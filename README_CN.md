@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <strong>AI Agent Skills 探索、扩展、进化智能引擎</strong>
+  <strong>AI Agent Skills 探索、扩展、进化智能引擎 🚀</strong>
 </p>
 
 <p align="center">
