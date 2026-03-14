@@ -30,7 +30,7 @@ from exo.api_integration.schemas import (
 app = FastAPI(
     title="EXO Web API",
     description="EXO - Everything Can Be a Skill • Skills Evolve Through Continuous Learning",
-    version="1.0.0"
+    version="0.1.0"
 )
 
 app.add_middleware(
