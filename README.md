@@ -1,7 +1,63 @@
-# EXO - Explore, Extend, Evolve AI Agent Cognition
 
-[English](./README.md) | [中文文档](./README_CN.md)
+<p align="center">
+  <h1 align="center">EXO</h1>
+</p>
 
+<p align="center">
+  <strong>An AI Agent Skills Exploration, Extension, and Evolution Framework</strong>
+</p>
+
+<p align="center">
+  Everything Can Be a Skill • Skills Evolve Through Continuous Learning • Elevating AI Agent Cognition
+</p>
+
+<p align="center">
+  <a href="https://opensource.org/licenses/MIT">
+    <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License">
+  </a>
+  <a href="https://www.python.org/">
+    <img src="https://img.shields.io/badge/Python-3.8+-blue.svg" alt="Python Version">
+  </a>
+  <a href="https://github.com/exo-skill/exo">
+    <img src="https://img.shields.io/github/stars/Yuan-ManX/EXO?style=social" alt="Stars">
+  </a>
+</p>
+
+
+<div align="center">
+
+### [English](./README.md) | [中文文档](./README_CN.md)
+
+</div>
+
+
+
+## Overview
+
+EXO is a revolutionary AI Agent Skills Exploration, Extension, and Evolution Framework built on a powerful core principle: **Everything Can Be a Skill**. Serving OpenClaw, Claude Code, Codex, Cursor, and other intelligent agent systems, EXO transforms any resource — web pages, documents, videos, code, datasets, and more — into structured, reusable Skill content. Through intelligent learning and continuous self-evolution, Skills grow and improve over time, significantly enhancing the cognitive capabilities of AI Agents.
+
+At the heart of EXO lies the belief that knowledge should not be static. Every Skill created with EXO can continuously learn from interactions, refine itself through reflection, and evolve to become more powerful, more comprehensive, and better suited to the evolving needs of AI Agents.
+
+## Core Philosophy
+
+EXO's revolutionary philosophy is centered around our foundational mission and principles:
+
+### The Mission: Explore, Extend, Evolve AI Agent Cognition
+
+At its core, EXO exists to elevate AI Agent cognition through three fundamental pillars:
+
+- **Explore** the vast knowledge available on the internet and in various file formats
+- **Extend** the capabilities of AI Agents through structured, reusable skills
+- **Evolve** skills through intelligent reflection and optimization to match Agent needs
+
+### The Principles: Everything Can Be a Skill, Skills Evolve Through Learning
+
+EXO's groundbreaking approach is built on two transformative principles:
+
+- **Everything Can Be a Skill**: Any resource — web pages, PDFs, videos, code, datasets, articles — can be transformed into a structured, AI-ready Skill
+- **Skills Evolve Through Learning**: Every Skill continuously learns from usage, feedback, and interactions, growing more powerful over time
+
+Together, these principles and pillars form EXO's revolutionary ecosystem where everything becomes a Skill, and every Skill continuously evolves to expand AI Agent cognition.
 
 ## Overview
 
