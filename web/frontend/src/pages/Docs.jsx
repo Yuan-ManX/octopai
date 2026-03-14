@@ -23,8 +23,8 @@ This guide will help you get up and running with EXO in minutes.
 ### 1. Clone the Repository
 
 \`\`\`bash
-git clone https://github.com/exo-skill/exo.git
-cd exo
+git clone https://github.com/Yuan-ManX/EXO.git
+cd EXO
 \`\`\`
 
 ### 2. Install Dependencies
@@ -162,8 +162,8 @@ PDF, DOC, DOCX, XLSX, CSV, images, videos, and more!
 ### 1. 克隆仓库
 
 \`\`\`bash
-git clone https://github.com/exo-skill/exo.git
-cd exo
+git clone https://github.com/Yuan-ManX/EXO.git
+cd EXO
 \`\`\`
 
 ### 2. 安装依赖
