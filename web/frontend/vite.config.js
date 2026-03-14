@@ -7,7 +7,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
-    base: isProduction ? '/exo/' : '/',
+    base: './',
     server: {
       port: 5173,
       proxy: {
