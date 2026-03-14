@@ -18,7 +18,7 @@
   <a href="https://www.python.org/">
     <img src="https://img.shields.io/badge/Python-3.8+-blue.svg" alt="Python Version">
   </a>
-  <a href="https://github.com/exo-skill/exo">
+  <a href="https://github.com/Yuan-ManX/EXO">
     <img src="https://img.shields.io/github/stars/Yuan-ManX/EXO?style=social" alt="Stars">
   </a>
 </p>
