@@ -1,16 +1,62 @@
-# EXO - 探索、扩展、进化 AI Agent 的认知能力！
+<p align="center">
+  <h1 align="center">EXO</h1>
+</p>
+
+<p align="center">
+  <strong>AI Agent Skills 探索、扩展、进化框架</strong>
+</p>
+
+<p align="center">
+  万物皆可为Skill • Skill在学习中不断自我进化 • 提升AI Agent认知能力
+</p>
+
+<p align="center">
+  <a href="https://opensource.org/licenses/MIT">
+    <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License">
+  </a>
+  <a href="https://www.python.org/">
+    <img src="https://img.shields.io/badge/Python-3.8+-blue.svg" alt="Python Version">
+  </a>
+  <a href="https://github.com/Yuan-ManX/EXO">
+    <img src="https://img.shields.io/github/stars/Yuan-ManX/EXO?style=social" alt="Stars">
+  </a>
+</p>
+
+<div align="center">
+
+#### [English](./README.md) | [中文文档](./README_CN.md)
+
+</div>
+
+
 
 ## 概述
 
-EXO是一个全面的AI Agent Skills开发平台，旨在扩展AI Agent的认知边界。服务于OpenClaw、Claude Code、Codex、Cursor等智能体系统，EXO将多样化的互联网资源和各种文件格式转化为AI Agent易于理解和利用的结构化Skill内容。通过自我优化和进化机制，EXO持续提升技能质量，为AI Agent赋予更广泛的知识和能力。
+EXO是一个革命性的AI Agent Skills探索、扩展、进化框架，其核心原则是：**万物皆可为Skill**。服务于OpenClaw、Claude Code、Codex、Cursor等智能体系统，EXO将任何资源——网页、文档、视频、代码、数据集等——转化为结构化、可复用的Skill内容。通过智能学习和持续的自我进化，Skill会随着时间不断成长和改进，显著提升AI Agent的认知能力。
 
-## 核心使命
+EXO的核心理念是知识不应是静态的。每一个用EXO创建的Skill都能从交互中持续学习，通过反思来自我完善，并不断进化，变得更强大、更全面，更好地适应AI Agent不断变化的需求。
+
+## 核心理念
+
+EXO的革命性理念围绕我们的基础使命和原则展开：
+
+### 使命：探索、扩展、进化AI Agent的认知
 
 EXO的核心理念是通过三大支柱提升AI Agent的认知能力：
 
-- **探索**互联网上海量的知识和各种文件格式的资源。
-- **扩展**AI Agent通过结构化、可复用的技能的能力。
-- **进化**技能通过智能反思和优化以匹配Agent需求。
+- **探索**互联网上海量的知识和各种文件格式的资源
+- **扩展**AI Agent通过结构化、可复用的技能的能力
+- **进化**技能通过智能反思和优化以匹配Agent需求
+
+### 原则：万物皆可为Skill，Skill在学习中不断进化
+
+EXO的突破性方法建立在两个变革性原则之上：
+
+- **万物皆可为Skill**：任何资源——网页、PDF、视频、代码、数据集、文章——都可以转化为结构化的、AI就绪的Skill
+- **Skill在学习中不断进化**：每一个Skill都从使用、反馈和交互中持续学习，随着时间变得更加强大
+
+这些原则和支柱共同构成了EXO的革命性生态系统，在这里万物皆可为Skill，每一个Skill都持续进化以扩展AI Agent的认知。
+
 
 ## ✨ 核心功能
 
