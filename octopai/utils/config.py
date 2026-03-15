@@ -14,10 +14,10 @@ class Config:
     # OpenRouter API configuration (required)
     OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY', '')
     
-    # Model configuration - EXO uses latest proprietary models
-    EXO_MODEL_PROVIDER = os.getenv('EXO_MODEL_PROVIDER', 'openrouter')
-    EXO_MODEL = os.getenv('EXO_MODEL', 'openai/gpt-5.4')
-    EXO_CLAUDE_MODEL = os.getenv('EXO_CLAUDE_MODEL', 'anthropic/claude-4.6')
+    # Model configuration - Octopai uses latest proprietary models
+    OCTOPAI_MODEL_PROVIDER = os.getenv('OCTOPAI_MODEL_PROVIDER', 'openrouter')
+    OCTOPAI_MODEL = os.getenv('OCTOPAI_MODEL', 'openai/gpt-5.4')
+    OCTOPAI_CLAUDE_MODEL = os.getenv('OCTOPAI_CLAUDE_MODEL', 'anthropic/claude-4.6')
     
     # Project configuration
     SKILLS_DIR = os.getenv('SKILLS_DIR', './skills')
@@ -25,7 +25,7 @@ class Config:
     OUTPUT_DIR = os.getenv('OUTPUT_DIR', './output')
     
     # Verbose mode
-    EXO_VERBOSE = os.getenv('EXO_VERBOSE', '0').lower() in ('1', 'true', 'yes')
+    OCTOPAI_VERBOSE = os.getenv('OCTOPAI_VERBOSE', '0').lower() in ('1', 'true', 'yes')
     
     # API endpoints
     @classmethod
@@ -68,9 +68,9 @@ class Config:
     def get_info(cls):
         """Get configuration info summary"""
         return {
-            'model_provider': cls.EXO_MODEL_PROVIDER,
-            'model': cls.EXO_MODEL,
+            'model_provider': cls.OCTOPAI_MODEL_PROVIDER,
+            'model': cls.OCTOPAI_MODEL,
             'has_cloudflare': cls.has_cloudflare(),
             'skills_dir': cls.SKILLS_DIR,
-            'verbose': cls.EXO_VERBOSE
+            'verbose': cls.OCTOPAI_VERBOSE
         }
