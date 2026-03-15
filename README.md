@@ -1,4 +1,6 @@
 <div align="center">
+
+<img src="./assets/Octopai.png" alt="Octopai Logo" />
   
 <p align="center">
   <h1 align="center">Octopai</h1>
@@ -40,11 +42,11 @@
 
 Octopai is a revolutionary AI Agent Skills Exploration, Extension, and Evolution Intelligence Engine built on a powerful core principle: **Everything Can Be a Skill • Skills Evolve Through Continuous Learning • Elevating AI Agent Cognition**. Serving OpenClaw, Claude Code, Codex, Cursor, and other intelligent agent systems, EXO transforms any resource — web pages, documents, videos, code, datasets, and more — into structured, reusable Skill content. Through intelligent learning and continuous self-evolution, Skills grow and improve over time, significantly enhancing the cognitive capabilities of AI Agents.
 
-At the heart of Octopai lies the belief that knowledge should not be static. Every Skill created with EXO can continuously learn from interactions, refine itself through reflection, and evolve to become more powerful, more comprehensive, and better suited to the evolving needs of AI Agents.
+At the heart of Octopai lies the belief that knowledge should not be static. Every Skill created with Octopai can continuously learn from interactions, refine itself through reflection, and evolve to become more powerful, more comprehensive, and better suited to the evolving needs of AI Agents.
 
 ## Core Philosophy
 
-EXO's revolutionary philosophy is centered around our foundational mission and principles:
+Octopai's revolutionary philosophy is centered around our foundational mission and principles:
 
 
 #### The Mission: Explore, Extend, Evolve AI Agent Cognition
@@ -58,12 +60,12 @@ At its core, Octopai exists to elevate AI Agent cognition through three fundamen
 
 #### The Principles: Everything Can Be a Skill, Skills Evolve Through Learning
 
-EXO's groundbreaking approach is built on two transformative principles:
+Octopai's groundbreaking approach is built on two transformative principles:
 
 - **Everything Can Be a Skill**: Any resource — web pages, PDFs, videos, code, datasets, articles — can be transformed into a structured, AI-ready Skill
 - **Skills Evolve Through Learning**: Every Skill continuously learns from usage, feedback, and interactions, growing more powerful over time
 
-Together, these principles and pillars form EXO's revolutionary ecosystem where everything becomes a Skill, and every Skill continuously evolves to expand AI Agent cognition.
+Together, these principles and pillars form Octopai's revolutionary ecosystem where everything becomes a Skill, and every Skill continuously evolves to expand AI Agent cognition.
 
 
 ## ✨ Key Features
