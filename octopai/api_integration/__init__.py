@@ -1,12 +1,12 @@
 """
-EXO API Integration - Standardized Interface Module
+Octopai API Integration - Standardized Interface Module
 
-This module provides standardized interfaces for integrating EXO
+This module provides standardized interfaces for integrating Octopai
 with external applications and services.
 """
 
-from exo.api_integration.api import EXOIntegrationAPI
-from exo.api_integration.schemas import (
+from octopai.api_integration.api import OctopaiIntegrationAPI
+from octopai.api_integration.schemas import (
     CreateSkillFromURLRequest,
     CreateSkillFromFilesRequest,
     CreateSkillFromPromptRequest,
@@ -17,7 +17,7 @@ from exo.api_integration.schemas import (
 )
 
 __all__ = [
-    "EXOIntegrationAPI",
+    "OctopaiIntegrationAPI",
     "CreateSkillFromURLRequest",
     "CreateSkillFromFilesRequest",
     "CreateSkillFromPromptRequest",
