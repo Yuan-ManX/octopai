@@ -125,7 +125,7 @@ stats = hub_stats()
 
 
 ### 🔗 Dual Interface: Python API + CLI
-Use EXO in the way that works best for you:
+Use Octopai in the way that works best for you:
 - **Python API**: Import directly into your projects for seamless integration
 - **Command-Line**: Quick operations and automation through the terminal
 
@@ -287,7 +287,7 @@ exo/
 
 ## 💡 Skill Evolution System
 
-EXO's evolution engine uses a sophisticated three-stage pipeline:
+Octopai's evolution engine uses a sophisticated three-stage pipeline:
 
 ```
 ┌────────────┐      ┌────────────┐      ┌────────────┐
@@ -333,4 +333,4 @@ If you like this project, please ⭐ star the repo. Your support helps us grow!
 - **Documentation**: [docs/](./docs/README.md)
 
 
-**EXO** - Empowering AI Agents to Explore, Extend, and Evolve their cognitive capabilities.
+**Octopai** - Empowering AI Agents to Explore, Extend, and Evolve their cognitive capabilities.
