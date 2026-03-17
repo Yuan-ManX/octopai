@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./assets/Octopai.png" alt="Octopai Logo" width="60%"/>
+<img src="./assets/Octopai.png" alt="Octopai Logo" width="70%"/>
   
 <p align="center">
   <h1 align="center">Octopai 🐙</h1>
