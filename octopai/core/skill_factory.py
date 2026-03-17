@@ -1,7 +1,7 @@
 """
-Skill Factory - EXO's Innovative Skill Creation System
+Skill Factory - Octopai's Innovative Skill Creation System
 
-This module provides EXO's proprietary skill creation system that
+This module provides Octopai's proprietary skill creation system that
 transforms diverse resources into structured, AI-ready skills through
 intelligent analysis and generation.
 """
@@ -13,10 +13,10 @@ from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from enum import Enum
 
-from exo.utils.config import Config
-from exo.utils.helpers import read_file, write_file
-from exo.core.converter import URLConverter
-from exo.core.resource_parser import ResourceParser
+from octopai.utils.config import Config
+from octopai.utils.helpers import read_file, write_file
+from octopai.core.converter import URLConverter
+from octopai.core.resource_parser import ResourceParser
 import requests
 import re
 import uuid
@@ -134,9 +134,9 @@ class SkillDefinition:
 
 class SkillFactory:
     """
-    EXO's Skill Factory - Intelligent Skill Creation System
+    Octopai's Skill Factory - Intelligent Skill Creation System
     
-    Transforms ANYTHING into structured, high-quality skills through EXO's 
+    Transforms ANYTHING into structured, high-quality skills through Octopai's 
     proprietary analysis and generation pipeline. Everything Can Be a Skill!
     
     Supported input types:
@@ -367,7 +367,7 @@ class SkillFactory:
         skill_type: SkillType,
         additional_context: Optional[str]
     ) -> str:
-        """Generate structured skill content using EXO's intelligent generation"""
+        """Generate structured skill content using Octopai's intelligent generation"""
         
         prompt = self._build_skill_generation_prompt(
             source_content=source_content,
@@ -652,7 +652,7 @@ Format as Markdown, ready to be used as SKILL.md content."""
 ## Overview
 
 This skill was created from source content and provides structured knowledge
-for AI Agents. Created with EXO's 'Everything Can Be a Skill' philosophy.
+for AI Agents. Created with Octopai's 'Everything Can Be a Skill' philosophy.
 
 ## Source Content
 
@@ -664,5 +664,4 @@ Use this skill to access and apply the knowledge contained within.
 
 ---
 
-*Created by EXO Skill Factory - Everything Can Be a Skill!*
-"""
+*Created by Octopai Skill Factory - Everything Can Be a Skill!*"""
