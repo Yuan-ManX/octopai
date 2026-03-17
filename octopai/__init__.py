@@ -33,7 +33,12 @@ from octopai.core.skill_factory import (
     SkillQualityLevel,
     SkillQualityMetrics,
     SkillQualityEvaluator,
-    SkillOptimizer
+    SkillOptimizer,
+    SkillTemplate,
+    SkillInteractionPrototype,
+    EnhancedQualityEvaluator,
+    create_skill_with_template,
+    generate_skill_prototype
 )
 from octopai.core.evolution_engine import (
     EvolutionEngine,
@@ -95,6 +100,11 @@ __all__ = [
     "SkillQualityMetrics",
     "SkillQualityEvaluator",
     "SkillOptimizer",
+    "SkillTemplate",
+    "SkillInteractionPrototype",
+    "EnhancedQualityEvaluator",
+    "create_skill_with_template",
+    "generate_skill_prototype",
     "EvolutionEngine",
     "EvolutionConfig",
     "EvolutionObjective",
