@@ -1,30 +1,47 @@
 """
-Octopai High-Level API
+Octopai High-Level API - Enhanced with Full-Lifecycle Engineering
 
-This module provides a simplified, high-level API for working with Octopai.
+This module provides a simplified, high-level API for working with Octopai,
+now enhanced with the full-lifecycle skill creation and optimization framework.
 """
 
 from typing import Optional, List, Union, Dict, Any
-from octopai.core.converter import URLConverter
-from octopai.core.creator import SkillCreator
-from octopai.core.evolver import SkillEvolver
+from octopai.core.converter import URLConverter, convert_url_to_content
 from octopai.core.resource_parser import (
     ResourceParser,
     ParsedResource,
     parse_resource,
     parse_to_skill_resource
 )
+from octopai.core.skill_factory import (
+    SkillFactory,
+    SkillDefinition,
+    SkillMetadata,
+    SkillVersion,
+    SkillType,
+    SkillQualityLevel
+)
 from octopai.core.skill_hub import SkillHub, Skill
+from octopai.core.experience_tracker import ExperienceTracker
 
 
 class Octopai:
     """
     Octopai - High-level API for AI Agent skill development
     
-    This class provides a unified interface for all Octopai functionality.
+    This class provides a unified interface for all Octopai functionality,
+    now enhanced with full-lifecycle skill engineering.
     """
     
-    def __init__(self, model_provider: str = "openrouter", model: str = "openai/gpt-5.4", api_key: Optional[str] = None, skill_hub_dir: str = "./SkillHub"):
+    def __init__(
+        self,
+        model_provider: str = "openrouter",
+        model: str = "openai/gpt-5.4",
+        api_key: Optional[str] = None,
+        skill_hub_dir: str = "./SkillHub",
+        skill_output_dir: str = "./skills",
+        experience_dir: str = "./experiences"
+    ):
         """
         Initialize Octopai API
         
@@ -33,29 +50,31 @@ class Octopai:
             model: Model name to use
             api_key: Optional API key (overrides environment variable)
             skill_hub_dir: Directory for SkillHub storage
+            skill_output_dir: Directory for skill output
+            experience_dir: Directory for experience tracking
         """
         self.converter = URLConverter()
-        self.creator = SkillCreator()
-        self.evolver = SkillEvolver()
+        self.skill_factory = SkillFactory()
         self.resource_parser = ResourceParser()
         self.skill_hub = SkillHub(skill_hub_dir)
+        self.experience_tracker = ExperienceTracker(experience_dir)
+        
         self.model_provider = model_provider
         self.model = model
         self.api_key = api_key
+        self.skill_output_dir = skill_output_dir
     
-    def convert_url(self, url: str, output_path: Optional[str] = None, use_crawler: bool = False) -> str:
+    def convert_url(self, url: str) -> str:
         """
-        Convert a web URL to Markdown format
+        Convert a web URL to structured content for skill creation
         
         Args:
             url: The URL to convert
-            output_path: Optional path to save the output file
-            use_crawler: Whether to also download web resources
             
         Returns:
-            The converted Markdown content
+            The converted content
         """
-        return self.converter.convert(url, output_path, use_crawler)
+        return self.converter.convert(url)
     
     def parse_file(self, file_path: str) -> ParsedResource:
         """
@@ -93,49 +112,248 @@ class Octopai:
         """
         return [self.parse_file(path) for path in file_paths]
     
-    def create_skill(self, prompt: str, name: Optional[str] = None, output_path: Optional[str] = None, resources: Optional[List[str]] = None) -> str:
+    def create_from_url(
+        self,
+        url: str,
+        name: str,
+        description: str,
+        tags: Optional[List[str]] = None,
+        category: Optional[str] = None,
+        author: Optional[str] = None,
+        skill_type: SkillType = SkillType.GENERAL,
+        auto_optimize: bool = True,
+        target_quality: SkillQualityLevel = SkillQualityLevel.GOOD
+    ) -> SkillDefinition:
         """
-        Create a new skill using LLM
+        Create a skill from a URL with full-lifecycle engineering
+        
+        Args:
+            url: The web URL to transform
+            name: Name for the skill
+            description: Description of the skill
+            tags: Optional tags for categorization
+            category: Optional category
+            author: Optional author name
+            skill_type: Type of skill being created
+            auto_optimize: Whether to auto-optimize after creation
+            target_quality: Target quality level for optimization
+            
+        Returns:
+            Complete SkillDefinition ready for use
+        """
+        return self.skill_factory.create_from_url(
+            url=url,
+            name=name,
+            description=description,
+            tags=tags,
+            category=category,
+            author=author,
+            skill_type=skill_type,
+            auto_optimize=auto_optimize,
+            target_quality=target_quality
+        )
+    
+    def create_from_files(
+        self,
+        file_paths: List[str],
+        name: str,
+        description: str,
+        tags: Optional[List[str]] = None,
+        category: Optional[str] = None,
+        author: Optional[str] = None,
+        skill_type: SkillType = SkillType.GENERAL,
+        auto_optimize: bool = True,
+        target_quality: SkillQualityLevel = SkillQualityLevel.GOOD
+    ) -> SkillDefinition:
+        """
+        Create a skill from one or more files with full-lifecycle engineering
+        
+        Args:
+            file_paths: List of file paths to process
+            name: Name for the skill
+            description: Description of the skill
+            tags: Optional tags for categorization
+            category: Optional category
+            author: Optional author name
+            skill_type: Type of skill being created
+            auto_optimize: Whether to auto-optimize after creation
+            target_quality: Target quality level for optimization
+            
+        Returns:
+            Complete SkillDefinition ready for use
+        """
+        return self.skill_factory.create_from_files(
+            file_paths=file_paths,
+            name=name,
+            description=description,
+            tags=tags,
+            category=category,
+            author=author,
+            skill_type=skill_type,
+            auto_optimize=auto_optimize,
+            target_quality=target_quality
+        )
+    
+    def create_from_prompt(
+        self,
+        prompt: str,
+        name: str,
+        description: str,
+        tags: Optional[List[str]] = None,
+        category: Optional[str] = None,
+        author: Optional[str] = None,
+        skill_type: SkillType = SkillType.GENERAL,
+        resources: Optional[List[str]] = None,
+        auto_optimize: bool = True,
+        target_quality: SkillQualityLevel = SkillQualityLevel.GOOD
+    ) -> SkillDefinition:
+        """
+        Create a skill from a descriptive prompt with full-lifecycle engineering
         
         Args:
             prompt: Description of what the skill should do
-            name: Optional name for the skill
-            output_path: Optional path to save the skill file
-            resources: Optional list of file paths to use as resources
+            name: Name for the skill
+            description: Description of the skill
+            tags: Optional tags for categorization
+            category: Optional category
+            author: Optional author name
+            skill_type: Type of skill being created
+            resources: Optional list of resource files to include
+            auto_optimize: Whether to auto-optimize after creation
+            target_quality: Target quality level for optimization
             
         Returns:
-            The generated skill content
+            Complete SkillDefinition ready for use
         """
-        enhanced_prompt = prompt
-        
-        if resources:
-            resource_contents = []
-            for res_path in resources:
-                try:
-                    res_content = self.parse_to_skill_resource(res_path)
-                    resource_contents.append(f"\n--- Resource: {res_path} ---\n{res_content}")
-                except Exception as e:
-                    resource_contents.append(f"\n--- Resource: {res_path} ---\nError parsing: {str(e)}")
-            
-            if resource_contents:
-                enhanced_prompt = f"{prompt}\n\nAdditional Resources:\n{' '.join(resource_contents)}"
-        
-        return self.creator.create(enhanced_prompt, name, output_path)
+        return self.skill_factory.create_from_prompt(
+            prompt=prompt,
+            name=name,
+            description=description,
+            tags=tags,
+            category=category,
+            author=author,
+            skill_type=skill_type,
+            resources=resources,
+            auto_optimize=auto_optimize,
+            target_quality=target_quality
+        )
     
-    def evolve_skill(self, skill_path: str, prompt: str, use_engine: bool = True, iterations: int = 3) -> str:
+    def create_from_text(
+        self,
+        text: str,
+        name: str,
+        description: str,
+        tags: Optional[List[str]] = None,
+        category: Optional[str] = None,
+        author: Optional[str] = None,
+        skill_type: SkillType = SkillType.GENERAL,
+        auto_optimize: bool = True,
+        target_quality: SkillQualityLevel = SkillQualityLevel.GOOD
+    ) -> SkillDefinition:
         """
-        Evolve and improve an existing skill
+        Create a skill from raw text content with full-lifecycle engineering
         
         Args:
-            skill_path: Path to the skill file
-            prompt: Evolution instructions or feedback
-            use_engine: Whether to use the advanced evolution engine
-            iterations: Number of evolution iterations
+            text: Raw text content to transform
+            name: Name for the skill
+            description: Description of the skill
+            tags: Optional tags for categorization
+            category: Optional category
+            author: Optional author name
+            skill_type: Type of skill being created
+            auto_optimize: Whether to auto-optimize after creation
+            target_quality: Target quality level for optimization
             
         Returns:
-            The evolved skill content
+            Complete SkillDefinition ready for use
         """
-        return self.evolver.evolve(skill_path, prompt, use_engine, iterations)
+        return self.skill_factory.create_from_text(
+            text=text,
+            name=name,
+            description=description,
+            tags=tags,
+            category=category,
+            author=author,
+            skill_type=skill_type,
+            auto_optimize=auto_optimize,
+            target_quality=target_quality
+        )
+    
+    def create_from_code(
+        self,
+        code: str,
+        language: str,
+        name: str,
+        description: str,
+        tags: Optional[List[str]] = None,
+        category: Optional[str] = None,
+        author: Optional[str] = None,
+        auto_optimize: bool = True,
+        target_quality: SkillQualityLevel = SkillQualityLevel.GOOD
+    ) -> SkillDefinition:
+        """
+        Create a skill from code with full-lifecycle engineering
+        
+        Args:
+            code: Source code to transform
+            language: Programming language
+            name: Name for the skill
+            description: Description of the skill
+            tags: Optional tags for categorization
+            category: Optional category
+            author: Optional author name
+            auto_optimize: Whether to auto-optimize after creation
+            target_quality: Target quality level for optimization
+            
+        Returns:
+            Complete SkillDefinition ready for use
+        """
+        return self.skill_factory.create_from_code(
+            code=code,
+            language=language,
+            name=name,
+            description=description,
+            tags=tags,
+            category=category,
+            author=author,
+            auto_optimize=auto_optimize,
+            target_quality=target_quality
+        )
+    
+    def optimize_skill(
+        self,
+        skill_def: SkillDefinition,
+        target_quality: SkillQualityLevel = SkillQualityLevel.EXCELLENT,
+        author: Optional[str] = None
+    ) -> SkillDefinition:
+        """
+        Optimize an existing skill
+        
+        Args:
+            skill_def: Skill definition to optimize
+            target_quality: Target quality level
+            author: Optional author name
+            
+        Returns:
+            Updated skill definition
+        """
+        return self.skill_factory.optimize_skill(
+            skill_def=skill_def,
+            target_quality=target_quality,
+            author=author
+        )
+    
+    def evaluate_skill(self, skill_def: SkillDefinition):
+        """
+        Evaluate a skill's quality
+        
+        Args:
+            skill_def: Skill definition to evaluate
+            
+        Returns:
+            Quality metrics
+        """
+        return self.skill_factory.evaluate_skill(skill_def)
     
     def create_skill_in_hub(
         self,
@@ -145,7 +363,9 @@ class Octopai:
         tags: Optional[List[str]] = None,
         category: Optional[str] = None,
         author: Optional[str] = None,
-        resources: Optional[List[str]] = None
+        resources: Optional[List[str]] = None,
+        auto_optimize: bool = True,
+        target_quality: SkillQualityLevel = SkillQualityLevel.GOOD
     ) -> Skill:
         """
         Create a skill and store it in SkillHub
@@ -158,11 +378,27 @@ class Octopai:
             category: Optional category
             author: Optional author name
             resources: Optional list of file paths to use as resources
+            auto_optimize: Whether to auto-optimize
+            target_quality: Target quality level
             
         Returns:
             Created Skill object
         """
-        skill_content = self.create_skill(prompt, name=name, resources=resources)
+        skill_def = self.create_from_prompt(
+            prompt=prompt,
+            name=name,
+            description=description,
+            tags=tags,
+            category=category,
+            author=author,
+            resources=resources,
+            auto_optimize=auto_optimize,
+            target_quality=target_quality
+        )
+        
+        latest_version = skill_def.latest_version
+        skill_content = latest_version.content if latest_version else ""
+        
         return self.skill_hub.create_skill(
             name=name,
             description=description,
@@ -207,7 +443,16 @@ class Octopai:
         if not skill:
             return None
         
-        new_content = self.create_skill(prompt, name=skill.metadata.name)
+        skill_def = self.create_from_prompt(
+            prompt=prompt,
+            name=skill.name,
+            description=getattr(skill, 'description', ''),
+            author=author
+        )
+        
+        latest_version = skill_def.latest_version
+        new_content = latest_version.content if latest_version else prompt
+        
         return self.skill_hub.update_skill(
             skill_id=skill_id,
             content=new_content,
@@ -257,7 +502,7 @@ class Octopai:
     
     def record_skill_usage(self, skill_id: str, success: bool = True) -> bool:
         """
-        Record skill usage in SkillHub
+        Record skill usage in SkillHub and ExperienceTracker
         
         Args:
             skill_id: Skill ID
@@ -266,7 +511,32 @@ class Octopai:
         Returns:
             True if successful
         """
+        self.experience_tracker.record_interaction(skill_id, success=success)
         return self.skill_hub.record_skill_usage(skill_id, success)
+    
+    def get_skill_experience(self, skill_id: str):
+        """
+        Get experience data for a skill
+        
+        Args:
+            skill_id: Skill ID
+            
+        Returns:
+            Skill experience data
+        """
+        return self.experience_tracker.get_skill_experience(skill_id)
+    
+    def get_experience_insights(self, skill_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Get experience insights
+        
+        Args:
+            skill_id: Optional specific skill to analyze
+            
+        Returns:
+            Dictionary of insights
+        """
+        return self.experience_tracker.get_insights(skill_id)
     
     def merge_skills_in_hub(
         self,
@@ -298,52 +568,209 @@ class Octopai:
         """
         return self.skill_hub.get_statistics()
     
-    def process(self, input_data: Union[str, List[str]], operation: str = "convert", **kwargs) -> Union[str, List[str], ParsedResource, List[ParsedResource], Skill, List[Skill]]:
+    def create_anything(
+        self,
+        source: Any,
+        name: str,
+        description: str,
+        tags: Optional[List[str]] = None,
+        category: Optional[str] = None,
+        author: Optional[str] = None,
+        skill_type: SkillType = SkillType.GENERAL,
+        auto_optimize: bool = True,
+        target_quality: SkillQualityLevel = SkillQualityLevel.GOOD
+    ) -> SkillDefinition:
         """
-        Generic method for any Octopai operation
+        Create a skill from ANYTHING - the core of 'Everything Can Be a Skill'
         
         Args:
-            input_data: The input data to process
-            operation: The operation to perform ('convert', 'parse', 'create', 'evolve', 'hub_create', 'hub_search', 'hub_list')
-            **kwargs: Additional operation-specific parameters
+            source: ANY source to transform into a skill
+            name: Name for the skill
+            description: Description of the skill
+            tags: Optional tags for categorization
+            category: Optional category
+            author: Optional author name
+            skill_type: Type of skill being created
+            auto_optimize: Whether to auto-optimize after creation
+            target_quality: Target quality level for optimization
             
         Returns:
-            The result of the operation
+            Complete SkillDefinition ready for use
         """
-        if operation == "convert":
-            return self.convert_url(input_data, **kwargs)
-        elif operation == "parse":
-            if isinstance(input_data, list):
-                return self.parse_multiple_files(input_data)
-            return self.parse_file(input_data)
-        elif operation == "create":
-            return self.create_skill(input_data, **kwargs)
-        elif operation == "evolve":
-            return self.evolve_skill(input_data, **kwargs)
-        elif operation == "hub_create":
-            return self.create_skill_in_hub(**kwargs)
-        elif operation == "hub_search":
-            return self.search_skills_in_hub(input_data, **kwargs)
-        elif operation == "hub_list":
-            return self.list_skills_in_hub(**kwargs)
-        else:
-            raise ValueError(f"Unknown operation: {operation}")
+        return self.skill_factory.create_anything(
+            source=source,
+            name=name,
+            description=description,
+            tags=tags,
+            category=category,
+            author=author,
+            skill_type=skill_type,
+            auto_optimize=auto_optimize,
+            target_quality=target_quality
+        )
 
 
-def convert(url: str, output_path: Optional[str] = None, use_crawler: bool = False) -> str:
+def create_from_url(
+    url: str,
+    name: str,
+    description: str,
+    tags: Optional[List[str]] = None,
+    category: Optional[str] = None,
+    author: Optional[str] = None,
+    skill_type: SkillType = SkillType.GENERAL,
+    auto_optimize: bool = True,
+    target_quality: SkillQualityLevel = SkillQualityLevel.GOOD
+) -> SkillDefinition:
     """
-    Convenience function to convert a URL to Markdown
+    Convenience function to create a skill from a URL
+    
+    Args:
+        url: The web URL to transform
+        name: Name for the skill
+        description: Description of the skill
+        tags: Optional tags for categorization
+        category: Optional category
+        author: Optional author name
+        skill_type: Type of skill being created
+        auto_optimize: Whether to auto-optimize after creation
+        target_quality: Target quality level for optimization
+        
+    Returns:
+        Complete SkillDefinition ready for use
+    """
+    octopai = Octopai()
+    return octopai.create_from_url(
+        url=url,
+        name=name,
+        description=description,
+        tags=tags,
+        category=category,
+        author=author,
+        skill_type=skill_type,
+        auto_optimize=auto_optimize,
+        target_quality=target_quality
+    )
+
+
+def create_from_files(
+    file_paths: List[str],
+    name: str,
+    description: str,
+    tags: Optional[List[str]] = None,
+    category: Optional[str] = None,
+    author: Optional[str] = None,
+    skill_type: SkillType = SkillType.GENERAL,
+    auto_optimize: bool = True,
+    target_quality: SkillQualityLevel = SkillQualityLevel.GOOD
+) -> SkillDefinition:
+    """
+    Convenience function to create a skill from files
+    
+    Args:
+        file_paths: List of file paths to process
+        name: Name for the skill
+        description: Description of the skill
+        tags: Optional tags for categorization
+        category: Optional category
+        author: Optional author name
+        skill_type: Type of skill being created
+        auto_optimize: Whether to auto-optimize after creation
+        target_quality: Target quality level for optimization
+        
+    Returns:
+        Complete SkillDefinition ready for use
+    """
+    octopai = Octopai()
+    return octopai.create_from_files(
+        file_paths=file_paths,
+        name=name,
+        description=description,
+        tags=tags,
+        category=category,
+        author=author,
+        skill_type=skill_type,
+        auto_optimize=auto_optimize,
+        target_quality=target_quality
+    )
+
+
+def create_from_prompt(
+    prompt: str,
+    name: str,
+    description: str,
+    tags: Optional[List[str]] = None,
+    category: Optional[str] = None,
+    author: Optional[str] = None,
+    skill_type: SkillType = SkillType.GENERAL,
+    resources: Optional[List[str]] = None,
+    auto_optimize: bool = True,
+    target_quality: SkillQualityLevel = SkillQualityLevel.GOOD
+) -> SkillDefinition:
+    """
+    Convenience function to create a skill from a prompt
+    
+    Args:
+        prompt: Description of what the skill should do
+        name: Name for the skill
+        description: Description of the skill
+        tags: Optional tags for categorization
+        category: Optional category
+        author: Optional author name
+        skill_type: Type of skill being created
+        resources: Optional list of resource files to include
+        auto_optimize: Whether to auto-optimize after creation
+        target_quality: Target quality level for optimization
+        
+    Returns:
+        Complete SkillDefinition ready for use
+    """
+    octopai = Octopai()
+    return octopai.create_from_prompt(
+        prompt=prompt,
+        name=name,
+        description=description,
+        tags=tags,
+        category=category,
+        author=author,
+        skill_type=skill_type,
+        resources=resources,
+        auto_optimize=auto_optimize,
+        target_quality=target_quality
+    )
+
+
+def optimize_skill(
+    skill_def: SkillDefinition,
+    target_quality: SkillQualityLevel = SkillQualityLevel.EXCELLENT,
+    author: Optional[str] = None
+) -> SkillDefinition:
+    """
+    Convenience function to optimize a skill
+    
+    Args:
+        skill_def: Skill definition to optimize
+        target_quality: Target quality level
+        author: Optional author name
+        
+    Returns:
+        Updated skill definition
+    """
+    octopai = Octopai()
+    return octopai.optimize_skill(skill_def, target_quality, author)
+
+
+def convert(url: str) -> str:
+    """
+    Convenience function to convert a URL to content
     
     Args:
         url: The URL to convert
-        output_path: Optional path to save the output file
-        use_crawler: Whether to also download web resources
         
     Returns:
-        The converted Markdown content
+        The converted content
     """
     octopai = Octopai()
-    return octopai.convert_url(url, output_path, use_crawler)
+    return octopai.convert_url(url)
 
 
 def parse(file_path: str) -> ParsedResource:
@@ -360,56 +787,6 @@ def parse(file_path: str) -> ParsedResource:
     return octopai.parse_file(file_path)
 
 
-def create(prompt: str, name: Optional[str] = None, output_path: Optional[str] = None, resources: Optional[List[str]] = None) -> str:
-    """
-    Convenience function to create a skill
-    
-    Args:
-        prompt: Description of what the skill should do
-        name: Optional name for the skill
-        output_path: Optional path to save the skill file
-        resources: Optional list of file paths to use as resources
-        
-    Returns:
-        The generated skill content
-    """
-    octopai = Octopai()
-    return octopai.create_skill(prompt, name, output_path, resources)
-
-
-def evolve(skill_path: str, prompt: str, use_engine: bool = True, iterations: int = 3) -> str:
-    """
-    Convenience function to evolve a skill
-    
-    Args:
-        skill_path: Path to the skill file
-        prompt: Evolution instructions or feedback
-        use_engine: Whether to use the advanced evolution engine
-        iterations: Number of evolution iterations
-        
-    Returns:
-        The evolved skill content
-    """
-    octopai = Octopai()
-    return octopai.evolve_skill(skill_path, prompt, use_engine, iterations)
-
-
-def process(input_data: Union[str, List[str]], operation: str = "convert", **kwargs) -> Union[str, List[str], ParsedResource, List[ParsedResource], Skill, List[Skill]]:
-    """
-    Convenience function for any Octopai operation
-    
-    Args:
-        input_data: The input data to process
-        operation: The operation to perform
-        **kwargs: Additional operation-specific parameters
-        
-    Returns:
-        The result of the operation
-    """
-    octopai = Octopai()
-    return octopai.process(input_data, operation, **kwargs)
-
-
 def hub_create(
     name: str,
     description: str,
@@ -417,7 +794,9 @@ def hub_create(
     tags: Optional[List[str]] = None,
     category: Optional[str] = None,
     author: Optional[str] = None,
-    resources: Optional[List[str]] = None
+    resources: Optional[List[str]] = None,
+    auto_optimize: bool = True,
+    target_quality: SkillQualityLevel = SkillQualityLevel.GOOD
 ) -> Skill:
     """
     Convenience function to create a skill in SkillHub
@@ -430,12 +809,17 @@ def hub_create(
         category: Optional category
         author: Optional author name
         resources: Optional list of file paths to use as resources
+        auto_optimize: Whether to auto-optimize
+        target_quality: Target quality level
         
     Returns:
         Created Skill object
     """
     octopai = Octopai()
-    return octopai.create_skill_in_hub(name, description, prompt, tags, category, author, resources)
+    return octopai.create_skill_in_hub(
+        name, description, prompt, tags, category, author, resources,
+        auto_optimize, target_quality
+    )
 
 
 def hub_get(skill_id: str) -> Optional[Skill]:
@@ -503,3 +887,17 @@ def hub_stats() -> Dict[str, Any]:
     """
     octopai = Octopai()
     return octopai.get_skill_hub_stats()
+
+
+def get_insights(skill_id: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Convenience function to get experience insights
+    
+    Args:
+        skill_id: Optional specific skill to analyze
+        
+    Returns:
+        Dictionary of insights
+    """
+    octopai = Octopai()
+    return octopai.get_experience_insights(skill_id)
