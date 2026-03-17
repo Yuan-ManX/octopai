@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-EXO batch processing example
+Octopai batch processing example
 """
 
 import os
-from exo.core.converter import URLConverter
-from exo.core.creator import SkillCreator
+from octopai.core.converter import URLConverter
+from octopai.core.creator import SkillCreator
 
 
 def main():
