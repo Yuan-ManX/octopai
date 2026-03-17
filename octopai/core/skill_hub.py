@@ -1,7 +1,7 @@
 """
 SkillHub - Skill Storage and Management System
 
-EXO's centralized skill management system provides
+Octopai's centralized skill management system provides
 centralized skill management, version control,
 retrieval, and merging capabilities.
 """
