@@ -5,7 +5,7 @@ This module provides a simplified, high-level API for working with Octopai,
 now enhanced with the full-lifecycle skill creation and optimization framework.
 """
 
-from typing import Optional, List, Union, Dict, Any
+from typing import Optional, List, Union, Dict, Any, Tuple
 from octopai.core.converter import URLConverter, convert_url_to_content
 from octopai.core.resource_parser import (
     ResourceParser,
@@ -21,7 +21,11 @@ from octopai.core.skill_factory import (
     SkillType,
     SkillQualityLevel
 )
-from octopai.core.skill_hub import SkillHub, Skill
+from octopai.core.skill_hub import (
+    SkillHub, Skill, SkillStatus, SkillVisibility,
+    SkillDependency, SkillRating, SkillCollection,
+    ContextSlot, ContextComposition, VersionDiff, SearchIndex
+)
 from octopai.core.experience_tracker import ExperienceTracker
 
 
@@ -568,6 +572,364 @@ class Octopai:
         """
         return self.skill_hub.get_statistics()
     
+    def update_skill_metadata_in_hub(
+        self,
+        skill_id: str,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        tags: Optional[List[str]] = None,
+        category: Optional[str] = None,
+        status: Optional[SkillStatus] = None,
+        visibility: Optional[SkillVisibility] = None,
+        author: Optional[str] = None,
+        keywords: Optional[List[str]] = None,
+        dependencies: Optional[List[SkillDependency]] = None,
+        related_skills: Optional[List[str]] = None,
+        skill_type: Optional[str] = None,
+        custom_fields: Optional[Dict[str, Any]] = None
+    ) -> Optional[Skill]:
+        """
+        Update skill metadata in SkillHub
+        
+        Args:
+            skill_id: Skill ID to update
+            name: Optional new name
+            description: Optional new description
+            tags: Optional new tags
+            category: Optional new category
+            status: Optional new status
+            visibility: Optional new visibility
+            author: Optional new author
+            keywords: Optional new keywords
+            dependencies: Optional new dependencies
+            related_skills: Optional related skills
+            skill_type: Optional skill type
+            custom_fields: Optional custom fields
+            
+        Returns:
+            Updated Skill object or None if not found
+        """
+        return self.skill_hub.update_skill_metadata(
+            skill_id=skill_id,
+            name=name,
+            description=description,
+            tags=tags,
+            category=category,
+            status=status,
+            visibility=visibility,
+            author=author,
+            keywords=keywords,
+            dependencies=dependencies,
+            related_skills=related_skills,
+            skill_type=skill_type,
+            custom_fields=custom_fields
+        )
+    
+    def create_collection_in_hub(
+        self,
+        name: str,
+        description: str,
+        skill_ids: Optional[List[str]] = None,
+        tags: Optional[List[str]] = None,
+        author: Optional[str] = None
+    ) -> SkillCollection:
+        """
+        Create a skill collection in SkillHub
+        
+        Args:
+            name: Collection name
+            description: Collection description
+            skill_ids: Optional list of skill IDs to include
+            tags: Optional tags for the collection
+            author: Optional author name
+            
+        Returns:
+            Created SkillCollection object
+        """
+        return self.skill_hub.create_collection(name, description, skill_ids, tags, author)
+    
+    def add_skill_to_collection_in_hub(self, collection_id: str, skill_id: str) -> bool:
+        """
+        Add a skill to a collection in SkillHub
+        
+        Args:
+            collection_id: Collection ID
+            skill_id: Skill ID to add
+            
+        Returns:
+            True if successful
+        """
+        return self.skill_hub.add_skill_to_collection(collection_id, skill_id)
+    
+    def remove_skill_from_collection_in_hub(self, collection_id: str, skill_id: str) -> bool:
+        """
+        Remove a skill from a collection in SkillHub
+        
+        Args:
+            collection_id: Collection ID
+            skill_id: Skill ID to remove
+            
+        Returns:
+            True if successful
+        """
+        return self.skill_hub.remove_skill_from_collection(collection_id, skill_id)
+    
+    def get_collection_from_hub(self, collection_id: str) -> Optional[SkillCollection]:
+        """
+        Get a collection from SkillHub by ID
+        
+        Args:
+            collection_id: Collection ID to retrieve
+            
+        Returns:
+            SkillCollection object or None
+        """
+        return self.skill_hub.get_collection(collection_id)
+    
+    def list_collections_in_hub(self) -> List[SkillCollection]:
+        """
+        List all collections in SkillHub
+        
+        Returns:
+            List of SkillCollection objects
+        """
+        return self.skill_hub.list_collections()
+    
+    def delete_collection_from_hub(self, collection_id: str) -> bool:
+        """
+        Delete a collection from SkillHub
+        
+        Args:
+            collection_id: Collection ID to delete
+            
+        Returns:
+            True if successful
+        """
+        return self.skill_hub.delete_collection(collection_id)
+    
+    def add_rating_to_skill_in_hub(
+        self,
+        skill_id: str,
+        rating: float,
+        feedback: Optional[str] = None,
+        reviewer: Optional[str] = None
+    ) -> Optional[SkillRating]:
+        """
+        Add a rating to a skill in SkillHub
+        
+        Args:
+            skill_id: Skill ID
+            rating: Rating value (0-5)
+            feedback: Optional feedback text
+            reviewer: Optional reviewer name
+            
+        Returns:
+            Created SkillRating object or None
+        """
+        return self.skill_hub.add_rating(skill_id, rating, feedback, reviewer)
+    
+    def get_ratings_from_hub(self, skill_id: str) -> List[SkillRating]:
+        """
+        Get all ratings for a skill from SkillHub
+        
+        Args:
+            skill_id: Skill ID
+            
+        Returns:
+            List of SkillRating objects
+        """
+        return self.skill_hub.get_ratings(skill_id)
+    
+    def compute_version_diff_in_hub(
+        self,
+        skill_id: str,
+        from_version: int,
+        to_version: int
+    ) -> Optional[VersionDiff]:
+        """
+        Compute difference between two skill versions in SkillHub
+        
+        Args:
+            skill_id: Skill ID
+            from_version: Source version number
+            to_version: Target version number
+            
+        Returns:
+            VersionDiff object or None
+        """
+        return self.skill_hub.compute_version_diff(skill_id, from_version, to_version)
+    
+    def rollback_skill_in_hub(
+        self,
+        skill_id: str,
+        version: int,
+        author: Optional[str] = None
+    ) -> Optional[Skill]:
+        """
+        Rollback skill to a previous version in SkillHub
+        
+        Args:
+            skill_id: Skill ID
+            version: Version to rollback to
+            author: Optional author name
+            
+        Returns:
+            Updated Skill object or None
+        """
+        return self.skill_hub.rollback_to_version(skill_id, version, author)
+    
+    def publish_skill_in_hub(
+        self,
+        skill_id: str,
+        visibility: SkillVisibility = SkillVisibility.PUBLIC
+    ) -> Optional[Skill]:
+        """
+        Publish a skill in SkillHub
+        
+        Args:
+            skill_id: Skill ID
+            visibility: Visibility level
+            
+        Returns:
+            Updated Skill object or None
+        """
+        return self.skill_hub.publish_skill(skill_id, visibility)
+    
+    def deprecate_skill_in_hub(self, skill_id: str) -> Optional[Skill]:
+        """
+        Deprecate a skill in SkillHub
+        
+        Args:
+            skill_id: Skill ID
+            
+        Returns:
+            Updated Skill object or None
+        """
+        return self.skill_hub.deprecate_skill(skill_id)
+    
+    def archive_skill_in_hub(self, skill_id: str) -> Optional[Skill]:
+        """
+        Archive a skill in SkillHub
+        
+        Args:
+            skill_id: Skill ID
+            
+        Returns:
+            Updated Skill object or None
+        """
+        return self.skill_hub.archive_skill(skill_id)
+    
+    def create_composition_in_hub(
+        self,
+        name: str,
+        description: str,
+        slots: Optional[Dict[str, ContextSlot]] = None
+    ) -> ContextComposition:
+        """
+        Create a context composition in SkillHub
+        
+        Args:
+            name: Composition name
+            description: Composition description
+            slots: Optional dictionary of slots
+            
+        Returns:
+            Created ContextComposition object
+        """
+        return self.skill_hub.create_composition(name, description, slots)
+    
+    def add_slot_to_composition_in_hub(
+        self,
+        composition_id: str,
+        slot: ContextSlot
+    ) -> bool:
+        """
+        Add a slot to a composition in SkillHub
+        
+        Args:
+            composition_id: Composition ID
+            slot: Slot to add
+            
+        Returns:
+            True if successful
+        """
+        return self.skill_hub.add_slot_to_composition(composition_id, slot)
+    
+    def bind_skill_to_slot_in_hub(
+        self,
+        composition_id: str,
+        slot_id: str,
+        skill_id: str
+    ) -> bool:
+        """
+        Bind a skill to a composition slot in SkillHub
+        
+        Args:
+            composition_id: Composition ID
+            slot_id: Slot ID
+            skill_id: Skill ID to bind
+            
+        Returns:
+            True if successful
+        """
+        return self.skill_hub.bind_skill_to_slot(composition_id, slot_id, skill_id)
+    
+    def get_composition_from_hub(self, composition_id: str) -> Optional[ContextComposition]:
+        """
+        Get a composition from SkillHub by ID
+        
+        Args:
+            composition_id: Composition ID to retrieve
+            
+        Returns:
+            ContextComposition object or None
+        """
+        return self.skill_hub.get_composition(composition_id)
+    
+    def list_compositions_in_hub(self) -> List[ContextComposition]:
+        """
+        List all compositions in SkillHub
+        
+        Returns:
+            List of ContextComposition objects
+        """
+        return self.skill_hub.list_compositions()
+    
+    def delete_composition_from_hub(self, composition_id: str) -> bool:
+        """
+        Delete a composition from SkillHub
+        
+        Args:
+            composition_id: Composition ID to delete
+            
+        Returns:
+            True if successful
+        """
+        return self.skill_hub.delete_composition(composition_id)
+    
+    def semantic_search_in_hub(
+        self,
+        query: str,
+        tags: Optional[List[str]] = None,
+        category: Optional[str] = None,
+        status: Optional[SkillStatus] = None,
+        limit: int = 20
+    ) -> List[Tuple[Skill, float]]:
+        """
+        Enhanced semantic search using search index in SkillHub
+        
+        Args:
+            query: Search query
+            tags: Optional tag filter
+            category: Optional category filter
+            status: Optional status filter
+            limit: Maximum results
+            
+        Returns:
+            List of (Skill, score) tuples sorted by relevance
+        """
+        return self.skill_hub.semantic_search(query, tags, category, status, limit)
+    
     def create_anything(
         self,
         source: Any,
@@ -901,3 +1263,227 @@ def get_insights(skill_id: Optional[str] = None) -> Dict[str, Any]:
     """
     octopai = Octopai()
     return octopai.get_experience_insights(skill_id)
+
+
+def hub_update_metadata(
+    skill_id: str,
+    name: Optional[str] = None,
+    description: Optional[str] = None,
+    tags: Optional[List[str]] = None,
+    category: Optional[str] = None,
+    status: Optional[SkillStatus] = None,
+    visibility: Optional[SkillVisibility] = None,
+    author: Optional[str] = None,
+    keywords: Optional[List[str]] = None,
+    dependencies: Optional[List[SkillDependency]] = None,
+    related_skills: Optional[List[str]] = None,
+    skill_type: Optional[str] = None,
+    custom_fields: Optional[Dict[str, Any]] = None
+) -> Optional[Skill]:
+    """
+    Convenience function to update skill metadata in SkillHub
+    """
+    octopai = Octopai()
+    return octopai.update_skill_metadata_in_hub(
+        skill_id, name, description, tags, category, status, visibility,
+        author, keywords, dependencies, related_skills, skill_type, custom_fields
+    )
+
+
+def hub_create_collection(
+    name: str,
+    description: str,
+    skill_ids: Optional[List[str]] = None,
+    tags: Optional[List[str]] = None,
+    author: Optional[str] = None
+) -> SkillCollection:
+    """
+    Convenience function to create a skill collection in SkillHub
+    """
+    octopai = Octopai()
+    return octopai.create_collection_in_hub(name, description, skill_ids, tags, author)
+
+
+def hub_add_to_collection(collection_id: str, skill_id: str) -> bool:
+    """
+    Convenience function to add a skill to a collection in SkillHub
+    """
+    octopai = Octopai()
+    return octopai.add_skill_to_collection_in_hub(collection_id, skill_id)
+
+
+def hub_remove_from_collection(collection_id: str, skill_id: str) -> bool:
+    """
+    Convenience function to remove a skill from a collection in SkillHub
+    """
+    octopai = Octopai()
+    return octopai.remove_skill_from_collection_in_hub(collection_id, skill_id)
+
+
+def hub_get_collection(collection_id: str) -> Optional[SkillCollection]:
+    """
+    Convenience function to get a collection from SkillHub
+    """
+    octopai = Octopai()
+    return octopai.get_collection_from_hub(collection_id)
+
+
+def hub_list_collections() -> List[SkillCollection]:
+    """
+    Convenience function to list all collections in SkillHub
+    """
+    octopai = Octopai()
+    return octopai.list_collections_in_hub()
+
+
+def hub_delete_collection(collection_id: str) -> bool:
+    """
+    Convenience function to delete a collection from SkillHub
+    """
+    octopai = Octopai()
+    return octopai.delete_collection_from_hub(collection_id)
+
+
+def hub_add_rating(
+    skill_id: str,
+    rating: float,
+    feedback: Optional[str] = None,
+    reviewer: Optional[str] = None
+) -> Optional[SkillRating]:
+    """
+    Convenience function to add a rating to a skill in SkillHub
+    """
+    octopai = Octopai()
+    return octopai.add_rating_to_skill_in_hub(skill_id, rating, feedback, reviewer)
+
+
+def hub_get_ratings(skill_id: str) -> List[SkillRating]:
+    """
+    Convenience function to get all ratings for a skill from SkillHub
+    """
+    octopai = Octopai()
+    return octopai.get_ratings_from_hub(skill_id)
+
+
+def hub_compute_diff(
+    skill_id: str,
+    from_version: int,
+    to_version: int
+) -> Optional[VersionDiff]:
+    """
+    Convenience function to compute version difference in SkillHub
+    """
+    octopai = Octopai()
+    return octopai.compute_version_diff_in_hub(skill_id, from_version, to_version)
+
+
+def hub_rollback(
+    skill_id: str,
+    version: int,
+    author: Optional[str] = None
+) -> Optional[Skill]:
+    """
+    Convenience function to rollback a skill in SkillHub
+    """
+    octopai = Octopai()
+    return octopai.rollback_skill_in_hub(skill_id, version, author)
+
+
+def hub_publish(
+    skill_id: str,
+    visibility: SkillVisibility = SkillVisibility.PUBLIC
+) -> Optional[Skill]:
+    """
+    Convenience function to publish a skill in SkillHub
+    """
+    octopai = Octopai()
+    return octopai.publish_skill_in_hub(skill_id, visibility)
+
+
+def hub_deprecate(skill_id: str) -> Optional[Skill]:
+    """
+    Convenience function to deprecate a skill in SkillHub
+    """
+    octopai = Octopai()
+    return octopai.deprecate_skill_in_hub(skill_id)
+
+
+def hub_archive(skill_id: str) -> Optional[Skill]:
+    """
+    Convenience function to archive a skill in SkillHub
+    """
+    octopai = Octopai()
+    return octopai.archive_skill_in_hub(skill_id)
+
+
+def hub_create_composition(
+    name: str,
+    description: str,
+    slots: Optional[Dict[str, ContextSlot]] = None
+) -> ContextComposition:
+    """
+    Convenience function to create a context composition in SkillHub
+    """
+    octopai = Octopai()
+    return octopai.create_composition_in_hub(name, description, slots)
+
+
+def hub_add_slot(
+    composition_id: str,
+    slot: ContextSlot
+) -> bool:
+    """
+    Convenience function to add a slot to a composition in SkillHub
+    """
+    octopai = Octopai()
+    return octopai.add_slot_to_composition_in_hub(composition_id, slot)
+
+
+def hub_bind_skill(
+    composition_id: str,
+    slot_id: str,
+    skill_id: str
+) -> bool:
+    """
+    Convenience function to bind a skill to a slot in SkillHub
+    """
+    octopai = Octopai()
+    return octopai.bind_skill_to_slot_in_hub(composition_id, slot_id, skill_id)
+
+
+def hub_get_composition(composition_id: str) -> Optional[ContextComposition]:
+    """
+    Convenience function to get a composition from SkillHub
+    """
+    octopai = Octopai()
+    return octopai.get_composition_from_hub(composition_id)
+
+
+def hub_list_compositions() -> List[ContextComposition]:
+    """
+    Convenience function to list all compositions in SkillHub
+    """
+    octopai = Octopai()
+    return octopai.list_compositions_in_hub()
+
+
+def hub_delete_composition(composition_id: str) -> bool:
+    """
+    Convenience function to delete a composition from SkillHub
+    """
+    octopai = Octopai()
+    return octopai.delete_composition_from_hub(composition_id)
+
+
+def hub_semantic_search(
+    query: str,
+    tags: Optional[List[str]] = None,
+    category: Optional[str] = None,
+    status: Optional[SkillStatus] = None,
+    limit: int = 20
+) -> List[Tuple[Skill, float]]:
+    """
+    Convenience function for semantic search in SkillHub
+    """
+    octopai = Octopai()
+    return octopai.semantic_search_in_hub(query, tags, category, status, limit)
