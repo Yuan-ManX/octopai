@@ -1,10 +1,10 @@
-# EXO Documentation
+# Octopai Documentation
 
-Welcome to the EXO documentation!
+Welcome to the Octopai documentation!
 
-## What is EXO?
+## What is Octopai?
 
-EXO is a comprehensive AI Agent skill development platform designed to expand the cognitive boundaries of AI Agents. Serving OpenClaw, Claude Code, Codex, Cursor, and other intelligent agent systems, EXO transforms diverse internet resources into structured Skill content that AI Agents can readily understand and utilize.
+Octopai is a comprehensive AI Agent skill development platform designed to expand the cognitive boundaries of AI Agents. Serving OpenClaw, Claude Code, Codex, Cursor, and other intelligent agent systems, Octopai transforms diverse internet resources into structured Skill content that AI Agents can readily understand and utilize.
 
 ## Quick Links
 
@@ -29,10 +29,10 @@ Parse and transform any file format (PDF, DOC, Excel, images, videos, etc.) into
 A three-stage evolution engine (Executor → Reflector → Optimizer) for continuous skill improvement.
 
 ### 5. Python API
-Import and use EXO directly in your Python code with a clean, intuitive API.
+Import and use Octopai directly in your Python code with a clean, intuitive API.
 
 ### 6. Command-Line Interface
-Use EXO from your terminal with a powerful CLI.
+Use Octopai from your terminal with a powerful CLI.
 
 ### 7. Web Crawler
 Advanced web crawling capabilities to fetch and save content from URLs as skill resources.
