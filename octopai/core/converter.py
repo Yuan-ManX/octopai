@@ -1,8 +1,8 @@
 import os
 import requests
-from exo.utils.config import Config
-from exo.utils.helpers import ensure_directory, fetch_url_content, extract_title, sanitize_filename, write_file
-from exo.core.crawler import WebCrawler
+from octopai.utils.config import Config
+from octopai.utils.helpers import ensure_directory, fetch_url_content, extract_title, sanitize_filename, write_file
+from octopai.core.crawler import WebCrawler
 
 
 class URLConverter:
@@ -100,7 +100,7 @@ class URLConverter:
 ## Metadata
 - **name**: {title}
 - **description**: Skill converted from {url}
-- **author**: EXO
+- **author**: Octopai
 - **version**: 1.0.0
 - **tags**:
   - web
