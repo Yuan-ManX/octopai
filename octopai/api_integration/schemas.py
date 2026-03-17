@@ -145,7 +145,7 @@ class OptimizeSkillRequest:
 class PipelineStatusResponse:
     """Response schema for pipeline status"""
     request_id: str
-    status: WebPipelineStage
+    status: IntegrationPipelineStage
     current_stage: Optional[str] = None
     progress: float = 0.0
     skill_id: Optional[str] = None
@@ -175,7 +175,7 @@ class PipelineStatusResponse:
     def from_dict(cls, data: Dict[str, Any]) -> 'PipelineStatusResponse':
         data = data.copy()
         if 'status' in data:
-            data['status'] = WebPipelineStage(data['status'])
+            data['status'] = IntegrationPipelineStage(data['status'])
         return cls(**data)
 
 
