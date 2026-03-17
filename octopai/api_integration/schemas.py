@@ -277,3 +277,409 @@ class SkillSearchQuery:
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'SkillSearchQuery':
         return cls(**data)
+
+
+@dataclass
+class UpdateSkillMetadataRequest:
+    """Request schema for updating skill metadata"""
+    skill_id: str
+    name: Optional[str] = None
+    description: Optional[str] = None
+    tags: Optional[List[str]] = None
+    category: Optional[str] = None
+    status: Optional[str] = None
+    visibility: Optional[str] = None
+    author: Optional[str] = None
+    keywords: Optional[List[str]] = None
+    related_skills: Optional[List[str]] = None
+    skill_type: Optional[str] = None
+    custom_fields: Optional[Dict[str, Any]] = None
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "skill_id": self.skill_id,
+            "name": self.name,
+            "description": self.description,
+            "tags": self.tags,
+            "category": self.category,
+            "status": self.status,
+            "visibility": self.visibility,
+            "author": self.author,
+            "keywords": self.keywords,
+            "related_skills": self.related_skills,
+            "skill_type": self.skill_type,
+            "custom_fields": self.custom_fields
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'UpdateSkillMetadataRequest':
+        return cls(**data)
+
+
+@dataclass
+class CreateCollectionRequest:
+    """Request schema for creating a skill collection"""
+    name: str
+    description: str
+    skill_ids: Optional[List[str]] = None
+    tags: Optional[List[str]] = None
+    author: Optional[str] = None
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "name": self.name,
+            "description": self.description,
+            "skill_ids": self.skill_ids,
+            "tags": self.tags,
+            "author": self.author
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'CreateCollectionRequest':
+        return cls(**data)
+
+
+@dataclass
+class CollectionResponse:
+    """Response schema for a skill collection"""
+    collection_id: str
+    name: str
+    description: str
+    skill_ids: List[str] = field(default_factory=list)
+    tags: List[str] = field(default_factory=list)
+    created_at: str = field(default_factory=lambda: datetime.now().isoformat())
+    updated_at: str = field(default_factory=lambda: datetime.now().isoformat())
+    author: Optional[str] = None
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "collection_id": self.collection_id,
+            "name": self.name,
+            "description": self.description,
+            "skill_ids": self.skill_ids,
+            "tags": self.tags,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
+            "author": self.author
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'CollectionResponse':
+        return cls(**data)
+
+
+@dataclass
+class CollectionListResponse:
+    """Response schema for listing collections"""
+    collections: List[CollectionResponse]
+    total: int
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "collections": [c.to_dict() for c in self.collections],
+            "total": self.total
+        }
+
+
+@dataclass
+class AddRatingRequest:
+    """Request schema for adding a skill rating"""
+    skill_id: str
+    rating: float
+    feedback: Optional[str] = None
+    reviewer: Optional[str] = None
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "skill_id": self.skill_id,
+            "rating": self.rating,
+            "feedback": self.feedback,
+            "reviewer": self.reviewer
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'AddRatingRequest':
+        return cls(**data)
+
+
+@dataclass
+class RatingResponse:
+    """Response schema for a skill rating"""
+    rating_id: str
+    skill_id: str
+    rating: float
+    feedback: Optional[str] = None
+    reviewer: Optional[str] = None
+    created_at: str = field(default_factory=lambda: datetime.now().isoformat())
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "rating_id": self.rating_id,
+            "skill_id": self.skill_id,
+            "rating": self.rating,
+            "feedback": self.feedback,
+            "reviewer": self.reviewer,
+            "created_at": self.created_at
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'RatingResponse':
+        return cls(**data)
+
+
+@dataclass
+class VersionDiffRequest:
+    """Request schema for computing version diff"""
+    skill_id: str
+    from_version: int
+    to_version: int
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "skill_id": self.skill_id,
+            "from_version": self.from_version,
+            "to_version": self.to_version
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'VersionDiffRequest':
+        return cls(**data)
+
+
+@dataclass
+class VersionDiffResponse:
+    """Response schema for version diff"""
+    diff_id: str
+    skill_id: str
+    from_version: int
+    to_version: int
+    additions: List[str] = field(default_factory=list)
+    deletions: List[str] = field(default_factory=list)
+    modifications: List[str] = field(default_factory=list)
+    created_at: str = field(default_factory=lambda: datetime.now().isoformat())
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "diff_id": self.diff_id,
+            "skill_id": self.skill_id,
+            "from_version": self.from_version,
+            "to_version": self.to_version,
+            "additions": self.additions,
+            "deletions": self.deletions,
+            "modifications": self.modifications,
+            "created_at": self.created_at
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'VersionDiffResponse':
+        return cls(**data)
+
+
+@dataclass
+class RollbackRequest:
+    """Request schema for rolling back a skill"""
+    skill_id: str
+    version: int
+    author: Optional[str] = None
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "skill_id": self.skill_id,
+            "version": self.version,
+            "author": self.author
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'RollbackRequest':
+        return cls(**data)
+
+
+@dataclass
+class PublishSkillRequest:
+    """Request schema for publishing a skill"""
+    skill_id: str
+    visibility: str = "public"
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "skill_id": self.skill_id,
+            "visibility": self.visibility
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'PublishSkillRequest':
+        return cls(**data)
+
+
+@dataclass
+class ContextSlotSchema:
+    """Schema for a context slot"""
+    slot_id: str
+    name: str
+    description: str
+    required: bool = True
+    default_skill_id: Optional[str] = None
+    allowed_skill_types: List[str] = field(default_factory=list)
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "slot_id": self.slot_id,
+            "name": self.name,
+            "description": self.description,
+            "required": self.required,
+            "default_skill_id": self.default_skill_id,
+            "allowed_skill_types": self.allowed_skill_types
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'ContextSlotSchema':
+        return cls(**data)
+
+
+@dataclass
+class CreateCompositionRequest:
+    """Request schema for creating a context composition"""
+    name: str
+    description: str
+    slots: Optional[Dict[str, ContextSlotSchema]] = None
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "name": self.name,
+            "description": self.description,
+            "slots": {k: v.to_dict() for k, v in self.slots.items()} if self.slots else None
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'CreateCompositionRequest':
+        slots = None
+        if data.get("slots"):
+            slots = {
+                k: ContextSlotSchema.from_dict(v)
+                for k, v in data["slots"].items()
+            }
+        return cls(
+            name=data["name"],
+            description=data["description"],
+            slots=slots
+        )
+
+
+@dataclass
+class CompositionResponse:
+    """Response schema for a context composition"""
+    composition_id: str
+    name: str
+    description: str
+    slots: Dict[str, ContextSlotSchema] = field(default_factory=dict)
+    bindings: Dict[str, str] = field(default_factory=dict)
+    created_at: str = field(default_factory=lambda: datetime.now().isoformat())
+    updated_at: str = field(default_factory=lambda: datetime.now().isoformat())
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "composition_id": self.composition_id,
+            "name": self.name,
+            "description": self.description,
+            "slots": {k: v.to_dict() for k, v in self.slots.items()},
+            "bindings": self.bindings,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'CompositionResponse':
+        slots = {
+            k: ContextSlotSchema.from_dict(v)
+            for k, v in data.get("slots", {}).items()
+        }
+        return cls(
+            composition_id=data["composition_id"],
+            name=data["name"],
+            description=data["description"],
+            slots=slots,
+            bindings=data.get("bindings", {}),
+            created_at=data.get("created_at"),
+            updated_at=data.get("updated_at")
+        )
+
+
+@dataclass
+class CompositionListResponse:
+    """Response schema for listing compositions"""
+    compositions: List[CompositionResponse]
+    total: int
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "compositions": [c.to_dict() for c in self.compositions],
+            "total": self.total
+        }
+
+
+@dataclass
+class BindSkillRequest:
+    """Request schema for binding a skill to a slot"""
+    composition_id: str
+    slot_id: str
+    skill_id: str
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "composition_id": self.composition_id,
+            "slot_id": self.slot_id,
+            "skill_id": self.skill_id
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'BindSkillRequest':
+        return cls(**data)
+
+
+@dataclass
+class SemanticSearchQuery:
+    """Query schema for enhanced semantic search"""
+    query: str
+    tags: Optional[List[str]] = None
+    category: Optional[str] = None
+    status: Optional[str] = None
+    limit: int = 20
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "query": self.query,
+            "tags": self.tags,
+            "category": self.category,
+            "status": self.status,
+            "limit": self.limit
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'SemanticSearchQuery':
+        return cls(**data)
+
+
+@dataclass
+class SemanticSearchResult:
+    """Response schema for semantic search result"""
+    skill: SkillInfoResponse
+    score: float
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "skill": self.skill.to_dict(),
+            "score": self.score
+        }
+
+
+@dataclass
+class SemanticSearchResponse:
+    """Response schema for semantic search"""
+    results: List[SemanticSearchResult]
+    total: int
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "results": [r.to_dict() for r in self.results],
+            "total": self.total
+        }
