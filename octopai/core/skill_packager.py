@@ -1,7 +1,7 @@
 """
-Skill Packager - EXO's Standardized Skill Packaging System
+Skill Packager - Octopai's Standardized Skill Packaging System
 
-This module provides EXO's proprietary skill packaging system that
+This module provides Octopai's proprietary skill packaging system that
 creates standardized, versioned skill packages ready for distribution
 and use by AI Agents.
 """
@@ -14,7 +14,7 @@ from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from pathlib import Path
 
-from exo.utils.helpers import read_file, write_file
+from octopai.utils.helpers import read_file, write_file
 
 
 @dataclass
@@ -30,9 +30,9 @@ class PackageConfig:
 
 class SkillPackager:
     """
-    EXO's Skill Packager - Standardized Skill Packaging System
+    Octopai's Skill Packager - Standardized Skill Packaging System
     
-    Creates professional, standardized skill packages in EXO's
+    Creates professional, standardized skill packages in Octopai's
     proprietary format that is ready for use and distribution.
     """
     
@@ -296,11 +296,11 @@ class SkillPackager:
 
 ## Usage
 
-This skill can be used with EXO or compatible AI Agent systems.
+This skill can be used with Octopai or compatible AI Agent systems.
 
 ---
 
-*Created by EXO Skill Packager*
+*Created by Octopai Skill Packager*
 """
         with open(path, 'w', encoding='utf-8') as f:
             f.write(readme_content)
