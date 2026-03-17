@@ -6,7 +6,7 @@ import os
 import shutil
 import tempfile
 import pytest
-from exo.core.skill_hub import SkillHub, Skill, SkillVersion, SkillMetadata
+from octopai.core.skill_hub import SkillHub, Skill, SkillVersion, SkillMetadata
 
 
 class TestSkillVersion:
