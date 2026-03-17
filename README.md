@@ -25,8 +25,8 @@
   <a href="https://www.python.org/">
     <img src="https://img.shields.io/badge/Python-3.8+-blue.svg" alt="Python Version">
   </a>
-  <a href="https://github.com/Yuan-ManX/EXO">
-    <img src="https://img.shields.io/github/stars/Yuan-ManX/EXO?style=social" alt="Stars">
+  <a href="https://github.com/Yuan-ManX/octopai">
+    <img src="https://img.shields.io/github/stars/Yuan-ManX/octopai?style=social" alt="Stars">
   </a>
 </p>
 
@@ -40,7 +40,7 @@
 
 ## Overview
 
-Octopai is a revolutionary AI Agent Skills Exploration, Extension, and Evolution Intelligence Engine built on a powerful core principle: **Everything Can Be a Skill • Skills Evolve Through Continuous Learning • Elevating AI Agent Cognition**. Serving OpenClaw, Claude Code, Codex, Cursor, and other intelligent agent systems, EXO transforms any resource — web pages, documents, videos, code, datasets, and more — into structured, reusable Skill content. Through intelligent learning and continuous self-evolution, Skills grow and improve over time, significantly enhancing the cognitive capabilities of AI Agents.
+Octopai is a revolutionary AI Agent Skills Exploration, Extension, and Evolution Intelligence Engine built on a powerful core principle: **Everything Can Be a Skill • Skills Evolve Through Continuous Learning • Elevating AI Agent Cognition**. Serving OpenClaw, Claude Code, Codex, Cursor, and other intelligent agent systems, Octopai transforms any resource — web pages, documents, videos, code, datasets, and more — into structured, reusable Skill content. Through intelligent learning and continuous self-evolution, Skills grow and improve over time, significantly enhancing the cognitive capabilities of AI Agents.
 
 At the heart of Octopai lies the belief that knowledge should not be static. Every Skill created with Octopai can continuously learn from interactions, refine itself through reflection, and evolve to become more powerful, more comprehensive, and better suited to the evolving needs of AI Agents.
 
@@ -102,7 +102,7 @@ Store, organize, and evolve your skills in a centralized repository:
 - **Usage Analytics**: Track skill usage and success rates
 
 ```python
-from exo import EXO, hub_create, hub_search, hub_list, hub_stats
+from octopai import Octopai, hub_create, hub_search, hub_list, hub_stats
 
 # Create a skill in SkillHub
 skill = hub_create(
@@ -133,7 +133,7 @@ Use Octopai in the way that works best for you:
 ### 🔧 High-Level API
 Simplified access to all functionality:
 ```python
-from exo import EXO, convert, create, evolve, parse
+from octopai import Octopai, convert, create, evolve, parse
 
 # Convert URL to skill
 content = convert("https://example.com")
@@ -157,8 +157,8 @@ evolved = evolve("skill.py", "Improve performance")
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/Yuan-ManX/EXO.git
-cd EXO
+git clone https://github.com/Yuan-ManX/octopai.git
+cd octopai
 ```
 
 ### 2. Install Dependencies
@@ -193,26 +193,26 @@ EXO_MODEL=openai/gpt-5.4
 
 ### Python API
 ```python
-from exo import EXO
+from octopai import Octopai
 
 # Initialize EXO
-exo = EXO()
+octopai = Octopai()
 
 # Convert URL to Markdown
-content = exo.convert_url("https://example.com")
+content = octopai.convert_url("https://example.com")
 
 # Parse files as resources
-resource = exo.parse_file("data/document.pdf")
+resource = octopai.parse_file("data/document.pdf")
 print(resource.to_skill_resource())
 
 # Create a skill with resources
-skill = exo.create_skill(
+skill = octopai.create_skill(
     "Create a data analysis skill",
     resources=["data/sample.csv", "docs/reference.pdf"]
 )
 
 # Evolve a skill
-evolved = exo.evolve_skill(
+evolved = octopai.evolve_skill(
     "skills/my_skill.py",
     "Add better error handling and logging",
     iterations=5
@@ -321,15 +321,15 @@ We welcome contributions! Please see our contribution guidelines (coming soon) f
 If you like this project, please ⭐ star the repo. Your support helps us grow!
 
 <p align="center">
-  <a href="https://star-history.com/#Yuan-ManX/Octopai&Date">
-    <img src="https://api.star-history.com/svg?repos=Yuan-ManX/Octopai&type=Date" />
+  <a href="https://star-history.com/#Yuan-ManX/octopai&Date">
+    <img src="https://api.star-history.com/svg?repos=Yuan-ManX/octopai&type=Date" />
   </a>
 </p>
 
 
 ## 📞 Support & Community
 
-- **Issues**: [GitHub Issues](https://github.com/Yuan-ManX/EXO/issues)
+- **Issues**: [GitHub Issues](https://github.com/Yuan-ManX/octopai/issues)
 - **Documentation**: [docs/](./docs/README.md)
 
 
