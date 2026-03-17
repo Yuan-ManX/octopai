@@ -1,11 +1,10 @@
-#!/usr/bin/env python3
 """
-EXO usage example
+Octopai usage example
 """
 
-from exo.core.converter import URLConverter
-from exo.core.creator import SkillCreator
-from exo.core.evolver import SkillEvolver
+from octopai.core.converter import URLConverter
+from octopai.core.creator import SkillCreator
+from octopai.core.evolver import SkillEvolver
 
 
 def main():
