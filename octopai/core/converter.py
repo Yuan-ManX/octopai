@@ -1,75 +1,88 @@
+"""
+URL Converter - Enhanced URL Content Extractor for Skill Factory
+
+This module provides intelligent URL content extraction and conversion
+to structured Markdown format, optimized for Octopai's Skill Factory.
+Enhanced to work seamlessly with the full-lifecycle skill creation framework.
+"""
+
 import os
 import requests
+from typing import Optional, Dict, Any, List
+from dataclasses import dataclass
+
 from octopai.utils.config import Config
-from octopai.utils.helpers import ensure_directory, fetch_url_content, extract_title, sanitize_filename, write_file
-from octopai.core.crawler import WebCrawler
+from octopai.utils.helpers import fetch_url_content, extract_title
+
+
+@dataclass
+class ExtractedURLContent:
+    """Structured representation of extracted URL content"""
+    url: str
+    title: str
+    raw_html: str
+    markdown_content: str
+    metadata: Dict[str, Any]
 
 
 class URLConverter:
-    """URL to Markdown converter class"""
+    """
+    Enhanced URL to Markdown converter class for Skill Factory
+    
+    Focuses on content extraction rather than full skill packaging,
+    leaving skill creation and optimization to SkillFactory.
+    """
     
     def __init__(self):
         self.config = Config()
     
-    def convert(self, url, output_dir=None, use_crawler: bool = False):
+    def convert(self, url: str) -> str:
         """
-        Convert URL to Markdown skill
+        Convert URL to structured Markdown content (for Skill Factory)
         
         Args:
             url: The URL to convert
-            output_dir: Optional output directory
-            use_crawler: Whether to use the web crawler to download resources
             
         Returns:
-            Path to the generated skill directory
+            Structured Markdown content ready for skill creation
         """
-        # Validate configuration
+        extracted = self.extract(url)
+        return self._format_for_skill_factory(extracted)
+    
+    def extract(self, url: str) -> ExtractedURLContent:
+        """
+        Extract comprehensive content from a URL
+        
+        Args:
+            url: The URL to extract content from
+            
+        Returns:
+            ExtractedURLContent with structured content and metadata
+        """
         self.config.validate()
         
-        # Fetch URL content
         html_content = fetch_url_content(url)
-        
-        # Extract title as skill name
         title = extract_title(html_content)
-        skill_name = sanitize_filename(title)
-        
-        # Determine output directory
-        if not output_dir:
-            output_dir = os.path.join(self.config.SKILLS_DIR, skill_name)
-        
-        # Ensure output directories exist
-        ensure_directory(output_dir)
-        ensure_directory(os.path.join(output_dir, 'assets'))
-        ensure_directory(os.path.join(output_dir, 'scripts'))
-        ensure_directory(os.path.join(output_dir, 'references'))
-        
-        # Use crawler if requested
-        if use_crawler:
-            print(f"Using web crawler to download resources...")
-            crawler_dir = os.path.join(output_dir, 'crawled')
-            crawler = WebCrawler(crawler_dir)
-            crawl_results = crawler.crawl(url)
-            print(f"Crawled {crawl_results['total_files']} resources")
-        
-        # Call Cloudflare API to convert HTML to Markdown
         markdown_content = self._convert_html_to_markdown(html_content)
         
-        # Generate SKILL.md file
-        skill_metadata = self._generate_skill_metadata(title, url)
-        skill_content = f"{skill_metadata}\n\n{markdown_content}"
+        metadata = {
+            'url': url,
+            'title': title,
+            'extraction_timestamp': None,
+            'content_type': 'webpage',
+            'source': url
+        }
         
-        # Write files
-        skill_file = os.path.join(output_dir, 'SKILL.md')
-        write_file(skill_file, skill_content)
-        
-        # Write reference file
-        reference_file = os.path.join(output_dir, 'references', 'source.md')
-        write_file(reference_file, f"# Source\n\n- URL: {url}\n- Title: {title}")
-        
-        return output_dir
+        return ExtractedURLContent(
+            url=url,
+            title=title,
+            raw_html=html_content,
+            markdown_content=markdown_content,
+            metadata=metadata
+        )
     
-    def _convert_html_to_markdown(self, html_content):
-        """Convert HTML to Markdown using Cloudflare API"""
+    def _convert_html_to_markdown(self, html_content: str) -> str:
+        """Convert HTML to Markdown with enhanced fallback mechanisms"""
         headers = {
             'Authorization': f'Bearer {self.config.CLOUDFLARE_API_KEY}',
             'Content-Type': 'application/json'
@@ -88,25 +101,74 @@ class URLConverter:
             )
             response.raise_for_status()
             result = response.json()
-            return result.get('result', {}).get('markdown', '')
+            markdown = result.get('result', {}).get('markdown', '')
+            if markdown:
+                return markdown
         except Exception as e:
-            raise Exception(f"Failed to convert HTML to Markdown: {str(e)}")
+            print(f"Cloudflare API conversion failed: {e}")
+        
+        return self._fallback_html_to_markdown(html_content)
     
-    def _generate_skill_metadata(self, title, url):
-        """Generate skill metadata"""
-        metadata = f"""
-# {title}
+    def _fallback_html_to_markdown(self, html_content: str) -> str:
+        """Fallback method to convert HTML to Markdown without external API"""
+        try:
+            from bs4 import BeautifulSoup
+            soup = BeautifulSoup(html_content, 'html.parser')
+            
+            for script in soup(["script", "style", "noscript"]):
+                script.decompose()
+            
+            text = soup.get_text(separator='\n', strip=True)
+            lines = [line.strip() for line in text.split('\n') if line.strip()]
+            
+            return '\n\n'.join(lines)
+        except ImportError:
+            return html_content
+    
+    def _format_for_skill_factory(self, extracted: ExtractedURLContent) -> str:
+        """Format extracted content for use in Skill Factory"""
+        parts = []
+        
+        parts.append(f"# Source: {extracted.title}")
+        parts.append(f"**URL**: {extracted.url}")
+        parts.append("")
+        
+        parts.append("## Extracted Content")
+        parts.append(extracted.markdown_content)
+        
+        parts.append("")
+        parts.append("---")
+        parts.append("## Source Metadata")
+        parts.append(f"- **Source URL**: {extracted.url}")
+        parts.append(f"- **Title**: {extracted.title}")
+        parts.append("- **Extracted by**: Octopai URL Converter")
+        
+        return '\n'.join(parts)
 
-## Metadata
-- **name**: {title}
-- **description**: Skill converted from {url}
-- **author**: Octopai
-- **version**: 1.0.0
-- **tags**:
-  - web
-  - markdown
 
-## Instructions
-This skill was automatically generated from a web URL. Use it to access information from the source.
-"""
-        return metadata.strip()
+def convert_url_to_content(url: str) -> str:
+    """
+    Convenience function to convert URL to content
+    
+    Args:
+        url: URL to convert
+        
+    Returns:
+        Structured content string
+    """
+    converter = URLConverter()
+    return converter.convert(url)
+
+
+def extract_url_content(url: str) -> ExtractedURLContent:
+    """
+    Convenience function to extract comprehensive URL content
+    
+    Args:
+        url: URL to extract from
+        
+    Returns:
+        ExtractedURLContent object
+    """
+    converter = URLConverter()
+    return converter.extract(url)
