@@ -7,7 +7,7 @@ Tests the skill evolution capabilities.
 import os
 import tempfile
 import pytest
-from exo.core.evolution_engine import (
+from octopai.core.evolution_engine import (
     EvolutionTrace,
     SkillCandidate,
     EvolutionEngine
