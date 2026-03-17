@@ -1,7 +1,7 @@
 <div align="center">
 
 <img src="./assets/Octopai.png" alt="Octopai Logo" width="65%"/>
-  
+
 <p align="center">
   <h1 align="center">Octopai 🐙</h1>
 </p>
@@ -85,24 +85,36 @@ Parse and transform **any file format** into skill-ready resources:
 - **Text**: Markdown, JSON, YAML, plain text
 
 ### 🚀 Intelligent Evolution Engine
-Advanced three-stage evolution pipeline for skill optimization:
-1. **Executor**: Run candidates and capture full execution traces
-2. **Reflector**: Analyze failures and identify improvement patterns
-3. **Optimizer**: Generate improved candidates based on insights
+Advanced evolution engine with comprehensive capabilities:
+- **Curriculum Learning**: Progressive skill development through structured levels
+- **Goal-Oriented Evolution**: Directed evolution toward specific objectives
+- **Self-Verification**: Automatic validation of skill improvements
+- **Meta-Cognition**: Reflective learning and adaptive strategies
+- **Adaptive Mutation**: Exploratory, refinement, and reflective mutation strategies
 
-Features reflective mutation, system-aware merge, and Pareto-efficient search.
-
-
-### 💼 SkillHub - Centralized Skill Management
-Store, organize, and evolve your skills in a centralized repository:
+### 💼 SkillHub - Comprehensive Skill Management Center
+Store, organize, evolve, and manage your skills in a centralized, intelligent repository:
+- **Comprehensive Metadata**: Status, visibility, author, version, license, keywords, dependencies, and more
 - **Persistent Storage**: Skills saved to disk with full history
 - **Version Control**: Track skill evolution with complete version history
-- **Smart Search**: Find relevant skills by keywords, tags, or categories
+- **Version Diffing**: Compare versions with detailed change analysis
+- **Rollback Capabilities**: Revert to previous versions instantly
+- **Publishing Workflow**: Draft → Review → Published → Deprecated → Archived status management
+- **Visibility Control**: Private, Internal, or Public visibility levels
+- **Smart Collections**: Organize skills into curated collections
+- **Tags & Categories**: Flexible categorization and tagging system
+- **Skill Ratings**: User feedback and rating system
+- **Semantic Search**: Intelligent search with token-based indexing and relevance scoring
+- **Context Composition**: Compose skills into powerful context combinations
+- **Skill Dependencies**: Track relationships between skills
 - **Skill Merging**: Combine complementary skills into more powerful ones
-- **Usage Analytics**: Track skill usage and success rates
+- **Usage Analytics**: Track skill usage, success rates, and performance metrics
 
 ```python
-from octopai import Octopai, hub_create, hub_search, hub_list, hub_stats
+from octopai import (
+    Octopai, hub_create, hub_search, hub_list, hub_stats,
+    hub_create_collection, hub_semantic_search, hub_publish
+)
 
 # Create a skill in SkillHub
 skill = hub_create(
@@ -113,8 +125,19 @@ skill = hub_create(
     category="data-processing"
 )
 
-# Search for skills
-results = hub_search("csv analysis")
+# Create a collection
+collection = hub_create_collection(
+    name="Data Science Tools",
+    description="Essential skills for data science",
+    skill_ids=[skill.metadata.skill_id],
+    tags=["data-science", "tools"]
+)
+
+# Semantic search with advanced scoring
+results = hub_semantic_search("csv analysis", category="data-processing")
+
+# Publish a skill
+published = hub_publish(skill.metadata.skill_id, visibility="public")
 
 # List all skills
 all_skills = hub_list(category="data-processing")
@@ -123,29 +146,62 @@ all_skills = hub_list(category="data-processing")
 stats = hub_stats()
 ```
 
-
 ### 🔗 Dual Interface: Python API + CLI
 Use Octopai in the way that works best for you:
 - **Python API**: Import directly into your projects for seamless integration
 - **Command-Line**: Quick operations and automation through the terminal
 
+### 🌐 Web Application & REST API
+Full-stack web application with comprehensive REST API:
+- **Modern Web UI**: Beautiful, intuitive frontend for skill management
+- **REST API Endpoints**: Complete API for all SkillHub operations
+- **Async Task Management**: Background task processing with status tracking
+- **Integration Ready**: Designed for easy integration with other systems
 
 ### 🔧 High-Level API
 Simplified access to all functionality:
 ```python
-from octopai import Octopai, convert, create, evolve, parse
+from octopai import (
+    Octopai, convert, create_from_url, create_from_files,
+    create_from_prompt, optimize_skill, parse,
+    hub_create_collection, hub_semantic_search, hub_publish
+)
 
-# Convert URL to skill
+# Convert URL to skill content
 content = convert("https://example.com")
 
 # Parse files as resources
 resource = parse("document.pdf")
 
-# Create skills with resources
-skill = create("Analyze this data", resources=["data.csv", "ref.pdf"])
+# Create skills from various sources
+skill1 = create_from_url(
+    url="https://example.com",
+    name="Web Analysis",
+    description="Analyze web content"
+)
 
-# Evolve skills
-evolved = evolve("skill.py", "Improve performance")
+skill2 = create_from_files(
+    file_paths=["data.csv", "reference.pdf"],
+    name="Data Processor",
+    description="Process structured data"
+)
+
+skill3 = create_from_prompt(
+    prompt="Create a skill to generate reports",
+    name="Report Generator",
+    description="Generate comprehensive reports"
+)
+
+# Optimize existing skills
+optimized = optimize_skill(skill1, target_quality="excellent")
+
+# Advanced SkillHub operations
+collection = hub_create_collection(
+    name="My Skills",
+    description="My personal skill collection"
+)
+
+results = hub_semantic_search("report generation", status="published")
 ```
 
 ## 📦 Installation
@@ -186,7 +242,7 @@ CLOUDFLARE_API_KEY=your_cloudflare_api_key_here
 CLOUDFLARE_ACCOUNT_ID=your_cloudflare_account_id_here
 
 # Model Configuration (Optional)
-EXO_MODEL=openai/gpt-5.4
+OCTOPAI_MODEL=openai/gpt-5.4
 ```
 
 ## 🚀 Quick Start
@@ -195,7 +251,7 @@ EXO_MODEL=openai/gpt-5.4
 ```python
 from octopai import Octopai
 
-# Initialize EXO
+# Initialize Octopai
 octopai = Octopai()
 
 # Convert URL to Markdown
@@ -206,35 +262,49 @@ resource = octopai.parse_file("data/document.pdf")
 print(resource.to_skill_resource())
 
 # Create a skill with resources
-skill = octopai.create_skill(
-    "Create a data analysis skill",
-    resources=["data/sample.csv", "docs/reference.pdf"]
+skill = octopai.create_skill_in_hub(
+    name="Data Analyzer",
+    description="Analyze CSV data files",
+    prompt="Create a skill to analyze CSV data",
+    tags=["data", "csv", "analysis"],
+    category="data-processing"
 )
 
-# Evolve a skill
-evolved = octopai.evolve_skill(
-    "skills/my_skill.py",
-    "Add better error handling and logging",
-    iterations=5
+# Create a collection
+collection = octopai.create_collection_in_hub(
+    name="Data Science",
+    description="Data science related skills",
+    skill_ids=[skill.metadata.skill_id]
 )
+
+# Add a rating
+rating = octopai.add_rating_to_skill_in_hub(
+    skill_id=skill.metadata.skill_id,
+    rating=5.0,
+    feedback="Excellent skill!",
+    reviewer="User"
+)
+
+# Semantic search
+results = octopai.semantic_search_in_hub("csv analysis")
+
+# Publish the skill
+published = octopai.publish_skill_in_hub(skill.metadata.skill_id)
 ```
 
 ### Command Line Interface
 ```bash
 # Convert URL to Markdown
-exo convert https://example.com -o output.md --crawler
+octopai convert https://example.com -o output.md --crawler
 
 # Parse a file to skill resource
-exo parse document.pdf -o resource.md
+octopai parse document.pdf -o resource.md
 
 # Create a skill
-exo create "A CSV analysis skill" -n csv-analyzer -o skill.py
-
-# Evolve a skill
-exo evolve skill.py "Optimize for large files" -i 5
+octopai create "A CSV analysis skill" -n csv-analyzer -o skill.py
 
 # Crawl a website
-exo crawl https://example.com -o ./downloads
+octopai crawl https://example.com -o ./downloads
 ```
 
 ## 📚 Documentation
@@ -255,26 +325,41 @@ Quick links:
 ## 🏗️ Project Architecture
 
 ```
-exo/
+octopai/
 ├── __init__.py           # Package exports
 ├── api.py                # High-level API interface
 ├── core/                 # Core functionality modules
 │   ├── converter.py      # URL to Markdown conversion
 │   ├── crawler.py        # Web crawling and resource download
-│   ├── creator.py        # Skill creation from descriptions
-│   ├── evolver.py        # Skill evolution interface
-│   ├── evolution_engine.py # Advanced three-stage evolution engine
+│   ├── skill_factory.py  # Skill creation, optimization, and quality evaluation
+│   ├── evolution_engine.py # Advanced evolution with curriculum learning and meta-cognition
+│   ├── experience_tracker.py # Experience tracking with pattern recognition
 │   ├── resource_parser.py # Multi-format file parser (PDF, DOC, Excel, etc.)
-│   └── skill_hub.py     # SkillHub - centralized skill management system
+│   ├── skill_hub.py     # SkillHub - comprehensive skill management center
+│   ├── skill_packager.py # Skill packaging and distribution
+│   └── pipeline.py      # End-to-end skill engineering pipeline
+├── api_integration/      # API integration layer
+│   ├── __init__.py
+│   ├── api.py           # Integration API with async task management
+│   └── schemas.py       # Data schemas for API requests/responses
 ├── cli/                  # Command-line interface
 │   └── main.py           # Main command entry point
 ├── utils/                # Utility functions
 │   ├── config.py         # Configuration management
 │   └── helpers.py        # Helper functions
+├── web/                  # Web application
+│   ├── backend/         # FastAPI backend
+│   │   ├── main.py       # Main FastAPI application
+│   │   └── requirements.txt
+│   └── frontend/        # React/Vite frontend
+│       ├── src/
+│       │   ├── components/
+│       │   ├── pages/
+│       │   ├── api/
+│       │   └── App.jsx
+│       └── package.json
 ├── tests/                # Comprehensive test suite
 │   ├── test_converter.py
-│   ├── test_creator.py
-│   ├── test_evolver.py
 │   ├── test_evolution_engine.py
 │   ├── test_resource_parser.py
 │   └── test_skill_hub.py
@@ -287,23 +372,30 @@ exo/
 
 ## 💡 Skill Evolution System
 
-Octopai's evolution engine uses a sophisticated three-stage pipeline:
+Octopai's evolution engine uses a sophisticated system with multiple capabilities:
 
 ```
-┌────────────┐      ┌────────────┐      ┌────────────┐
-│  Executor  │ ───▶ │  Reflector │ ───▶ │ Optimizer  │
-│            │      │            │      │            │
-│ Run candi- │      │ Analyze    │      │ Generate   │
-│ dates, cap-│      │ traces to  │      │ improved   │
-│ ture traces│      │ diagnose   │      │ candidates │
-└────────────┘      └────────────┘      └────────────┘
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│  Curriculum     │ ──▶ │  Goal-Oriented  │ ──▶ │  Self-         │
+│  Learning       │     │  Evolution      │     │  Verification   │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+         │                      │                      │
+         └──────────────────────┼──────────────────────┘
+                                ▼
+                       ┌─────────────────┐
+                       │  Meta-Cognition  │
+                       │  & Reflection    │
+                       └─────────────────┘
 ```
 
 **Key Concepts:**
-- **Actionable Side Information (ASI)**: Diagnostic feedback that guides evolution
-- **Pareto Frontier**: Maintains candidates that excel in different ways
-- **Reflective Mutation**: Targeted improvements based on failure analysis
-- **System-Aware Merge**: Combines complementary strengths from multiple candidates
+- **Curriculum Learning**: Progressive skill development through structured difficulty levels
+- **Goal-Oriented Evolution**: Directed evolution with specific objectives and priorities
+- **Self-Verification**: Automatic validation and quality assurance
+- **Meta-Cognitive Reflection**: Adaptive learning strategies based on experience
+- **Pattern Recognition**: Identifying success and failure patterns from interactions
+- **Knowledge Transfer**: Cross-skill knowledge sharing and transfer
+- **Memory Consolidation**: Long-term memory formation and retrieval
 
 
 ## 📄 License
@@ -321,7 +413,7 @@ We welcome contributions! Please see our contribution guidelines (coming soon) f
 If you like this project, please ⭐ star the repo. Your support helps us grow!
 
 <p align="center">
-  <a href="https://star-history.com/#Yuan-ManX/octopai&Date">
+  <a href="https://star-history.com/#Yuan-ManX/Octopai&Date">
     <img src="https://api.star-history.com/svg?repos=Yuan-ManX/octopai&type=Date" />
   </a>
 </p>
