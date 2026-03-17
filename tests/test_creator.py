@@ -1,6 +1,6 @@
 import os
 import tempfile
-from exo.core.creator import SkillCreator
+from octopai.core.creator import SkillCreator
 
 
 def test_creator_initialization():
