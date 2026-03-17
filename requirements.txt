@@ -1,4 +1,4 @@
-# EXO Requirements
+# Octopai Requirements
 # Complete dependencies for all functionality
 
 requests>=2.31.0
