@@ -113,6 +113,16 @@ from octopai.core.recursive_evolution import (
     EvolutionProposal,
     ValidationResult
 )
+from octopai.core.skill_registry import (
+    SkillRegistry,
+    RegistrySkillMetadata,
+    SkillRegistryStatus,
+    RedirectType,
+    SkillComment,
+    SkillStar,
+    SkillRedirect,
+    SkillInstallRecord
+)
 from octopai.api import (
     Octopai,
     create_from_url,
@@ -242,6 +252,14 @@ __all__ = [
     "hub_delete_composition",
     "hub_semantic_search",
     "get_insights",
+    "SkillRegistry",
+    "RegistrySkillMetadata",
+    "SkillRegistryStatus",
+    "RedirectType",
+    "SkillComment",
+    "SkillStar",
+    "SkillRedirect",
+    "SkillInstallRecord",
     "__version__",
     "__author__",
 ]
