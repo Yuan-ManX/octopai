@@ -27,6 +27,18 @@ from octopai.core.skill_hub import (
     ContextSlot, ContextComposition, VersionDiff, SearchIndex
 )
 from octopai.core.experience_tracker import ExperienceTracker
+from octopai.core.skill_bank import (
+    SkillBank, SkillType as BankSkillType, SkillPrinciple,
+    BankedSkill, CommonMistake
+)
+from octopai.core.experience_distiller import (
+    ExperienceDistiller, TrajectoryType, Trajectory, TrajectoryStep,
+    ExtractedPattern, FailureLesson
+)
+from octopai.core.recursive_evolution import (
+    RecursiveEvolutionEngine, EvolutionConfig, EvolutionTrigger,
+    EvolutionStatus, EvolutionCycle, EvolutionProposal, ValidationResult
+)
 
 
 class Octopai:
@@ -44,7 +56,10 @@ class Octopai:
         api_key: Optional[str] = None,
         skill_hub_dir: str = "./SkillHub",
         skill_output_dir: str = "./skills",
-        experience_dir: str = "./experiences"
+        experience_dir: str = "./experiences",
+        skill_bank_dir: str = "./SkillBank",
+        distiller_dir: str = "./ExperienceDistiller",
+        evolution_dir: str = "./RecursiveEvolution"
     ):
         """
         Initialize Octopai API
@@ -56,12 +71,18 @@ class Octopai:
             skill_hub_dir: Directory for SkillHub storage
             skill_output_dir: Directory for skill output
             experience_dir: Directory for experience tracking
+            skill_bank_dir: Directory for SkillBank storage
+            distiller_dir: Directory for ExperienceDistiller storage
+            evolution_dir: Directory for RecursiveEvolutionEngine storage
         """
         self.converter = URLConverter()
         self.skill_factory = SkillFactory()
         self.resource_parser = ResourceParser()
         self.skill_hub = SkillHub(skill_hub_dir)
         self.experience_tracker = ExperienceTracker(experience_dir)
+        self.skill_bank = SkillBank(skill_bank_dir)
+        self.experience_distiller = ExperienceDistiller(distiller_dir)
+        self.recursive_evolution = RecursiveEvolutionEngine(evolution_dir)
         
         self.model_provider = model_provider
         self.model = model
@@ -970,6 +991,313 @@ class Octopai:
             auto_optimize=auto_optimize,
             target_quality=target_quality
         )
+    
+    def add_general_skill_to_bank(
+        self,
+        name: str,
+        description: str,
+        content: str,
+        tags: Optional[List[str]] = None,
+        principles: Optional[List[str]] = None
+    ) -> BankedSkill:
+        """
+        Add a general skill to the SkillBank
+        
+        Args:
+            name: Skill name
+            description: Skill description
+            content: Skill content
+            tags: Optional tags
+            principles: Optional skill principles
+            
+        Returns:
+            Created BankedSkill object
+        """
+        return self.skill_bank.add_general_skill(
+            name=name,
+            description=description,
+            content=content,
+            tags=tags,
+            principles=principles
+        )
+    
+    def add_task_specific_skill_to_bank(
+        self,
+        name: str,
+        description: str,
+        content: str,
+        task_domain: str,
+        tags: Optional[List[str]] = None,
+        principles: Optional[List[str]] = None
+    ) -> BankedSkill:
+        """
+        Add a task-specific skill to the SkillBank
+        
+        Args:
+            name: Skill name
+            description: Skill description
+            content: Skill content
+            task_domain: Task domain this skill applies to
+            tags: Optional tags
+            principles: Optional skill principles
+            
+        Returns:
+            Created BankedSkill object
+        """
+        return self.skill_bank.add_task_specific_skill(
+            name=name,
+            description=description,
+            content=content,
+            task_domain=task_domain,
+            tags=tags,
+            principles=principles
+        )
+    
+    def add_common_mistake(
+        self,
+        mistake_id: str,
+        description: str,
+        avoid_instruction: str,
+        related_skill_ids: Optional[List[str]] = None,
+        tags: Optional[List[str]] = None
+    ) -> CommonMistake:
+        """
+        Add a common mistake to the SkillBank
+        
+        Args:
+            mistake_id: Unique mistake ID
+            description: Description of the mistake
+            avoid_instruction: Instruction to avoid the mistake
+            related_skill_ids: Optional related skill IDs
+            tags: Optional tags
+            
+        Returns:
+            Created CommonMistake object
+        """
+        return self.skill_bank.add_common_mistake(
+            mistake_id=mistake_id,
+            description=description,
+            avoid_instruction=avoid_instruction,
+            related_skill_ids=related_skill_ids,
+            tags=tags
+        )
+    
+    def get_skill_injection_context(
+        self,
+        task_context: Optional[str] = None,
+        skill_ids: Optional[List[str]] = None,
+        include_general: bool = True,
+        include_mistakes: bool = True,
+        task_domain: Optional[str] = None,
+        max_tokens: int = 4000
+    ) -> str:
+        """
+        Get skill injection context for agent prompts
+        
+        Args:
+            task_context: Optional task context
+            skill_ids: Optional specific skill IDs to include
+            include_general: Whether to include general skills
+            include_mistakes: Whether to include common mistakes
+            task_domain: Optional task domain for filtering
+            max_tokens: Maximum tokens for the context
+            
+        Returns:
+            Formatted context string
+        """
+        return self.skill_bank.format_skill_injection(
+            task_context=task_context,
+            skill_ids=skill_ids,
+            include_general=include_general,
+            include_mistakes=include_mistakes,
+            task_domain=task_domain,
+            max_tokens=max_tokens
+        )
+    
+    def record_trajectory_step(
+        self,
+        trajectory_id: str,
+        step_number: int,
+        action: str,
+        observation: str,
+        reasoning: Optional[str] = None,
+        decision_outcome: Optional[str] = None
+    ) -> TrajectoryStep:
+        """
+        Record a step in a trajectory
+        
+        Args:
+            trajectory_id: Trajectory ID
+            step_number: Step number
+            action: Action taken
+            observation: Observation after action
+            reasoning: Optional reasoning
+            decision_outcome: Optional decision outcome
+            
+        Returns:
+            Created TrajectoryStep object
+        """
+        return self.experience_distiller.record_step(
+            trajectory_id=trajectory_id,
+            step_number=step_number,
+            action=action,
+            observation=observation,
+            reasoning=reasoning,
+            decision_outcome=decision_outcome
+        )
+    
+    def finalize_trajectory(
+        self,
+        trajectory_id: str,
+        trajectory_type: TrajectoryType,
+        overall_success: bool,
+        task_completion: Optional[str] = None,
+        lessons_learned: Optional[str] = None
+    ) -> Trajectory:
+        """
+        Finalize a trajectory for distillation
+        
+        Args:
+            trajectory_id: Trajectory ID
+            trajectory_type: Type of trajectory
+            overall_success: Whether overall successful
+            task_completion: Optional task completion description
+            lessons_learned: Optional lessons learned
+            
+        Returns:
+            Finalized Trajectory object
+        """
+        return self.experience_distiller.finalize_trajectory(
+            trajectory_id=trajectory_id,
+            trajectory_type=trajectory_type,
+            overall_success=overall_success,
+            task_completion=task_completion,
+            lessons_learned=lessons_learned
+        )
+    
+    def distill_success_patterns(
+        self,
+        trajectory_id: Optional[str] = None,
+        min_success_rate: float = 0.7,
+        max_patterns: int = 5
+    ) -> List[ExtractedPattern]:
+        """
+        Distill success patterns from trajectories
+        
+        Args:
+            trajectory_id: Optional specific trajectory ID
+            min_success_rate: Minimum success rate threshold
+            max_patterns: Maximum patterns to extract
+            
+        Returns:
+            List of ExtractedPattern objects
+        """
+        return self.experience_distiller.distill_success_patterns(
+            trajectory_id=trajectory_id,
+            min_success_rate=min_success_rate,
+            max_patterns=max_patterns
+        )
+    
+    def extract_failure_lessons(
+        self,
+        trajectory_id: Optional[str] = None,
+        max_lessons: int = 5
+    ) -> List[FailureLesson]:
+        """
+        Extract lessons from failed trajectories
+        
+        Args:
+            trajectory_id: Optional specific trajectory ID
+            max_lessons: Maximum lessons to extract
+            
+        Returns:
+            List of FailureLesson objects
+        """
+        return self.experience_distiller.extract_failure_lessons(
+            trajectory_id=trajectory_id,
+            max_lessons=max_lessons
+        )
+    
+    def record_skill_performance_for_evolution(
+        self,
+        skill_id: str,
+        version: int,
+        success: bool,
+        performance_metrics: Optional[Dict[str, float]] = None,
+        context: Optional[str] = None
+    ):
+        """
+        Record skill performance for evolution monitoring
+        
+        Args:
+            skill_id: Skill ID
+            version: Skill version
+            success: Whether the skill application was successful
+            performance_metrics: Optional performance metrics
+            context: Optional context about the usage
+        """
+        self.recursive_evolution.record_skill_performance(
+            skill_id=skill_id,
+            version=version,
+            success=success,
+            performance_metrics=performance_metrics,
+            context=context
+        )
+    
+    def trigger_skill_evolution(
+        self,
+        skill_id: str,
+        trigger: EvolutionTrigger = EvolutionTrigger.MANUAL,
+        current_version: int = 1,
+        rationale: str = ""
+    ) -> Optional[EvolutionCycle]:
+        """
+        Trigger an evolution cycle for a skill
+        
+        Args:
+            skill_id: Skill ID to evolve
+            trigger: Evolution trigger
+            current_version: Current skill version
+            rationale: Rationale for evolution
+            
+        Returns:
+            Created EvolutionCycle or None
+        """
+        return self.recursive_evolution.trigger_evolution(
+            skill_id=skill_id,
+            trigger=trigger,
+            current_version=current_version,
+            rationale=rationale
+        )
+    
+    def get_skill_performance_trend(
+        self,
+        skill_id: str,
+        version: Optional[int] = None
+    ) -> Dict[str, Any]:
+        """
+        Get performance trend for a skill
+        
+        Args:
+            skill_id: Skill ID
+            version: Optional version filter
+            
+        Returns:
+            Performance trend data
+        """
+        return self.recursive_evolution.get_skill_performance_trend(
+            skill_id=skill_id,
+            version=version
+        )
+    
+    def get_evolution_statistics(self) -> Dict[str, Any]:
+        """
+        Get evolution engine statistics
+        
+        Returns:
+            Statistics dictionary
+        """
+        return self.recursive_evolution.get_statistics()
 
 
 def create_from_url(
