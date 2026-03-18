@@ -39,6 +39,10 @@ from octopai.core.recursive_evolution import (
     RecursiveEvolutionEngine, EvolutionConfig, EvolutionTrigger,
     EvolutionStatus, EvolutionCycle, EvolutionProposal, ValidationResult
 )
+from octopai.core.skill_registry import (
+    SkillRegistry, RegistrySkillMetadata, SkillRegistryStatus,
+    RedirectType, SkillComment, SkillStar, SkillRedirect, SkillInstallRecord
+)
 
 
 class Octopai:
@@ -59,7 +63,8 @@ class Octopai:
         experience_dir: str = "./experiences",
         skill_bank_dir: str = "./SkillBank",
         distiller_dir: str = "./ExperienceDistiller",
-        evolution_dir: str = "./RecursiveEvolution"
+        evolution_dir: str = "./RecursiveEvolution",
+        registry_dir: str = "./SkillRegistry"
     ):
         """
         Initialize Octopai API
@@ -74,6 +79,7 @@ class Octopai:
             skill_bank_dir: Directory for SkillBank storage
             distiller_dir: Directory for ExperienceDistiller storage
             evolution_dir: Directory for RecursiveEvolutionEngine storage
+            registry_dir: Directory for SkillRegistry storage
         """
         self.converter = URLConverter()
         self.skill_factory = SkillFactory()
@@ -83,6 +89,7 @@ class Octopai:
         self.skill_bank = SkillBank(skill_bank_dir)
         self.experience_distiller = ExperienceDistiller(distiller_dir)
         self.recursive_evolution = RecursiveEvolutionEngine(evolution_dir)
+        self.skill_registry = SkillRegistry(registry_dir)
         
         self.model_provider = model_provider
         self.model = model
@@ -1298,6 +1305,292 @@ class Octopai:
             Statistics dictionary
         """
         return self.recursive_evolution.get_statistics()
+    
+    def publish_skill_to_registry(
+        self,
+        name: str,
+        description: str,
+        version: str,
+        author: str,
+        owner_id: str,
+        tags: Optional[List[str]] = None,
+        category: Optional[str] = None,
+        visibility: str = "public",
+        license: str = "MIT",
+        changelog_entry: Optional[str] = None
+    ) -> RegistrySkillMetadata:
+        """
+        Publish a new skill to the registry
+        
+        Args:
+            name: Skill name
+            description: Skill description
+            version: Semantic version
+            author: Author name
+            owner_id: Owner ID
+            tags: Optional tags
+            category: Optional category
+            visibility: Visibility level
+            license: License type
+            changelog_entry: Optional changelog entry
+            
+        Returns:
+            Created RegistrySkillMetadata
+        """
+        return self.skill_registry.publish_skill(
+            name=name,
+            description=description,
+            version=version,
+            author=author,
+            owner_id=owner_id,
+            tags=tags,
+            category=category,
+            visibility=visibility,
+            license=license,
+            changelog_entry=changelog_entry
+        )
+    
+    def get_registry_skill_by_slug(self, slug: str) -> Optional[RegistrySkillMetadata]:
+        """
+        Get a skill from the registry by slug, following redirects
+        
+        Args:
+            slug: Skill slug
+            
+        Returns:
+            RegistrySkillMetadata or None
+        """
+        return self.skill_registry.get_skill_by_slug(slug)
+    
+    def get_registry_skill_by_id(self, skill_id: str) -> Optional[RegistrySkillMetadata]:
+        """
+        Get a skill from the registry by ID
+        
+        Args:
+            skill_id: Skill ID
+            
+        Returns:
+            RegistrySkillMetadata or None
+        """
+        return self.skill_registry.get_skill_by_id(skill_id)
+    
+    def update_registry_skill_version(
+        self,
+        skill_id: str,
+        new_version: str,
+        changelog_entry: str,
+        user_id: str
+    ) -> Optional[RegistrySkillMetadata]:
+        """
+        Update a registry skill's version
+        
+        Args:
+            skill_id: Skill ID
+            new_version: New version string
+            changelog_entry: Description of changes
+            user_id: User making the update
+            
+        Returns:
+            Updated RegistrySkillMetadata or None
+        """
+        return self.skill_registry.update_skill_version(
+            skill_id=skill_id,
+            new_version=new_version,
+            changelog_entry=changelog_entry,
+            user_id=user_id
+        )
+    
+    def rename_registry_skill(
+        self,
+        skill_id: str,
+        new_name: str,
+        user_id: str
+    ) -> Optional[RegistrySkillMetadata]:
+        """
+        Rename a registry skill without breaking old links
+        
+        Args:
+            skill_id: Skill ID
+            new_name: New skill name
+            user_id: User making the change
+            
+        Returns:
+            Updated RegistrySkillMetadata or None
+        """
+        return self.skill_registry.rename_skill(
+            skill_id=skill_id,
+            new_name=new_name,
+            user_id=user_id
+        )
+    
+    def merge_registry_skills(
+        self,
+        source_slug: str,
+        target_slug: str,
+        user_id: str
+    ) -> bool:
+        """
+        Merge a source skill into a target skill
+        
+        Args:
+            source_slug: Source skill slug (will be hidden)
+            target_slug: Target skill slug (canonical)
+            user_id: User performing the merge
+            
+        Returns:
+            True if successful
+        """
+        return self.skill_registry.merge_skills(
+            source_slug=source_slug,
+            target_slug=target_slug,
+            user_id=user_id
+        )
+    
+    def soft_delete_registry_skill(self, skill_id: str, user_id: str) -> bool:
+        """
+        Soft delete a registry skill (can be restored)
+        
+        Args:
+            skill_id: Skill ID
+            user_id: User performing the delete
+            
+        Returns:
+            True if successful
+        """
+        return self.skill_registry.soft_delete_skill(skill_id, user_id)
+    
+    def restore_registry_skill(self, skill_id: str, user_id: str) -> bool:
+        """
+        Restore a soft-deleted registry skill
+        
+        Args:
+            skill_id: Skill ID
+            user_id: User performing the restore
+            
+        Returns:
+            True if successful
+        """
+        return self.skill_registry.restore_skill(skill_id, user_id)
+    
+    def star_registry_skill(
+        self,
+        skill_id: str,
+        user_id: str,
+        rating: float
+    ) -> SkillStar:
+        """
+        Star/rate a registry skill
+        
+        Args:
+            skill_id: Skill ID
+            user_id: User ID
+            rating: Rating (0-5)
+            
+        Returns:
+            Created SkillStar
+        """
+        return self.skill_registry.star_skill(skill_id, user_id, rating)
+    
+    def add_comment_to_registry_skill(
+        self,
+        skill_id: str,
+        author: str,
+        content: str
+    ) -> SkillComment:
+        """
+        Add a comment to a registry skill
+        
+        Args:
+            skill_id: Skill ID
+            author: Author name
+            content: Comment content
+            
+        Returns:
+            Created SkillComment
+        """
+        return self.skill_registry.add_comment(skill_id, author, content)
+    
+    def record_registry_skill_install(
+        self,
+        skill_id: str,
+        slug: str,
+        version: str,
+        installed_by: str,
+        is_local: bool = True
+    ) -> SkillInstallRecord:
+        """
+        Record a registry skill installation
+        
+        Args:
+            skill_id: Skill ID
+            slug: Skill slug
+            version: Version installed
+            installed_by: User who installed
+            is_local: Whether it's a local install
+            
+        Returns:
+            Created SkillInstallRecord
+        """
+        return self.skill_registry.record_install(
+            skill_id=skill_id,
+            slug=slug,
+            version=version,
+            installed_by=installed_by,
+            is_local=is_local
+        )
+    
+    def search_registry_skills(
+        self,
+        query: Optional[str] = None,
+        tags: Optional[List[str]] = None,
+        category: Optional[str] = None,
+        visibility: Optional[str] = None,
+        sort_by: str = "popular",
+        limit: int = 20
+    ) -> List[RegistrySkillMetadata]:
+        """
+        Search for skills in the registry
+        
+        Args:
+            query: Optional search query
+            tags: Optional tag filter
+            category: Optional category filter
+            visibility: Optional visibility filter
+            sort_by: Sort method ('popular', 'recent', 'rating', 'name')
+            limit: Maximum results
+            
+        Returns:
+            List of matching RegistrySkillMetadata
+        """
+        return self.skill_registry.search_skills(
+            query=query,
+            tags=tags,
+            category=category,
+            visibility=visibility,
+            sort_by=sort_by,
+            limit=limit
+        )
+    
+    def get_popular_registry_skills(self, limit: int = 10) -> List[RegistrySkillMetadata]:
+        """
+        Get popular skills from the registry by install count
+        
+        Args:
+            limit: Maximum results
+            
+        Returns:
+            List of RegistrySkillMetadata
+        """
+        return self.skill_registry.get_popular_skills(limit)
+    
+    def get_registry_statistics(self) -> Dict[str, Any]:
+        """
+        Get registry statistics
+        
+        Returns:
+            Statistics dictionary
+        """
+        return self.skill_registry.get_statistics()
 
 
 def create_from_url(
