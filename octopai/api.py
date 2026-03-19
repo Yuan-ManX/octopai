@@ -1620,19 +1620,30 @@ def create_from_url(
         
     Returns:
         Complete SkillDefinition ready for use
+    
+    Example:
+        >>> from octopai import create_from_url
+        >>> skill = create_from_url(
+        ...     url="https://example.com",
+        ...     name="Web Analysis",
+        ...     description="Analyze web content"
+        ... )
     """
-    octopai = Octopai()
-    return octopai.create_from_url(
-        url=url,
-        name=name,
-        description=description,
-        tags=tags,
-        category=category,
-        author=author,
-        skill_type=skill_type,
-        auto_optimize=auto_optimize,
-        target_quality=target_quality
-    )
+    try:
+        octopai = Octopai()
+        return octopai.create_from_url(
+            url=url,
+            name=name,
+            description=description,
+            tags=tags,
+            category=category,
+            author=author,
+            skill_type=skill_type,
+            auto_optimize=auto_optimize,
+            target_quality=target_quality
+        )
+    except Exception as e:
+        raise ValueError(f"Error creating skill from URL: {str(e)}")
 
 
 def create_from_files(
@@ -1662,19 +1673,35 @@ def create_from_files(
         
     Returns:
         Complete SkillDefinition ready for use
+    
+    Example:
+        >>> from octopai import create_from_files
+        >>> skill = create_from_files(
+        ...     file_paths=["data.csv", "reference.pdf"],
+        ...     name="Data Processor",
+        ...     description="Process structured data"
+        ... )
     """
-    octopai = Octopai()
-    return octopai.create_from_files(
-        file_paths=file_paths,
-        name=name,
-        description=description,
-        tags=tags,
-        category=category,
-        author=author,
-        skill_type=skill_type,
-        auto_optimize=auto_optimize,
-        target_quality=target_quality
-    )
+    try:
+        # Validate file paths
+        for path in file_paths:
+            if not os.path.exists(path):
+                raise ValueError(f"File not found: {path}")
+        
+        octopai = Octopai()
+        return octopai.create_from_files(
+            file_paths=file_paths,
+            name=name,
+            description=description,
+            tags=tags,
+            category=category,
+            author=author,
+            skill_type=skill_type,
+            auto_optimize=auto_optimize,
+            target_quality=target_quality
+        )
+    except Exception as e:
+        raise ValueError(f"Error creating skill from files: {str(e)}")
 
 
 def create_from_prompt(
@@ -1706,20 +1733,37 @@ def create_from_prompt(
         
     Returns:
         Complete SkillDefinition ready for use
+    
+    Example:
+        >>> from octopai import create_from_prompt
+        >>> skill = create_from_prompt(
+        ...     prompt="Create a skill to generate reports",
+        ...     name="Report Generator",
+        ...     description="Generate comprehensive reports"
+        ... )
     """
-    octopai = Octopai()
-    return octopai.create_from_prompt(
-        prompt=prompt,
-        name=name,
-        description=description,
-        tags=tags,
-        category=category,
-        author=author,
-        skill_type=skill_type,
-        resources=resources,
-        auto_optimize=auto_optimize,
-        target_quality=target_quality
-    )
+    try:
+        # Validate resources if provided
+        if resources:
+            for path in resources:
+                if not os.path.exists(path):
+                    raise ValueError(f"Resource file not found: {path}")
+        
+        octopai = Octopai()
+        return octopai.create_from_prompt(
+            prompt=prompt,
+            name=name,
+            description=description,
+            tags=tags,
+            category=category,
+            author=author,
+            skill_type=skill_type,
+            resources=resources,
+            auto_optimize=auto_optimize,
+            target_quality=target_quality
+        )
+    except Exception as e:
+        raise ValueError(f"Error creating skill from prompt: {str(e)}")
 
 
 def optimize_skill(
