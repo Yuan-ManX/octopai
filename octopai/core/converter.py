@@ -93,8 +93,11 @@ class URLConverter:
         }
         
         try:
+            cloudflare_api_url = self.config.get_cloudflare_markdown_api()
+            if not cloudflare_api_url:
+                raise Exception("Cloudflare API URL not available")
             response = requests.post(
-                self.config.CLOUDFLARE_MARKDOWN_API,
+                cloudflare_api_url,
                 headers=headers,
                 json=data,
                 timeout=30
