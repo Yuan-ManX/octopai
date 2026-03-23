@@ -155,13 +155,184 @@ stats = hub_stats()
 - **异步任务管理**：带状态跟踪的后台任务处理
 - **集成就绪**：设计用于与其他系统轻松集成
 
+### 🔄 工作流引擎 - 高级技能编排
+强大的工作流引擎，用于编排复杂的技能序列：
+- **多格式工作流**：支持YAML、JSON和Markdown工作流定义
+- **渐进式加载**：仅在需要时加载技能，优化上下文使用
+- **条件执行**：基于智能条件的步骤执行
+- **重试与超时**：内置重试机制和超时处理
+- **Python和技能操作**：无缝执行Python函数和现有技能
+- **API集成**：直接API调用作为工作流步骤
+
+```python
+from octopai import WorkflowEngine, WorkflowDefinition, WorkflowStep
+
+# 初始化工作流引擎
+engine = WorkflowEngine()
+
+# 以编程方式创建工作流
+workflow = WorkflowDefinition(
+    name="研究报告生成器",
+    version="1.0.0",
+    description="生成全面的研究报告",
+    author="Octopai团队",
+    tags=["研究", "报告", "自动化"],
+    variables={"topic": "AI Agents", "output_format": "markdown"}
+)
+
+# 添加工作流步骤
+workflow.steps.append(WorkflowStep(
+    name="web_research",
+    description="在线研究主题",
+    action="skill:web_research",
+    inputs={"query": "${topic}"},
+    outputs=["research_data"]
+))
+
+workflow.steps.append(WorkflowStep(
+    name="generate_report",
+    description="生成最终报告",
+    action="skill:report_generation",
+    inputs={"data": "${research_data}", "format": "${output_format}"},
+    outputs=["final_report"]
+))
+
+# 执行工作流
+results = await engine.execute_workflow(workflow)
+print(results["final_report"])
+```
+
+### 🧠 子任务编排器 - 智能任务分解
+用于分解和执行复杂任务的高级系统：
+- **自动任务分解**：AI驱动的任务分解为可并行的子任务
+- **依赖管理**：智能依赖解析和执行排序
+- **基于优先级的执行**：关键子任务的动态优先级
+- **并行执行**：独立子任务的并发执行
+- **进度跟踪**：实时状态监控和完成回调
+- **错误恢复**：自动重试和从子任务失败中恢复
+
+```python
+from octopai import SubtaskOrchestrator
+
+# 初始化编排器
+orchestrator = SubtaskOrchestrator()
+
+# 分解复杂任务
+task_group = await orchestrator.decompose_task(
+    main_task="创建一个关于AI Agents的综合网站",
+    context={"target_audience": "developers", "style": "modern"}
+)
+
+# 执行分解后的任务
+result = await orchestrator.execute_subtask_group(task_group.id)
+
+print(f"完成 {result['completed_count']} 个任务，共 {result['total_count']} 个")
+print("结果：", result["results"])
+```
+
+### 💾 持久化记忆 - 用户偏好学习
+用于个性化交互的复杂记忆系统：
+- **事实记忆**：存储和检索带有置信度评分的事实知识
+- **用户偏好**：随时间学习和适应用户偏好
+- **对话历史**：维护过去交互的结构化摘要
+- **写作风格**：捕捉和应用用户的写作风格
+- **技术栈**：跟踪用户的技术偏好
+- **自动提取**：从对话中AI驱动的记忆提取
+- **上下文检索**：基于当前任务的智能上下文注入
+
+```python
+from octopai import PersistentMemory
+
+# 初始化记忆系统
+memory = PersistentMemory()
+
+# 存储事实
+memory.add_fact(
+    user_id="user_123",
+    content="在数据分析方面更喜欢Python而非JavaScript",
+    category="preference",
+    source="conversation",
+    confidence=0.9,
+    tags=["编程", "数据分析"]
+)
+
+# 设置用户偏好
+memory.set_preference(
+    user_id="user_123",
+    key="output_format",
+    value="markdown",
+    category="formatting",
+    description="文档的首选输出格式",
+    strength=0.8
+)
+
+# 获取任务的记忆上下文
+context = memory.get_memory_context(
+    user_id="user_123",
+    current_task="生成数据分析报告"
+)
+
+print("用户事实：", context["facts"])
+print("用户偏好：", context["preferences"])
+```
+
+### 🛡️ 沙箱执行器 - 隔离执行环境
+用于代码和命令的安全隔离执行环境：
+- **会话管理**：创建和管理隔离的沙箱会话
+- **文件系统**：完整的虚拟文件系统，包含上传、工作区和输出
+- **命令执行**：带超时和安全策略的安全命令执行
+- **Python执行**：在隔离环境中运行Python代码
+- **笔记本支持**：Jupyter笔记本单元执行
+- **安全策略**：可配置的允许/阻止命令列表
+- **执行历史**：所有操作的完整审计跟踪
+
+```python
+from octopai import SandboxExecutor, SandboxConfig
+
+# 初始化沙箱执行器
+executor = SandboxExecutor()
+
+# 使用自定义配置创建沙箱会话
+config = SandboxConfig(
+    timeout=300,
+    max_memory_mb=1024,
+    enable_network=False
+)
+session = executor.create_session(config=config)
+
+# 写入文件
+executor.write_file(
+    session_id=session.id,
+    file_path="workspace/analysis.py",
+    content="""
+import pandas as pd
+data = pd.DataFrame({'x': [1, 2, 3], 'y': [4, 5, 6]})
+print(data.describe())
+"""
+)
+
+# 执行Python代码
+result = await executor.execute_python_code(
+    session_id=session.id,
+    code="import pandas as pd; print(pd.__version__)"
+)
+
+print("成功：", result.success)
+print("输出：", result.stdout)
+
+# 获取会话摘要
+summary = executor.get_session_summary(session.id)
+print("会话统计：", summary)
+```
+
 ### 🔧 高级API
 简化访问所有功能：
 ```python
 from octopai import (
     Octopai, convert, create_from_url, create_from_files,
     create_from_prompt, optimize_skill, parse,
-    hub_create_collection, hub_semantic_search, hub_publish
+    hub_create_collection, hub_semantic_search, hub_publish,
+    WorkflowEngine, SubtaskOrchestrator, PersistentMemory, SandboxExecutor
 )
 
 # 将URL转换为技能内容
@@ -334,7 +505,15 @@ octopai/
 │   ├── resource_parser.py # 多格式文件解析器（PDF、DOC、Excel等）
 │   ├── skill_hub.py     # SkillHub - 全面的技能管理中心
 │   ├── skill_packager.py # 技能打包和分发
-│   └── pipeline.py      # 端到端技能工程管道
+│   ├── pipeline.py      # 端到端技能工程管道
+│   ├── skill_bank.py    # 分层技能库系统
+│   ├── experience_distiller.py # 基于经验的技能提取系统
+│   ├── recursive_evolution.py # 动态技能进化引擎
+│   ├── skill_registry.py # 高级技能注册表系统
+│   ├── workflow_engine.py # 🆕 高级工作流编排引擎
+│   ├── subtask_orchestrator.py # 🆕 智能任务分解与并行执行
+│   ├── persistent_memory.py # 🆕 用户偏好学习与持久化记忆
+│   └── sandbox_executor.py # 🆕 隔离执行环境
 ├── api_integration/      # API集成层
 │   ├── __init__.py
 │   ├── api.py           # 带异步任务管理的集成API
@@ -342,6 +521,7 @@ octopai/
 ├── cli/                  # 命令行界面
 │   └── main.py           # 主命令入口点
 ├── utils/                # 工具函数
+│   ├── __init__.py       # 工具模块导出
 │   ├── config.py         # 配置管理
 │   └── helpers.py        # 辅助函数
 ├── web/                  # Web应用
@@ -357,14 +537,44 @@ octopai/
 │       └── package.json
 ├── tests/                # 完整的测试套件
 │   ├── test_converter.py
+│   ├── test_creator.py   # 技能创建器测试
 │   ├── test_evolution_engine.py
+│   ├── test_evolver.py   # 技能进化器测试
 │   ├── test_resource_parser.py
 │   └── test_skill_hub.py
 ├── docs/                 # 文档（英文和中文）
 │   ├── en/               # 英文文档
 │   └── zh/               # 中文文档
 └── examples/             # 使用示例
+    ├── advanced_skill_evolution.py
+    └── skill_registry_demo.py
 ```
+
+## 🚀 超级智能体能力
+
+Octopai现在具有全面的超级智能体架构，包括：
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                      Octopai 超级智能体                        │
+├─────────────────────────────────────────────────────────────────┤
+│  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────┐ │
+│  │   工作流引擎     │  │  子任务编排器    │  │   记忆系统    │ │
+│  │  & 技能链       │  │  & 并行执行     │  │             │ │
+│  └──────────────────┘  └──────────────────┘  └──────────────┘ │
+│  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────┐ │
+│  │  沙箱执行器     │  │    SkillHub     │  │   进化引擎  │ │
+│  │  & 代码运行时   │  │   & 技能库      │  │             │ │
+│  └──────────────────┘  └──────────────────┘  └──────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**关键超级智能体特性：**
+- **统一编排**：无缝协调技能、工作流和子任务
+- **自适应学习**：通过记忆和经验持续改进
+- **安全执行**：所有代码执行的隔离沙箱环境
+- **个性化**：用户特定的偏好和上下文适配
+- **可扩展性**：并行执行和智能资源管理
 
 
 ## 💡 技能进化系统
