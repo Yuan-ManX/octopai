@@ -519,17 +519,17 @@ Focus on:
                 raise ValueError("No content returned from API")
             return optimized_content
         except requests.exceptions.Timeout:
-            print("API request timed out. Using fallback optimization.")
-            return self._build_fallback_optimization(content, metrics)
+            print("API request timed out. Using fallback skill content.")
+            return self._build_fallback_skill_content(source_content, name, description)
         except requests.exceptions.RequestException as e:
-            print(f"API request failed: {str(e)}. Using fallback optimization.")
-            return self._build_fallback_optimization(content, metrics)
+            print(f"API request failed: {str(e)}. Using fallback skill content.")
+            return self._build_fallback_skill_content(source_content, name, description)
         except (ValueError, KeyError) as e:
-            print(f"API response parsing failed: {str(e)}. Using fallback optimization.")
-            return self._build_fallback_optimization(content, metrics)
+            print(f"API response parsing failed: {str(e)}. Using fallback skill content.")
+            return self._build_fallback_skill_content(source_content, name, description)
         except Exception as e:
-            print(f"Unexpected error during optimization: {str(e)}. Using fallback optimization.")
-            return self._build_fallback_optimization(content, metrics)
+            print(f"Unexpected error during skill generation: {str(e)}. Using fallback skill content.")
+            return self._build_fallback_skill_content(source_content, name, description)
     
     def _build_optimization_prompt(self, content: str, metrics: SkillQualityMetrics) -> str:
         """Build optimization prompt"""
@@ -950,12 +950,26 @@ Format as Markdown, ready to be used as SKILL.md content."""
             )
             response.raise_for_status()
             result = response.json()
-            return result.get('choices', [{}])[0].get('message', {}).get('content', source_content)
+            choices = result.get('choices', [])
+            if not choices:
+                return self._build_fallback_skill_content(source_content, name, description)
+            message = choices[0].get('message', {})
+            generated_content = message.get('content', '')
+            if not generated_content:
+                return self._build_fallback_skill_content(source_content, name, description)
+            return generated_content
+        except requests.exceptions.Timeout:
+            print("API request timed out. Using fallback skill content.")
+            return self._build_fallback_skill_content(source_content, name, description)
+        except requests.exceptions.RequestException as e:
+            print(f"API request failed: {str(e)}. Using fallback skill content.")
+            return self._build_fallback_skill_content(source_content, name, description)
+        except (ValueError, KeyError) as e:
+            print(f"API response parsing failed: {str(e)}. Using fallback skill content.")
+            return self._build_fallback_skill_content(source_content, name, description)
         except Exception as e:
-            print(f"Skill generation fallback: {e}")
-            return self._build_fallback_skill_content(
-                source_content, name, description
-            )
+            print(f"Unexpected error during skill generation: {str(e)}. Using fallback skill content.")
+            return self._build_fallback_skill_content(source_content, name, description)
     
     def _build_skill_generation_prompt(
         self,
