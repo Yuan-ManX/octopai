@@ -89,6 +89,50 @@ Octopai的突破性方法建立在两个变革性原则之上：
 - **元认知**：反思学习和自适应策略
 - **自适应变异**：探索性、优化性和反思性变异策略
 
+### 📋 OCTOPAI Skill Specification - 标准化技能格式
+定义了强大的标准化技能创建和共享格式：
+- **OCTOPAI.md格式**：YAML前置元数据+Markdown内容，实现全面的技能定义
+- **基于文件夹的技能**：支持技能文件夹，包含resources/、scripts/和assets/子目录
+- **丰富元数据**：名称、版本、作者、许可证、分类、关键词、依赖关系等
+- **触发器系统**：基于事件的技能激活，具有灵活的触发条件
+- **技能分类**：按领域组织（代码、数据、内容、研究、自动化等）
+- **验证系统**：内置的技能规范验证功能
+
+```python
+from octopai import OctopaiSkillSpec, create_skill_folder
+
+# 创建技能文件夹结构
+skill_folder = create_skill_folder(
+    name="data-analyzer",
+    path="./skills"
+)
+
+# 定义技能规范
+skill_spec = OctopaiSkillSpec(
+    name="数据分析器",
+    version="1.0.0",
+    author="Octopai团队",
+    category="data-processing",
+    description="分析和可视化来自各种来源的数据",
+    content="# 数据分析器\n\n此技能帮助您分析数据..."
+)
+
+# 导出为OCTOPAI.md
+skill_spec.to_skill_md("./skills/data-analyzer/OCTOPAI.md")
+
+# 从OCTOPAI.md导入
+loaded_spec = OctopaiSkillSpec.from_skill_md("./skills/data-analyzer/OCTOPAI.md")
+```
+
+### 🏪 Plugin Marketplace - 插件市场
+全面的技能存储库和插件管理系统：
+- **技能导入/导出**：从文件夹导入技能，导出为可分享格式
+- **存储库管理**：浏览、搜索和管理技能存储库
+- **版本管理**：跟踪技能版本和更新
+- **依赖解析**：技能的自动依赖管理
+- **安装系统**：从存储库一键安装技能
+- **技能发现**：按分类、流行度、评分等浏览技能
+
 ### 💼 SkillHub - 全面的技能管理中心
 在集中式、智能存储库中存储、组织、进化和管理您的技能：
 - **全面的元数据**：状态、可见性、作者、版本、许可证、关键词、依赖关系等
@@ -106,6 +150,71 @@ Octopai的突破性方法建立在两个变革性原则之上：
 - **技能依赖**：跟踪技能之间的关系
 - **技能合并**：将互补技能合并为更强大的技能
 - **使用分析**：跟踪技能使用情况、成功率和性能指标
+
+### 📄 文档处理技能
+强大的多种格式文档处理能力：
+- **PDF技能**：从PDF文件中提取文本、元数据、图像和结构化内容
+- **DOCX技能**：读取、操作和生成具有丰富格式的Word文档
+- **XLSX技能**：处理Excel电子表格，提取数据并执行计算
+- **PPTX技能**：从PowerPoint演示文稿中提取文本、图像和内容
+- **统一接口**：所有文档格式的一致API
+- **工厂系统**：通过统一工厂轻松访问文档处理器
+
+```python
+from octopai import DocumentSkillFactory, PDFSkill, DOCXSkill
+
+# 处理PDF文件
+pdf_processor = PDFSkill()
+pdf_content = pdf_processor.extract_text("document.pdf")
+pdf_metadata = pdf_processor.extract_metadata("document.pdf")
+
+# 处理Word文档
+docx_processor = DOCXSkill()
+doc_content = docx_processor.read_document("report.docx")
+docx_processor.modify_document("report.docx", updates={"title": "新标题"})
+
+# 使用工厂进行统一访问
+factory = DocumentSkillFactory()
+processor = factory.get_processor("document.xlsx")
+data = processor.extract_data("document.xlsx")
+```
+
+### 📝 技能模板系统
+用于快速创建技能的预构建技能模板：
+- **内置模板**：通用、代码分析、文档处理、数据分析、内容写作、研究助手、任务自动化
+- **模板分类**：按用例和领域组织模板
+- **自定义模板**：创建和保存您自己的模板
+- **模板库**：全面的即用型模板库
+- **快速启动**：在几分钟内开始技能开发
+
+```python
+from octopai import SkillTemplateLibrary, TemplateCategory
+
+# 访问模板库
+library = SkillTemplateLibrary()
+
+# 列出可用模板
+templates = library.list_templates(category=TemplateCategory.DATA_ANALYSIS)
+
+# 获取特定模板
+template = library.get_template("data-analyst")
+
+# 使用模板创建技能
+skill_content = template.render({
+    "name": "我的数据分析器",
+    "description": "自定义数据分析技能",
+    "data_sources": ["CSV", "Excel", "数据库"]
+})
+
+# 创建自定义模板
+from octopai import SkillTemplate
+custom_template = SkillTemplate(
+    name="my-template",
+    category=TemplateCategory.CONTENT_WRITING,
+    content="""# {{name}}\n\n{{description}}\n\n## 功能\n{{#features}}\n- {{.}}\n{{/features}}"""
+)
+library.add_template(custom_template)
+```
 
 ```python
 from octopai import (
@@ -332,7 +441,10 @@ from octopai import (
     Octopai, convert, create_from_url, create_from_files,
     create_from_prompt, optimize_skill, parse,
     hub_create_collection, hub_semantic_search, hub_publish,
-    WorkflowEngine, SubtaskOrchestrator, PersistentMemory, SandboxExecutor
+    WorkflowEngine, SubtaskOrchestrator, PersistentMemory, SandboxExecutor,
+    OctopaiSkillSpec, create_skill_folder,
+    DocumentSkillFactory, PDFSkill, DOCXSkill, XLSXSkill, PPTXSkill,
+    SkillTemplateLibrary, SkillTemplate, TemplateCategory
 )
 
 # 将URL转换为技能内容
