@@ -92,6 +92,50 @@ Advanced evolution engine with comprehensive capabilities:
 - **Meta-Cognition**: Reflective learning and adaptive strategies
 - **Adaptive Mutation**: Exploratory, refinement, and reflective mutation strategies
 
+### 📋 OCTOPAI Skill Specification - Standardized Skill Format
+Defines a powerful, standardized format for skill creation and sharing:
+- **OCTOPAI.md Format**: YAML frontmatter + Markdown content for comprehensive skill definition
+- **Folder-Based Skills**: Support for skill folders with resources/, scripts/, and assets/ subdirectories
+- **Rich Metadata**: Name, version, author, license, category, keywords, dependencies, and more
+- **Trigger System**: Event-based skill activation with flexible trigger conditions
+- **Skill Categories**: Organized by domain (code, data, content, research, automation, etc.)
+- **Validation System**: Built-in validation for skill specifications
+
+```python
+from octopai import OctopaiSkillSpec, create_skill_folder
+
+# Create a skill folder structure
+skill_folder = create_skill_folder(
+    name="data-analyzer",
+    path="./skills"
+)
+
+# Define a skill specification
+skill_spec = OctopaiSkillSpec(
+    name="Data Analyzer",
+    version="1.0.0",
+    author="Octopai Team",
+    category="data-processing",
+    description="Analyze and visualize data from various sources",
+    content="# Data Analyzer\n\nThis skill helps you analyze data..."
+)
+
+# Export to OCTOPAI.md
+skill_spec.to_skill_md("./skills/data-analyzer/OCTOPAI.md")
+
+# Import from OCTOPAI.md
+loaded_spec = OctopaiSkillSpec.from_skill_md("./skills/data-analyzer/OCTOPAI.md")
+```
+
+### 🏪 Plugin Marketplace - Skill Repository
+Comprehensive skill repository and plugin management system:
+- **Skill Import/Export**: Import skills from folders and export to shareable formats
+- **Repository Management**: Browse, search, and manage skill repositories
+- **Version Management**: Track skill versions and updates
+- **Dependency Resolution**: Automatic dependency management for skills
+- **Installation System**: One-click skill installation from repositories
+- **Skill Discovery**: Browse skills by category, popularity, ratings, and more
+
 ### 💼 SkillHub - Comprehensive Skill Management Center
 Store, organize, evolve, and manage your skills in a centralized, intelligent repository:
 - **Comprehensive Metadata**: Status, visibility, author, version, license, keywords, dependencies, and more
@@ -109,6 +153,71 @@ Store, organize, evolve, and manage your skills in a centralized, intelligent re
 - **Skill Dependencies**: Track relationships between skills
 - **Skill Merging**: Combine complementary skills into more powerful ones
 - **Usage Analytics**: Track skill usage, success rates, and performance metrics
+
+### 📄 Document Processing Skills
+Powerful document processing capabilities for various formats:
+- **PDF Skills**: Extract text, metadata, images, and structured content from PDF files
+- **DOCX Skills**: Read, manipulate, and generate Word documents with rich formatting
+- **XLSX Skills**: Process Excel spreadsheets, extract data, and perform calculations
+- **PPTX Skills**: Extract text, images, and content from PowerPoint presentations
+- **Unified Interface**: Consistent API across all document formats
+- **Factory System**: Easy access to document processors through a unified factory
+
+```python
+from octopai import DocumentSkillFactory, PDFSkill, DOCXSkill
+
+# Process a PDF file
+pdf_processor = PDFSkill()
+pdf_content = pdf_processor.extract_text("document.pdf")
+pdf_metadata = pdf_processor.extract_metadata("document.pdf")
+
+# Process a Word document
+docx_processor = DOCXSkill()
+doc_content = docx_processor.read_document("report.docx")
+docx_processor.modify_document("report.docx", updates={"title": "New Title"})
+
+# Use the factory for unified access
+factory = DocumentSkillFactory()
+processor = factory.get_processor("document.xlsx")
+data = processor.extract_data("document.xlsx")
+```
+
+### 📝 Skill Template System
+Pre-built skill templates for rapid skill creation:
+- **Built-in Templates**: General-purpose, code-analysis, document-processor, data-analyst, content-writer, research-assistant, task-automation
+- **Template Categories**: Organized templates by use case and domain
+- **Custom Templates**: Create and save your own templates
+- **Template Library**: Comprehensive library of ready-to-use templates
+- **Quick Start**: Get started with skill development in minutes
+
+```python
+from octopai import SkillTemplateLibrary, TemplateCategory
+
+# Access the template library
+library = SkillTemplateLibrary()
+
+# List available templates
+templates = library.list_templates(category=TemplateCategory.DATA_ANALYSIS)
+
+# Get a specific template
+template = library.get_template("data-analyst")
+
+# Use the template to create a skill
+skill_content = template.render({
+    "name": "My Data Analyzer",
+    "description": "Custom data analysis skill",
+    "data_sources": ["CSV", "Excel", "Database"]
+})
+
+# Create custom templates
+from octopai import SkillTemplate
+custom_template = SkillTemplate(
+    name="my-template",
+    category=TemplateCategory.CONTENT_WRITING,
+    content="""# {{name}}\n\n{{description}}\n\n## Features\n{{#features}}\n- {{.}}\n{{/features}}"""
+)
+library.add_template(custom_template)
+```
 
 ```python
 from octopai import (
@@ -335,7 +444,10 @@ from octopai import (
     Octopai, convert, create_from_url, create_from_files,
     create_from_prompt, optimize_skill, parse,
     hub_create_collection, hub_semantic_search, hub_publish,
-    WorkflowEngine, SubtaskOrchestrator, PersistentMemory, SandboxExecutor
+    WorkflowEngine, SubtaskOrchestrator, PersistentMemory, SandboxExecutor,
+    OctopaiSkillSpec, create_skill_folder,
+    DocumentSkillFactory, PDFSkill, DOCXSkill, XLSXSkill, PPTXSkill,
+    SkillTemplateLibrary, SkillTemplate, TemplateCategory
 )
 
 # Convert URL to skill content
