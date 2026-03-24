@@ -1437,3 +1437,318 @@ class SkillHub:
         
         results.sort(key=lambda x: x[1], reverse=True)
         return results[:limit]
+
+
+class PluginMarketplace:
+    """
+    Octopai Plugin Marketplace - Skill Repository System
+    
+    Manages skill repositories, plugin installations, and marketplace operations.
+    Features include repository management, skill discovery, installation,
+    and updates with version tracking.
+    """
+    
+    def __init__(self, marketplace_dir: str = "./PluginMarketplace"):
+        self.marketplace_dir = Path(marketplace_dir)
+        self.repos_dir = self.marketplace_dir / "repositories"
+        self.installed_dir = self.marketplace_dir / "installed"
+        self.repos_index = self.marketplace_dir / "repos.json"
+        self.installed_index = self.marketplace_dir / "installed.json"
+        
+        self._initialize_storage()
+        self._repositories: Dict[str, Dict[str, Any]] = self._load_repositories()
+        self._installed: Dict[str, Dict[str, Any]] = self._load_installed()
+    
+    def _initialize_storage(self):
+        """Initialize marketplace storage directories"""
+        self.repos_dir.mkdir(parents=True, exist_ok=True)
+        self.installed_dir.mkdir(parents=True, exist_ok=True)
+        
+        if not self.repos_index.exists():
+            self._save_repositories({})
+        if not self.installed_index.exists():
+            self._save_installed({})
+    
+    def _load_repositories(self) -> Dict[str, Dict[str, Any]]:
+        """Load registered repositories"""
+        if self.repos_index.exists():
+            try:
+                with open(self.repos_index, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except Exception:
+                pass
+        return {}
+    
+    def _save_repositories(self, repos: Dict[str, Dict[str, Any]]):
+        """Save registered repositories"""
+        with open(self.repos_index, 'w', encoding='utf-8') as f:
+            json.dump(repos, f, indent=2)
+    
+    def _load_installed(self) -> Dict[str, Dict[str, Any]]:
+        """Load installed skills"""
+        if self.installed_index.exists():
+            try:
+                with open(self.installed_index, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except Exception:
+                pass
+        return {}
+    
+    def _save_installed(self, installed: Dict[str, Dict[str, Any]]):
+        """Save installed skills index"""
+        with open(self.installed_index, 'w', encoding='utf-8') as f:
+            json.dump(installed, f, indent=2)
+    
+    def add_repository(
+        self,
+        repo_id: str,
+        name: str,
+        url: str,
+        description: Optional[str] = None,
+        priority: int = 0
+    ) -> Dict[str, Any]:
+        """
+        Register a new skill repository
+        
+        Args:
+            repo_id: Unique repository identifier
+            name: Repository name
+            url: Repository URL
+            description: Optional description
+            priority: Repository priority for search ordering
+            
+        Returns:
+            Repository information
+        """
+        repo = {
+            "repo_id": repo_id,
+            "name": name,
+            "url": url,
+            "description": description,
+            "priority": priority,
+            "added_at": datetime.now().isoformat(),
+            "last_updated": None
+        }
+        
+        self._repositories[repo_id] = repo
+        self._save_repositories(self._repositories)
+        return repo
+    
+    def remove_repository(self, repo_id: str) -> bool:
+        """Remove a registered repository"""
+        if repo_id not in self._repositories:
+            return False
+        
+        del self._repositories[repo_id]
+        self._save_repositories(self._repositories)
+        return True
+    
+    def list_repositories(self) -> List[Dict[str, Any]]:
+        """List all registered repositories"""
+        return list(self._repositories.values())
+    
+    def install_skill_from_folder(
+        self,
+        folder_path: Union[str, Path],
+        repo_source: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Install a skill from a folder
+        
+        Args:
+            folder_path: Path to the skill folder
+            repo_source: Optional repository source identifier
+            
+        Returns:
+            Installation information
+        """
+        from octopai.core.skill_spec import SkillFolder, OctopaiSkillSpec
+        
+        skill_folder = SkillFolder(folder_path)
+        skill_spec = skill_folder.load_skill()
+        
+        skill_id = skill_spec.name.lower().replace(' ', '-')
+        install_dir = self.installed_dir / skill_id
+        
+        if install_dir.exists():
+            existing = self._installed.get(skill_id, {})
+            current_version = existing.get('version', '0.0.0')
+            
+            if current_version == skill_spec.version:
+                return {
+                    "skill_id": skill_id,
+                    "status": "already_installed",
+                    "version": skill_spec.version
+                }
+        
+        import shutil
+        if install_dir.exists():
+            shutil.rmtree(install_dir)
+        
+        shutil.copytree(folder_path, install_dir)
+        
+        install_info = {
+            "skill_id": skill_id,
+            "name": skill_spec.name,
+            "version": skill_spec.version,
+            "description": skill_spec.description,
+            "author": skill_spec.author,
+            "license": skill_spec.license,
+            "category": skill_spec.category.value if hasattr(skill_spec.category, 'value') else str(skill_spec.category),
+            "tags": skill_spec.tags,
+            "keywords": skill_spec.keywords,
+            "installed_at": datetime.now().isoformat(),
+            "install_path": str(install_dir),
+            "repo_source": repo_source
+        }
+        
+        self._installed[skill_id] = install_info
+        self._save_installed(self._installed)
+        
+        return {
+            "skill_id": skill_id,
+            "status": "installed",
+            "version": skill_spec.version,
+            "info": install_info
+        }
+    
+    def uninstall_skill(self, skill_id: str) -> bool:
+        """Uninstall a skill"""
+        if skill_id not in self._installed:
+            return False
+        
+        install_info = self._installed[skill_id]
+        install_path = Path(install_info.get('install_path', ''))
+        
+        if install_path.exists():
+            import shutil
+            shutil.rmtree(install_path)
+        
+        del self._installed[skill_id]
+        self._save_installed(self._installed)
+        return True
+    
+    def list_installed_skills(self) -> List[Dict[str, Any]]:
+        """List all installed skills"""
+        return list(self._installed.values())
+    
+    def get_installed_skill(self, skill_id: str) -> Optional[Dict[str, Any]]:
+        """Get an installed skill by ID"""
+        return self._installed.get(skill_id)
+    
+    def load_installed_skill_spec(self, skill_id: str) -> Optional['OctopaiSkillSpec']:
+        """Load an installed skill specification"""
+        from octopai.core.skill_spec import SkillFolder
+        
+        install_info = self._installed.get(skill_id)
+        if not install_info:
+            return None
+        
+        install_path = Path(install_info['install_path'])
+        if not install_path.exists():
+            return None
+        
+        skill_folder = SkillFolder(install_path)
+        return skill_folder.load_skill()
+    
+    def get_marketplace_statistics(self) -> Dict[str, Any]:
+        """Get marketplace statistics"""
+        return {
+            "total_repositories": len(self._repositories),
+            "total_installed": len(self._installed),
+            "installed_by_category": self._group_by_category(),
+            "repositories": list(self._repositories.keys())
+        }
+    
+    def _group_by_category(self) -> Dict[str, int]:
+        """Group installed skills by category"""
+        categories = {}
+        for skill in self._installed.values():
+            cat = skill.get('category', 'Uncategorized')
+            categories[cat] = categories.get(cat, 0) + 1
+        return categories
+
+
+# Add to SkillHub for folder-based skill support
+def import_skill_from_folder(
+    self,
+    folder_path: Union[str, Path],
+    author: Optional[str] = None
+) -> Skill:
+    """
+    Import a skill from a folder into SkillHub
+    
+    Args:
+        folder_path: Path to the skill folder
+        author: Optional author name
+        
+    Returns:
+        Imported Skill object
+    """
+    from octopai.core.skill_spec import SkillFolder, OctopaiSkillSpec
+    
+    skill_folder = SkillFolder(folder_path)
+    skill_spec = skill_folder.load_skill()
+    
+    content = skill_spec.to_skill_md()
+    
+    return self.create_skill(
+        name=skill_spec.name,
+        description=skill_spec.description,
+        content=content,
+        tags=skill_spec.tags,
+        category=skill_spec.category.value if hasattr(skill_spec.category, 'value') else str(skill_spec.category),
+        author=author or skill_spec.author,
+        keywords=skill_spec.keywords
+    )
+
+
+def export_skill_to_folder(
+    self,
+    skill_id: str,
+    output_path: Union[str, Path]
+) -> Optional[Path]:
+    """
+    Export a skill from SkillHub to a folder
+    
+    Args:
+        skill_id: Skill ID to export
+        output_path: Output directory path
+        
+    Returns:
+        Path to the exported folder or None
+    """
+    from octopai.core.skill_spec import (
+        OctopaiSkillSpec, SkillCategory, create_skill_folder,
+        SkillExample, SkillGuideline
+    )
+    
+    skill = self._skills.get(skill_id)
+    if not skill:
+        return None
+    
+    latest = skill.latest_version
+    if not latest:
+        return None
+    
+    category = SkillCategory(skill.metadata.category) if skill.metadata.category else SkillCategory.GENERAL
+    
+    skill_spec = OctopaiSkillSpec(
+        name=skill.metadata.name,
+        description=skill.metadata.description,
+        version=skill.metadata.version,
+        author=skill.metadata.author,
+        license=skill.metadata.license,
+        category=category,
+        tags=skill.metadata.tags,
+        keywords=skill.metadata.keywords,
+        content=latest.content
+    )
+    
+    folder = create_skill_folder(skill_spec, output_path)
+    return folder.folder_path
+
+
+# Attach methods to SkillHub class
+SkillHub.import_skill_from_folder = import_skill_from_folder
+SkillHub.export_skill_to_folder = export_skill_to_folder
