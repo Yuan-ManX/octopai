@@ -1,0 +1,91 @@
+:root {
+  /* ===== Primary Colors (Blue & Black Theme) ===== */
+  --octo-deep-black: #0a0e1a;
+  --octo-dark-surface: #141927;
+  --octo-midnight: #1a2332;
+  --octo-navy: #243447;
+  
+  /* Brand Blue System */
+  --octo-focus-blue: #3898ec;
+  --octo-electric-blue: #2563eb;
+  --octo-cyan-accent: #06b6d4;
+  --octo-azure: #3b82f6;
+  --octo-indigo: #6366f1;
+  
+  /* Light Surface Colors */
+  --octo-pearl: #f8fafc;
+  --octo-frost: #f1f5f9;
+  --octo-mist: #e2e8f0;
+  --octo-cloud: #cbd5e1;
+  
+  /* Text Colors */
+  --octo-text-primary: #0f172a;
+  --octo-text-secondary: #475569;
+  --octo-text-tertiary: #94a3b8;
+  --octo-text-light: #e2e8f0;
+  --octo-text-muted: #64748b;
+  
+  /* Semantic Colors */
+  --octo-success: #10b981;
+  --octo-warning: #f59e0b;
+  --octo-error: #ef4444;
+  --octo-info: #3898ec;
+  
+  /* Border & Ring System */
+  --octo-border-subtle: rgba(148, 163, 184, 0.15);
+  --octo-border-default: rgba(148, 163, 184, 0.25);
+  --octo-border-strong: rgba(148, 163, 184, 0.40);
+  --octo-ring-blue: rgba(56, 152, 236, 0.30);
+  --octo-ring-glow: rgba(56, 152, 236, 0.50);
+  
+  /* Shadow System */
+  --octo-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --octo-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --octo-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --octo-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --octo-shadow-glow: 0 0 20px rgba(56, 152, 236, 0.15), 0 0 40px rgba(56, 152, 236, 0.08);
+  --octo-shadow-ring: 0 0 0 1px var(--octo-border-default);
+  
+  /* Typography Scale */
+  --font-serif: Georgia, 'Times New Roman', Times, serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', system-ui, sans-serif;
+  --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+  
+  /* Spacing Scale (Base: 4px) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+  
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark Mode Overrides */
+[data-theme="dark"] {
+  --octo-text-primary: #f1f5f9;
+  --octo-text-secondary: #cbd5e1;
+  --octo-text-tertiary: #94a3b8;
+  --octo-text-light: #e2e8f0;
+  --octo-border-subtle: rgba(71, 85, 105, 0.25);
+  --octo-border-default: rgba(71, 85, 105, 0.35);
+  --octo-border-strong: rgba(71, 85, 105, 0.50);
+}
