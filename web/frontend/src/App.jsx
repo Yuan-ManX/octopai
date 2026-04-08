@@ -2,6 +2,9 @@ import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
+import Agent from './pages/Agent'
+import SkillsHub from './pages/SkillsHub'
+import Research from './pages/Research'
 import CreateSkill from './pages/CreateSkill'
 import SkillList from './pages/SkillList'
 import SkillDetail from './pages/SkillDetail'
@@ -11,11 +14,14 @@ function App() {
   return (
     <div className="min-h-screen">
       <Navbar />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/agent" element={<Agent />} />
+          <Route path="/skills" element={<SkillsHub />} />
+          <Route path="/research" element={<Research />} />
           <Route path="/create" element={<CreateSkill />} />
-          <Route path="/skills" element={<SkillList />} />
+          <Route path="/skill-list" element={<SkillList />} />
           <Route path="/skills/:skillId" element={<SkillDetail />} />
           <Route path="/docs" element={<Docs />} />
         </Routes>
