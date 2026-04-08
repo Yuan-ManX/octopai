@@ -1,71 +1,93 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
 const Navbar = () => {
   const location = useLocation()
+  const [scrolled, setScrolled] = useState(false)
   
-  const isActive = (path) => location.pathname === path
-  
+  const isActive = (path) => {
+    if (path === '/') return location.pathname === '/'
+    return location.pathname.startsWith(path)
+  }
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20)
+    }
+    
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const navLinks = [
+    { path: '/', label: 'Home' },
+    { path: '/agent', label: 'AI Agent' },
+    { path: '/skills', label: 'Skills Hub' },
+    { path: '/research', label: 'Research' },
+  ]
+
+  const isDarkPage = ['/agent'].includes(location.pathname)
+
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">O</span>
-              </div>
-              <span className="text-xl font-bold text-gray-900">Octopai</span>
+    <nav className={`nav-container ${scrolled ? 'scrolled' : ''}`} style={isDarkPage ? { 
+      background: 'rgba(10, 14, 26, 0.92)', 
+      borderBottomColor: 'var(--octo-navy)' 
+    } : {}}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Link to="/" className="nav-brand" style={isDarkPage ? { color: 'var(--octo-text-light)' } : {}}>
+          <span className="nav-logo-mark">O</span>
+          Octopai
+        </Link>
+
+        <div className="nav-links">
+          {navLinks.map(link => (
+            <Link
+              key={link.path}
+              to={link.path}
+              className="nav-link"
+              style={{
+                color: isDarkPage 
+                  ? (isActive(link.path) ? 'var(--octo-text-light)' : 'var(--octo-text-tertiary)')
+                  : (isActive(link.path) ? 'var(--octo-text-primary)' : ''),
+                fontWeight: isActive(link.path) ? 500 : 400
+              }}
+            >
+              {link.label}
             </Link>
-            <div className="hidden md:ml-10 md:flex md:space-x-1">
-              <Link
-                to="/"
-                className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all ${
-                  isActive('/')
-                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                Home
-              </Link>
-              <Link
-                to="/create"
-                className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all ${
-                  isActive('/create')
-                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                Create Skill
-              </Link>
-              <Link
-                to="/skills"
-                className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all ${
-                  isActive('/skills')
-                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                Skill Library
-              </Link>
-              <Link
-                to="/docs"
-                className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all ${
-                  isActive('/docs')
-                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                Documentation
-              </Link>
-            </div>
-          </div>
-          <div className="flex items-center">
-            <div className="text-sm text-gray-500">
-              <span className="hidden sm:inline font-medium">Everything Can Be a Skill</span>
-            </div>
-          </div>
+          ))}
+          
+          <Link 
+            to="/create" 
+            className="btn-primary" 
+            style={{ 
+              padding: '8px 20px', 
+              fontSize: '0.875rem',
+              boxShadow: scrolled ? 'var(--octo-shadow-glow)' : undefined
+            }}
+          >
+            Create Skill
+          </Link>
         </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          className="md:hidden"
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={isDarkPage ? 'var(--octo-text-light)' : 'var(--octo-text-primary)'} strokeWidth="2">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
       </div>
     </nav>
   )
