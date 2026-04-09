@@ -1,0 +1,9 @@
+{
+  "update_threshold": 0.4,
+  "max_new_skills_per_cycle": 3,
+  "min_success_rate_for_evolution": 0.3,
+  "auto_evolve_enabled": true,
+  "validation_required": true,
+  "max_concurrent_cycles": 2,
+  "risk_acceptance_level": "medium"
+}
