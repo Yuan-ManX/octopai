@@ -14,9 +14,6 @@
   Everything Can Be a Skill • Skills Evolve Through Continuous Learning • Elevating AI Agent Cognition
 </p>
 
-<p align="center">
-  Model(LLM) -> CPU • Agent -> OS • Skills -> Apps
-</p>
 
 <p align="center">
   <a href="https://opensource.org/licenses/MIT">
