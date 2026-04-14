@@ -1,0 +1,682 @@
+@import './octo-style.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== Claude-inspired Reset ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--octo-bg-page);
+  color: var(--octo-text-primary);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: var(--line-relaxed);
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ===== Clean Background - No Vertical Lines! ===== */
+/* Simple, clean background inspired by Claude - just the dark canvas */
+
+/* ===== Stars (Subtle) ===== */
+.stars, .stars2, .stars3 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.stars {
+  background: 
+    radial-gradient(2px 2px at 20px 30px, rgba(250, 249, 245, 0.8), transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(250, 249, 245, 0.6), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(250, 249, 245, 0.9), transparent),
+    radial-gradient(2px 2px at 160px 120px, rgba(250, 249, 245, 0.7), transparent),
+    radial-gradient(1px 1px at 230px 80px, rgba(250, 249, 245, 0.8), transparent),
+    radial-gradient(2px 2px at 300px 150px, rgba(250, 249, 245, 0.6), transparent);
+  background-repeat: repeat;
+  background-size: 350px 200px;
+  animation: twinkle 8s ease-in-out infinite;
+}
+
+.stars2 {
+  background: 
+    radial-gradient(1px 1px at 50px 160px, rgba(217, 119, 87, 0.7), transparent),
+    radial-gradient(1px 1px at 130px 90px, rgba(217, 119, 87, 0.5), transparent),
+    radial-gradient(1px 1px at 200px 180px, rgba(217, 119, 87, 0.8), transparent);
+  background-repeat: repeat;
+  background-size: 280px 250px;
+  animation: twinkle 12s ease-in-out infinite reverse;
+  opacity: 0.6;
+}
+
+.stars3 {
+  background: 
+    radial-gradient(1px 1px at 80px 50px, rgba(56, 152, 236, 0.6), transparent),
+    radial-gradient(1px 1px at 180px 160px, rgba(56, 152, 236, 0.5), transparent);
+  background-repeat: repeat;
+  background-size: 250px 220px;
+  animation: twinkle 10s ease-in-out infinite;
+  opacity: 0.4;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ===== TECH ANIMATIONS ===== */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(56, 152, 236, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 40px rgba(56, 152, 236, 0.6);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes tech-particles {
+  0% { 
+    transform: translateY(100vh) rotate(0deg); 
+    opacity: 0;
+  }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { 
+    transform: translateY(-100vh) rotate(720deg); 
+    opacity: 0;
+  }
+}
+
+.tech-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.tech-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.fade-in-up {
+  animation: fade-in-up 0.8s ease-out forwards;
+}
+
+/* ===== Bubble Particles Background ===== */
+.tech-particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.tech-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--octo-terracotta);
+  border-radius: 50%;
+  animation: tech-particles 15s linear infinite;
+}
+
+/* ===== Animated Gradient Text ===== */
+.gradient-text {
+  background: linear-gradient(90deg, #3898ec, #06b6d4, #6366f1, #3898ec);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 5s ease infinite;
+}
+
+/* ===== Card Hover Enhancements ===== */
+.card {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 60px rgba(56, 152, 236, 0.2);
+  border-color: var(--octo-terracotta);
+}
+
+.skill-card {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.skill-card:hover {
+  transform: translateY(-6px) scale(1.01);
+}
+
+/* ===== Button Enhancements ===== */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+/* ===== Octopus Background Animation ===== */
+.hero-section::after {
+  content: '🐙';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 200px;
+  opacity: 0.03;
+  pointer-events: none;
+  animation: octopus-pulse 6s ease-in-out infinite;
+}
+
+@keyframes octopus-pulse {
+  0%, 100% { 
+    opacity: 0.03;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% { 
+    opacity: 0.06;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+/* ===== NAVIGATION - Claude-inspired ===== */
+.nav-container {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 40px;
+  background: var(--octo-bg-nav);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--octo-border-color);
+}
+
+.nav-brand {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--octo-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.nav-logo-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--octo-terracotta);
+  border-radius: var(--radius-comfortable);
+  color: var(--octo-ivory);
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.nav-links {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
+
+.nav-links a {
+  color: var(--octo-text-secondary);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 400;
+  font-family: var(--font-sans);
+  transition: color var(--transition-base);
+}
+
+.nav-links a:hover {
+  color: var(--octo-text-primary);
+}
+
+/* ===== BUTTONS - Claude-inspired ===== */
+.btn-primary {
+  background: var(--octo-terracotta);
+  color: var(--octo-ivory);
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--radius-generous);
+  font-size: 16px;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  transition: all var(--transition-base);
+  box-shadow: var(--octo-terracotta) 0px 0px 0px 0px, var(--octo-terracotta) 0px 0px 0px 1px;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.05);
+}
+
+.btn-secondary {
+  background: var(--octo-deep-dark);
+  color: var(--octo-warm-silver);
+  padding: 12px 24px;
+  border: 1px solid var(--octo-dark-surface);
+  border-radius: var(--radius-generous);
+  font-size: 16px;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  transition: all var(--transition-base);
+}
+
+.btn-secondary:hover {
+  background: var(--octo-dark-surface);
+}
+
+.btn-warm-sand {
+  background: var(--octo-warm-sand);
+  color: var(--octo-charcoal-warm);
+  padding: 10px 12px 10px 8px;
+  border: none;
+  border-radius: var(--radius-comfortable);
+  font-size: 16px;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  transition: all var(--transition-base);
+  box-shadow: var(--octo-warm-sand) 0px 0px 0px 0px, var(--octo-ring-warm) 0px 0px 0px 1px;
+}
+
+/* ===== HERO SECTION - Claude-inspired ===== */
+.hero-section {
+  position: relative;
+  text-align: center;
+  padding: 120px 40px 100px;
+  overflow: hidden;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background: rgba(201, 100, 66, 0.10);
+  border: 1px solid rgba(201, 100, 66, 0.20);
+  border-radius: 9999px;
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-badge-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--octo-terracotta);
+  border-radius: 50%;
+}
+
+.hero-badge span {
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  color: var(--octo-coral);
+}
+
+.hero-section h1 {
+  font-family: var(--font-serif);
+  font-size: var(--text-display);
+  font-weight: 500;
+  line-height: var(--line-tight);
+  letter-spacing: normal;
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 1;
+  color: var(--octo-text-primary);
+}
+
+.hero-section h1 span {
+  color: var(--octo-coral);
+}
+
+.hero-section p {
+  color: var(--octo-text-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--text-body-large);
+  line-height: var(--line-relaxed);
+  margin-bottom: 40px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== SECTIONS ===== */
+.section-container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 80px var(--container-padding);
+  position: relative;
+  z-index: 1;
+}
+
+.section-label {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  color: var(--octo-accent-color);
+  margin-bottom: 12px;
+}
+
+.section-heading {
+  font-family: var(--font-serif);
+  font-size: var(--text-heading-2);
+  font-weight: 500;
+  line-height: var(--line-comfortable);
+  letter-spacing: normal;
+  margin-bottom: 48px;
+  color: var(--octo-text-primary);
+}
+
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--octo-border-subtle);
+  margin: 0 40px;
+  max-width: var(--container-max);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ===== CARDS - Claude-inspired ===== */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.card {
+  background: var(--octo-bg-card);
+  border-radius: var(--radius-generous);
+  padding: 28px;
+  border: 1px solid var(--octo-border-color);
+  transition: all var(--transition-base);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-whisper-dark);
+  transform: translateY(-2px);
+}
+
+.card-standard {
+  border: 1px solid var(--octo-border-color);
+}
+
+.card-whisper {
+  border: 1px solid var(--octo-border-color);
+  box-shadow: var(--shadow-whisper-dark);
+}
+
+.card-ring {
+  border: none;
+  box-shadow: var(--shadow-ring) var(--octo-charcoal-warm);
+}
+
+.card-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.55px;
+  color: var(--octo-coral);
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.card h3 {
+  font-family: var(--font-serif);
+  font-size: 25px;
+  font-weight: 500;
+  line-height: var(--line-comfortable);
+  margin-bottom: 12px;
+  color: var(--octo-text-primary);
+}
+
+.card p {
+  color: var(--octo-text-secondary);
+  font-size: 15px;
+  line-height: var(--line-relaxed);
+}
+
+/* ===== DARK SECTION - Claude-inspired ===== */
+.dark-section {
+  background: var(--octo-near-black);
+  color: var(--octo-text-primary);
+  position: relative;
+}
+
+.dark-section .section-heading,
+.dark-section h1, .dark-section h2, .dark-section h3,
+.dark-section h4, .dark-section h5, .dark-section h6 {
+  color: var(--octo-text-primary);
+}
+
+.dark-section p {
+  color: var(--octo-text-secondary);
+}
+
+/* ===== FEATURE ICON ===== */
+.feature-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: rgba(201, 100, 66, 0.12);
+  border: 1px solid rgba(201, 100, 66, 0.30);
+  border-radius: var(--radius-comfortable);
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+/* ===== STAT VALUES ===== */
+.stat-value {
+  font-family: var(--font-serif);
+  font-size: 3.5rem;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--octo-terracotta);
+}
+
+.stat-label {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--octo-text-secondary);
+  margin-top: 8px;
+}
+
+/* ===== Skills Grid - ClawHub inspired ===== */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.skill-card {
+  background: var(--octo-bg-card);
+  border: 1px solid var(--octo-border-color);
+  border-radius: var(--radius-generous);
+  padding: 24px;
+  transition: all var(--transition-base);
+}
+
+.skill-card:hover {
+  border-color: var(--octo-coral);
+  box-shadow: var(--shadow-whisper-dark);
+}
+
+.skill-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.skill-card-icon {
+  width: 40px;
+  height: 40px;
+  background: rgba(201, 100, 66, 0.12);
+  border-radius: var(--radius-comfortable);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.skill-badge {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+
+.card-title {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: var(--line-comfortable);
+  margin-bottom: 8px;
+  color: var(--octo-text-primary);
+}
+
+.card-description {
+  color: var(--octo-text-secondary);
+  font-size: 14px;
+  line-height: var(--line-relaxed);
+}
+
+/* ===== Input Fields ===== */
+.input-field {
+  width: 100%;
+  background: var(--octo-bg-card);
+  color: var(--octo-text-primary);
+  padding: 12px 16px;
+  border: 1px solid var(--octo-border-color);
+  border-radius: var(--radius-generous);
+  font-size: 16px;
+  font-family: var(--font-sans);
+  outline: none;
+  transition: all var(--transition-base);
+}
+
+.input-field:focus {
+  border-color: var(--octo-focus-blue);
+  box-shadow: 0 0 0 2px rgba(56, 152, 236, 0.2);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .nav-container {
+    padding: 12px 20px;
+  }
+  
+  .nav-links a:not(.btn-primary) {
+    display: none;
+  }
+  
+  .hero-section {
+    padding: 80px 20px 60px;
+  }
+  
+  .section-container {
+    padding: 60px var(--container-padding-mobile);
+  }
+  
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .hero-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .section-divider {
+    margin: 0 20px;
+  }
+}

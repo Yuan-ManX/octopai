@@ -1,0 +1,179 @@
+/* ====================================================
+   DESIGN TOKENS - Claude-inspired with Octopai flair
+   ==================================================== */
+
+:root {
+  /* ================================================
+     PRIMARY BRAND COLORS (Octopai Blue Theme)
+     ================================================ */
+  --octo-near-black: #141413;
+  --octo-terracotta: #3898ec;
+  --octo-coral: #06b6d4;
+  
+  /* ================================================
+     SECONDARY & ACCENT COLORS
+     ================================================ */
+  --octo-error: #b53333;
+  --octo-focus-blue: #3898ec;
+  
+  /* ================================================
+     SURFACE & BACKGROUND COLORS
+     ================================================ */
+  --octo-parchment: #f5f4ed;
+  --octo-ivory: #faf9f5;
+  --octo-white: #ffffff;
+  --octo-warm-sand: #e8e6dc;
+  --octo-dark-surface: #30302e;
+  --octo-deep-dark: #141413;
+  
+  /* ================================================
+     NEUTRALS & TEXT COLORS
+     ================================================ */
+  --octo-charcoal-warm: #4d4c48;
+  --octo-olive-gray: #5e5d59;
+  --octo-stone-gray: #87867f;
+  --octo-dark-warm: #3d3d3a;
+  --octo-warm-silver: #b0aea5;
+  
+  /* ================================================
+     BORDERS & RINGS
+     ================================================ */
+  --octo-border-cream: #f0eee6;
+  --octo-border-warm: #e8e6dc;
+  --octo-border-dark: #30302e;
+  --octo-ring-warm: #d1cfc5;
+  --octo-ring-deep: #c2c0b6;
+  
+  /* ================================================
+     OCTOPAI SIGNATURE COLORS (Blue-Black theme)
+     ================================================ */
+  --octo-electric-blue: #3898ec;
+  --octo-cyan-accent: #06b6d4;
+  --octo-indigo-accent: #6366f1;
+  --octo-deep-space: #0a0e1a;
+  --octo-cosmic-navy: #0f172a;
+  
+  /* ================================================
+     TYPOGRAPHY
+     ================================================ */
+  --font-serif: Georgia, 'Times New Roman', Times, serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+  
+  /* ================================================
+     TYPOGRAPHY SCALE
+     ================================================ */
+  --text-display: clamp(2.5rem, 5vw, 4rem);
+  --text-heading-1: clamp(2rem, 4vw, 3.25rem);
+  --text-heading-2: clamp(1.5rem, 3vw, 2.3rem);
+  --text-heading-3: clamp(1.25rem, 2.5vw, 2rem);
+  --text-heading-4: clamp(1.1rem, 2vw, 1.6rem);
+  --text-body-large: 1.25rem;
+  --text-body: 1rem;
+  --text-body-small: 0.9375rem;
+  --text-caption: 0.875rem;
+  --text-label: 0.75rem;
+  --text-micro: 0.6rem;
+  
+  /* ================================================
+     LINE HEIGHTS
+     ================================================ */
+  --line-tight: 1.10;
+  --line-comfortable: 1.20;
+  --line-relaxed: 1.60;
+  
+  /* ================================================
+     BORDER RADIUS SCALE
+     ================================================ */
+  --radius-sharp: 4px;
+  --radius-subtle: 6px;
+  --radius-comfortable: 8px;
+  --radius-generous: 12px;
+  --radius-very: 16px;
+  --radius-highly: 24px;
+  --radius-max: 32px;
+  
+  /* ================================================
+     SPACING SCALE (8px base)
+     ================================================ */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  
+  /* ================================================
+     SHADOWS & ELEVATION
+     ================================================ */
+  --shadow-none: none;
+  --shadow-ring: 0px 0px 0px 1px;
+  --shadow-whisper: rgba(0, 0, 0, 0.05) 0px 4px 24px;
+  --shadow-whisper-dark: rgba(0, 0, 0, 0.20) 0px 4px 24px;
+  --shadow-inset: inset 0px 0px 0px 1px rgba(255, 255, 255, 0.10);
+  
+  /* ================================================
+     TRANSITIONS
+     ================================================ */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
+  
+  /* ================================================
+     DARK MODE THEME (Primary for Octopai)
+     ================================================ */
+  --octo-bg-page: #141413;
+  --octo-bg-card: #30302e;
+  --octo-bg-nav: rgba(20, 20, 19, 0.92);
+  --octo-text-primary: #faf9f5;
+  --octo-text-secondary: #87867f;
+  --octo-text-tertiary: #b0aea5;
+  --octo-border-color: #30302e;
+  --octo-border-subtle: #30302e;
+  --octo-accent-color: #3898ec;
+  
+  /* ================================================
+     CONTAINER & LAYOUT
+     ================================================ */
+  --container-max: 1200px;
+  --container-padding: 40px;
+  --container-padding-mobile: 20px;
+  
+  /* ================================================
+     Z-INDEX SCALE
+     ================================================ */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-popover: 600;
+  --z-tooltip: 700;
+}
+
+/* ================================================
+   RESPONSIVE BREAKPOINTS
+   ================================================ */
+@media (max-width: 479px) {
+  :root {
+    --container-padding: var(--container-padding-mobile);
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --text-display: clamp(1.75rem, 6vw, 2.25rem);
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --text-display: clamp(2rem, 5vw, 2.5rem);
+  }
+}
