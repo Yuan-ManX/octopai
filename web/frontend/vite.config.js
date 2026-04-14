@@ -7,7 +7,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
-    base: './',
+    base: isProduction ? '/octopai/' : './',
     server: {
       port: 8081,
       proxy: {
