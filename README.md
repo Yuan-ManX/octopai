@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  Everything Can Be a Skill • Skills Evolve Through Continuous Learning • Elevating AI Agent Cognition
+  An AI Agent Platform featuring Skill Creator Studio, Evolution Workbench, Skills Hub, OctoTrace, AI Wiki, and AutoResearch — empowering AI agents to learn, adapt, evolve, and accumulate knowledge continuously.
 </p>
 
 
