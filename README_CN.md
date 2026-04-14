@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  AI Agent平台，包含Skill创建工作室、进化工作台、Skills中心、OctoTrace、AI Wiki和AutoResearch —— 使人工智能代理能够不断学习、适应、进化和积累知识。
+  AI Agent平台，包含Skill创建工作室、Evolution工作台、Skills中心、OctoTrace、AI Wiki和AutoResearch —— 使人工智能代理能够不断学习、适应、进化和积累知识。
 </p>
 
 <p align="center">
