@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  万物皆可为Skill • Skill在学习中不断自我进化 • 提升AI Agent认知能力
+  AI Agent平台，包含Skill创建工作室、进化工作台、Skills中心、OctoTrace、AI Wiki和AutoResearch —— 使人工智能代理能够不断学习、适应、进化和积累知识。
 </p>
 
 <p align="center">
