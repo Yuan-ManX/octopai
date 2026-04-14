@@ -621,7 +621,7 @@ const Home = () => {
         <div className="section-container">
           <div className="section-label">{t.autoResearch}</div>
           <h2 className="section-heading">{t.autonomousResearch}</h2>
-          <p style={{ color: 'var(--octo-text-secondary)', marginBottom: '48px', fontSize: '1.125rem', maxWidth: '700px' }}>
+          <p style={{ color: 'var(--octo-text-secondary)', marginBottom: '48px', fontSize: '1.125rem', maxWidth: '800px', textAlign: 'center' }}>
             {t.autoResearchDescription}
           </p>
           
