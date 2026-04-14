@@ -155,7 +155,7 @@ const Research = () => {
 
   return (
     <div className="min-h-screen py-8">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-10">
         {/* Header */}
         <div className="mb-12">
           <div className="flex items-center justify-between">
