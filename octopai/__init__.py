@@ -1,368 +1,179 @@
 """
 Octopai - Explore, Extend, Evolve AI Agent Cognition
 
-Octopai is a revolutionary AI Agent Skills Exploration, Extension, and Evolution Framework
-built on a powerful core principle: Everything Can Be a Skill.
-
-Through intelligent learning and continuous self-evolution, Skills grow and improve
-over time, significantly enhancing the cognitive capabilities of AI Agents.
-
-Key Principles:
-- Everything Can Be a Skill
-- Skills Evolve Through Continuous Learning
-- Elevate AI Agent Cognition
+Comprehensive AI Agent platform with modular architecture:
+- agents: Self-evolving AI agent system
+- skills: Skill creation, management, and marketplace
+  - creator: Multi-format skill generation (text/code/media/PPT)
+  - hub: GitHub-like repository system (public/private)
+- tools: Execution and orchestration
+- data: Data acquisition and processing
+- memory: Experience and memory management
+- evolution: Advanced self-evolution engines
+  - evolution_engine: Core evolution loop with frontier management
+  - mutator: Skill mutation and variation generation
+  - evaluator: Performance evaluation and scoring
+  - feedback: Feedback history tracking
+  - version_control: Checkpointing and rollback support
+- tracing: Visual tracing and monitoring (OctoTrace)
+  - tracer: OpenTelemetry-compatible tracing interface
+  - storage: Multiple backends (in-memory, file, database)
+  - visualizer: Tree/timeline visualization data
+  - analytics: Performance and cost analysis
 """
 
-__version__ = "0.1.0"
-__author__ = "Octopai Team"
+# Core Agents Module
+from octopai.agents import (
+    AgentInstance, AgentConfig, EvolvableSkill, EvolutionRun,
+    TaskExecution, AgentStatus, EvolutionPhase, SkillType,
+    EvolutionStrategy, FeedbackType, FeedbackSignal,
+    SkillTemplate, EvolutionConfig,
+    EvolutionEngineManager
+)
 
-from octopai.core.converter import URLConverter
-from octopai.core.resource_parser import (
-    ResourceParser,
-    parse_resource,
-    parse_to_skill_resource,
-    ParsedResource,
-    ResourceType
+# Skills Module
+from octopai.skills import (
+    SkillRegistry, RegistrySkillMetadata, SkillRegistryStatus,
+    SkillFactory, SkillDefinition, SkillMetadata, SkillVersion,
+    SkillHub, Skill,
+    SkillBank, BankedSkill, SkillPrinciple, CommonMistake, BankSkillType,
+    SkillPackager, PackageConfig,
+    SkillSpec,
+    SkillTemplate, TemplateLibrary
 )
-from octopai.core.skill_factory import (
-    SkillFactory,
-    SkillDefinition,
-    SkillMetadata,
-    SkillVersion,
-    SkillType,
-    SkillQualityLevel,
-    SkillQualityMetrics,
-    SkillQualityEvaluator,
-    SkillOptimizer,
-    SkillTemplate,
-    SkillInteractionPrototype,
-    EnhancedQualityEvaluator,
-    create_skill_with_template,
-    generate_skill_prototype
+
+# Tools Module
+from octopai.tools import (
+    SandboxExecutor, SandboxSession, SandboxConfig, ExecutionResult, SandboxMode, ExecutionStatus,
+    WorkflowEngine, WorkflowDefinition, WorkflowStep, WorkflowStepStatus,
+    SubtaskOrchestrator, Subtask, SubtaskGroup, SubtaskStatus,
+    OctopaiPipeline
 )
-from octopai.core.evolution_engine import (
-    EvolutionEngine,
-    EvolutionConfig,
-    EvolutionObjective,
-    EvolutionCandidate,
-    EvolutionTrace,
-    ActionableSideInfo,
-    GoalPriority,
-    EvolutionGoal,
-    CurriculumLevel,
-    SelfVerificationResult,
-    MetaCognitiveReflection,
-    KnowledgeChunk
+
+# Data Module
+from octopai.data import (
+    WebCrawler,
+    ResourceParser, ParsedResource, ResourceType, parse_resource, parse_to_skill_resource,
+    URLConverter
 )
-from octopai.core.skill_packager import (
-    SkillPackager,
-    PackageConfig
+
+# Memory Module
+from octopai.memory import (
+    ExperienceTracker, InteractionRecord, SkillExperience,
+    ExperienceDistiller, Trajectory, TrajectoryStep, TrajectoryType, ExtractedPattern, FailureLesson,
+    PersistentMemory, UserProfile, MemoryFact, UserPreference, ConversationSummary
 )
-from octopai.core.skill_hub import (
-    SkillHub,
-    Skill,
-    SkillStatus,
-    SkillVisibility,
-    SkillDependency,
-    SkillRating,
-    SkillCollection,
-    ContextSlot,
-    ContextComposition,
-    VersionDiff,
-    SearchIndex
+
+# Evolution Module (Enhanced with Feedback Descent)
+from octopai.evolution import (
+    SkillEvolutionEngine, EvolutionConfig as SelfEvolutionConfig,
+    EvolutionMode, SelectionStrategy, LoopResult,
+    FrontierManager, SkillEvaluator, EvalResult,
+    SkillMutator, MutationProposal, FeedbackHistory, FeedbackEntry,
+    VersionManager,
+    FeedbackDescentOptimizer, ComparisonResult, FDFeedbackRecord,
+    Proposal, OptimizationState, create_default_proposer,
 )
-from octopai.core.experience_tracker import (
-    ExperienceTracker,
-    InteractionRecord,
-    SkillExperience,
-    InteractionType,
-    InteractionOutcome,
-    PatternType,
-    ExperiencePattern,
-    TransferableKnowledge,
-    MemoryConsolidation,
-    TemporalTrend
+
+# Skills Creator Module
+from octopai.skills.creator import (
+    SkillCreator, TextParser, CodeParser, DocumentParser,
+    MediaParser, PresentationParser, TemplateParser,
+    SkillGenerator, SkillValidator,
+    SkillCreationRequest, SkillSource, SourceType,
+    GeneratedSkill, CreationResult,
+    IntelligentAnalyzer, ContentAnalysis, ContentType,
 )
-from octopai.core.pipeline import (
-    OctopaiPipeline,
-    PipelineConfig,
-    PipelineResult,
-    PipelineStage
+
+# Skills Hub Module (Repository System - v4.0)
+from octopai.skills.hub_pkg import (
+    SkillRepository, RepositoryVisibility, RepositoryStatus,
+    HubManager, PublishRequest, SearchResult, HubStatistics,
+    PermissionManager, Role, Permission,
+    MarketplaceManager, Rating, Review,
+    CollaborationManager, PullRequest, Issue, Comment,
+    ActivityItem, ReviewRequest, PRStatus, IssueType, IssueStatus,
 )
-from octopai.core.skill_bank import (
-    SkillBank,
-    BankedSkill,
-    SkillPrinciple,
-    CommonMistake,
-    SkillType as BankSkillType
+
+# Tracing Module (OctoTrace with Cost Tracking)
+from octopai.tracing import (
+    OctoTracer, TracerConfig, SpanKind, SpanStatus,
+    Trace, Span, Session, TraceEvent,
+    TraceListResult, TraceDetailResult,
+    TraceStorage, InMemoryStorage, FileStorage,
+    OtelTransformer, TraceVisualizer, VisualizationConfig,
+    TraceAnalytics, AnalyticsReport,
+    CostTracker, ModelPricing, TokenUsage,
+    CostRecord, BudgetConfig,
 )
-from octopai.core.experience_distiller import (
-    ExperienceDistiller,
-    Trajectory,
-    TrajectoryStep,
-    TrajectoryType,
-    ExtractedPattern,
-    FailureLesson
-)
-from octopai.core.recursive_evolution import (
-    RecursiveEvolutionEngine,
-    EvolutionCycle,
-    EvolutionTrigger,
-    EvolutionStatus,
-    EvolutionConfig,
-    EvolutionProposal,
-    ValidationResult
-)
-from octopai.core.skill_registry import (
-    SkillRegistry,
-    RegistrySkillMetadata,
-    SkillRegistryStatus,
-    RedirectType,
-    SkillComment,
-    SkillStar,
-    SkillRedirect,
-    SkillInstallRecord
-)
-from octopai.core.workflow_engine import (
-    WorkflowEngine,
-    WorkflowDefinition,
-    WorkflowStep,
-    WorkflowStepStatus
-)
-from octopai.core.subtask_orchestrator import (
-    SubtaskOrchestrator,
-    Subtask,
-    SubtaskGroup,
-    SubtaskStatus
-)
-from octopai.core.persistent_memory import (
-    PersistentMemory,
-    UserProfile,
-    MemoryFact,
-    UserPreference,
-    ConversationSummary
-)
-from octopai.core.sandbox_executor import (
-    SandboxExecutor,
-    SandboxSession,
-    SandboxConfig,
-    ExecutionResult,
-    SandboxMode,
-    ExecutionStatus
-)
-from octopai.core.skill_spec import (
-    SkillTriggerType,
-    SkillCategory,
-    SkillDependency,
-    SkillResource,
-    SkillScript,
-    SkillExample,
-    SkillGuideline,
-    SkillTrigger,
-    OctopaiSkillSpec,
-    SkillFolder,
-    create_skill_folder
-)
-from octopai.core.skill_hub import (
-    PluginMarketplace
-)
-from octopai.core.document_skills import (
-    DocumentFormat,
-    DocumentMetadata,
-    ExtractedText,
-    FormField,
-    TableData,
-    PDFSkill,
-    DOCXSkill,
-    XLSXSkill,
-    PPTXSkill,
-    DocumentSkillFactory
-)
-from octopai.core.skill_templates import (
-    TemplateCategory,
-    SkillTemplate,
-    SkillTemplateLibrary
-)
-from octopai.api import (
-    Octopai,
-    create_from_url,
-    create_from_files,
-    create_from_prompt,
-    optimize_skill,
-    convert,
-    parse,
-    hub_get,
-    hub_search,
-    hub_list,
-    hub_stats,
-    hub_update_metadata,
-    hub_create_collection,
-    hub_add_to_collection,
-    hub_remove_from_collection,
-    hub_get_collection,
-    hub_list_collections,
-    hub_delete_collection,
-    hub_add_rating,
-    hub_get_ratings,
-    hub_compute_diff,
-    hub_rollback,
-    hub_publish,
-    hub_deprecate,
-    hub_archive,
-    hub_create_composition,
-    hub_add_slot,
-    hub_bind_skill,
-    hub_get_composition,
-    hub_list_compositions,
-    hub_delete_composition,
-    hub_semantic_search,
-    get_insights
-)
+
+__version__ = "4.0.0"
 
 __all__ = [
-    "URLConverter",
-    "ResourceParser",
-    "parse_resource",
-    "parse_to_skill_resource",
-    "ParsedResource",
-    "ResourceType",
-    "SkillFactory",
-    "SkillDefinition",
-    "SkillMetadata",
-    "SkillVersion",
-    "SkillType",
-    "SkillQualityLevel",
-    "SkillQualityMetrics",
-    "SkillQualityEvaluator",
-    "SkillOptimizer",
-    "SkillTemplate",
-    "SkillInteractionPrototype",
-    "EnhancedQualityEvaluator",
-    "create_skill_with_template",
-    "generate_skill_prototype",
-    "EvolutionEngine",
-    "EvolutionConfig",
-    "EvolutionObjective",
-    "EvolutionCandidate",
-    "EvolutionTrace",
-    "ActionableSideInfo",
-    "GoalPriority",
-    "EvolutionGoal",
-    "CurriculumLevel",
-    "SelfVerificationResult",
-    "MetaCognitiveReflection",
-    "KnowledgeChunk",
-    "SkillPackager",
-    "PackageConfig",
-    "SkillHub",
-    "Skill",
-    "SkillStatus",
-    "SkillVisibility",
-    "SkillDependency",
-    "SkillRating",
-    "SkillCollection",
-    "ContextSlot",
-    "ContextComposition",
-    "VersionDiff",
-    "SearchIndex",
-    "ExperienceTracker",
-    "InteractionRecord",
-    "SkillExperience",
-    "InteractionType",
-    "InteractionOutcome",
-    "PatternType",
-    "ExperiencePattern",
-    "TransferableKnowledge",
-    "MemoryConsolidation",
-    "TemporalTrend",
-    "OctopaiPipeline",
-    "PipelineConfig",
-    "PipelineResult",
-    "PipelineStage",
-    "Octopai",
-    "create_from_url",
-    "create_from_files",
-    "create_from_prompt",
-    "optimize_skill",
-    "convert",
-    "parse",
-    "hub_get",
-    "hub_search",
-    "hub_list",
-    "hub_stats",
-    "hub_update_metadata",
-    "hub_create_collection",
-    "hub_add_to_collection",
-    "hub_remove_from_collection",
-    "hub_get_collection",
-    "hub_list_collections",
-    "hub_delete_collection",
-    "hub_add_rating",
-    "hub_get_ratings",
-    "hub_compute_diff",
-    "hub_rollback",
-    "hub_publish",
-    "hub_deprecate",
-    "hub_archive",
-    "hub_create_composition",
-    "hub_add_slot",
-    "hub_bind_skill",
-    "hub_get_composition",
-    "hub_list_compositions",
-    "hub_delete_composition",
-    "hub_semantic_search",
-    "get_insights",
-    "SkillRegistry",
-    "RegistrySkillMetadata",
-    "SkillRegistryStatus",
-    "RedirectType",
-    "SkillComment",
-    "SkillStar",
-    "SkillRedirect",
-    "SkillInstallRecord",
-    "WorkflowEngine",
-    "WorkflowDefinition",
-    "WorkflowStep",
-    "WorkflowStepStatus",
-    "SubtaskOrchestrator",
-    "Subtask",
-    "SubtaskGroup",
-    "SubtaskStatus",
-    "PersistentMemory",
-    "UserProfile",
-    "MemoryFact",
-    "UserPreference",
-    "ConversationSummary",
-    "SandboxExecutor",
-    "SandboxSession",
-    "SandboxConfig",
-    "ExecutionResult",
-    "SandboxMode",
-    "ExecutionStatus",
-    "SkillTriggerType",
-    "SkillCategory",
-    "SkillResource",
-    "SkillScript",
-    "SkillExample",
-    "SkillGuideline",
-    "SkillTrigger",
-    "OctopaiSkillSpec",
-    "SkillFolder",
-    "create_skill_folder",
-    "PluginMarketplace",
-    "DocumentFormat",
-    "DocumentMetadata",
-    "ExtractedText",
-    "FormField",
-    "TableData",
-    "PDFSkill",
-    "DOCXSkill",
-    "XLSXSkill",
-    "PPTXSkill",
-    "DocumentSkillFactory",
-    "TemplateCategory",
-    "SkillTemplate",
-    "SkillTemplateLibrary",
-    "__version__",
-    "__author__",
+    # Agents
+    'AgentInstance', 'AgentConfig', 'EvolvableSkill', 'EvolutionRun',
+    'TaskExecution', 'AgentStatus', 'EvolutionPhase', 'SkillType',
+    'EvolutionStrategy', 'FeedbackType', 'FeedbackSignal',
+    'SkillTemplate', 'EvolutionConfig',
+    'EvolutionEngineManager',
+
+    # Skills (Original)
+    'SkillRegistry', 'RegistrySkillMetadata', 'SkillRegistryStatus',
+    'SkillFactory', 'SkillDefinition', 'SkillMetadata', 'SkillVersion',
+    'SkillHub', 'Skill',
+    'SkillBank', 'BankedSkill', 'SkillPrinciple', 'CommonMistake', 'BankSkillType',
+    'SkillPackager', 'PackageConfig',
+    'SkillSpec',
+    'SkillTemplate', 'TemplateLibrary',
+
+    # Skills Creator (NEW)
+    'SkillCreator', 'TextParser', 'CodeParser', 'DocumentParser',
+    'MediaParser', 'PresentationParser', 'TemplateParser',
+    'SkillGenerator', 'SkillValidator',
+    'SkillCreationRequest', 'SkillSource', 'SourceType',
+    'GeneratedSkill', 'CreationResult',
+    'IntelligentAnalyzer', 'ContentAnalysis', 'ContentType',
+
+    # Skills Hub (NEW - with Collaboration)
+    'SkillRepository', 'RepositoryVisibility', 'RepositoryStatus',
+    'HubManager', 'PublishRequest', 'SearchResult', 'HubStatistics',
+    'PermissionManager', 'Role', 'Permission',
+    'MarketplaceManager', 'Rating', 'Review',
+    'CollaborationManager', 'PullRequest', 'Issue', 'Comment',
+    'ActivityItem', 'ReviewRequest', 'PRStatus', 'IssueType', 'IssueStatus',
+
+    # Tools
+    'SandboxExecutor', 'SandboxSession', 'SandboxConfig', 'ExecutionResult', 'SandboxMode', 'ExecutionStatus',
+    'WorkflowEngine', 'WorkflowDefinition', 'WorkflowStep', 'WorkflowStepStatus',
+    'SubtaskOrchestrator', 'Subtask', 'SubtaskGroup', 'SubtaskStatus',
+    'OctopaiPipeline',
+
+    # Data
+    'WebCrawler',
+    'ResourceParser', 'ParsedResource', 'ResourceType', 'parse_resource', 'parse_to_skill_resource',
+    'URLConverter',
+
+    # Memory
+    'ExperienceTracker', 'InteractionRecord', 'SkillExperience',
+    'ExperienceDistiller', 'Trajectory', 'TrajectoryStep', 'TrajectoryType', 'ExtractedPattern', 'FailureLesson',
+    'PersistentMemory', 'UserProfile', 'MemoryFact', 'UserPreference', 'ConversationSummary',
+
+    # Evolution (Enhanced - with Feedback Descent)
+    'SkillEvolutionEngine', 'SelfEvolutionConfig',
+    'EvolutionMode', 'SelectionStrategy', 'LoopResult',
+    'FrontierManager', 'SkillEvaluator', 'EvalResult',
+    'SkillMutator', 'MutationProposal', 'FeedbackHistory', 'FeedbackEntry',
+    'VersionManager',
+    'FeedbackDescentOptimizer', 'ComparisonResult', 'FDFeedbackRecord',
+    'Proposal', 'OptimizationState', 'create_default_proposer',
+
+    # Tracing (OctoTrace with Cost Tracking)
+    'OctoTracer', 'TracerConfig', 'SpanKind', 'SpanStatus',
+    'Trace', 'Span', 'Session', 'TraceEvent',
+    'TraceListResult', 'TraceDetailResult',
+    'TraceStorage', 'InMemoryStorage', 'FileStorage',
+    'OtelTransformer', 'TraceVisualizer', 'VisualizationConfig',
+    'TraceAnalytics', 'AnalyticsReport',
+    'CostTracker', 'ModelPricing', 'TokenUsage',
+    'CostRecord', 'BudgetConfig',
 ]
