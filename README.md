@@ -89,7 +89,7 @@ Advanced evolution engine with comprehensive capabilities:
 - **Meta-Cognition**: Reflective learning and adaptive strategies
 - **Adaptive Mutation**: Exploratory, refinement, and reflective mutation strategies
 
-### 📋 OCTOPAI Skill Specification - Standardized Skill Format
+### 📋 Skill Specification - Standardized Skill Format
 Defines a powerful, standardized format for skill creation and sharing:
 - **OCTOPAI.md Format**: YAML frontmatter + Markdown content for comprehensive skill definition
 - **Folder-Based Skills**: Support for skill folders with resources/, scripts/, and assets/ subdirectories
