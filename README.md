@@ -743,5 +743,3 @@ If you like this project, please ⭐ star the repo. Your support helps us grow!
 - **Issues**: [GitHub Issues](https://github.com/Yuan-ManX/octopai/issues)
 - **Documentation**: [docs/](./docs/README.md)
 
-
-**Octopai** - Empowering AI Agents to Explore, Extend, and Evolve their cognitive capabilities.
