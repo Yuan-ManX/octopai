@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  An AI Agent Platform featuring Skill Creator, Evolution Workbench, Skills Hub, OctoTrace, Skill Wiki, and AutoSkill — empowering AI agents to learn, adapt, evolve, and accumulate knowledge continuously.
+  An AI Agent Platform featuring Skill Creator, Skill Evolution, Skills Hub, OctoTrace, Skill Wiki, and AutoSkill — empowering AI agents to learn, adapt, evolve, and accumulate knowledge continuously.
 </p>
 
 
