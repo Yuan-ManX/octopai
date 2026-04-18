@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  AI Agent Skill平台，包含Skill创建、Skill进化、Skills中心、OctoTrace、Skill Wiki和AutoRSkill —— 使AI Agent能够不断学习、适应、进化和积累知识。
+  AI Agent Skill平台，包含Skill创建、Skill进化、Skills中心、OctoTrace、Skill Wiki和AutoSkill —— 使AI Agent能够不断学习、适应、进化和积累知识。
 </p>
 
 <p align="center">
