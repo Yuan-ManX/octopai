@@ -8,11 +8,11 @@
 </p>
 
 <p align="center">
-  <strong>AI Agent 探索、扩展、进化智能引擎 🚀</strong>
+  <strong>AI Agent 探索、扩展、进化技能引擎 🚀</strong>
 </p>
 
 <p align="center">
-  AI Agent平台，包含Skill创建工作室、Evolution工作台、Skills中心、OctoTrace、AI Wiki和AutoResearch —— 使AI Agent能够不断学习、适应、进化和积累知识。
+  AI Agent Skill平台，包含Skill创建、Skill进化、Skills中心、OctoTrace、Skill Wiki和AutoRSkill —— 使AI Agent能够不断学习、适应、进化和积累知识。
 </p>
 
 <p align="center">
