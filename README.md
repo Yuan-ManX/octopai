@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <strong>The Infinite Evolution Intelligence Engine for AI Agents.</strong>
+  <strong>The Infinite Evolution Skill Engine for AI Agents.</strong>
 </p>
 
 <p align="center">
