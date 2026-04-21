@@ -167,7 +167,7 @@ const Research = () => {
               </div>
               <div className="min-w-0 flex-1">
                 <h1 className="text-5xl font-black bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-700 dark:from-blue-400 dark:via-cyan-300 dark:to-blue-400 bg-clip-text text-transparent mb-3 tracking-wide drop-shadow-xl filter leading-snug">
-                  AutoResearch Workbench
+                  AutoSkill
                 </h1>
                 <p className="text-gray-700 dark:text-gray-300 text-base leading-relaxed font-medium max-w-2xl opacity-90">
                   Autonomous Scientific Discovery & Experimentation Platform — AI agents conduct research, run experiments, and evolve approaches autonomously

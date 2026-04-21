@@ -4,15 +4,15 @@ import { Link } from 'react-router-dom'
 const translations = {
   en: {
     heroSubtitle: 'The Infinite Evolution Intelligence Engine for AI Agents',
-    heroDescription: 'An AI Agent Platform featuring Skill Creator Studio, Evolution Workbench, Skills Hub, OctoTrace, AI Wiki, and AutoResearch — empowering AI agents to learn, adapt, evolve, and accumulate knowledge continuously.',
+    heroDescription: 'An AI Agent Platform featuring Skill Creator, Skill Evolution, Skills Hub, OctoTrace, Skill Wiki, and AutoSkill — empowering AI agents to learn, adapt, evolve, and accumulate knowledge continuously.',
     launchAgent: 'Launch Agent',
     coreCapabilities: 'Core Capabilities',
     sixPillars: 'Six Pillars of Intelligence',
     skillCreator: 'Skill Creator',
-    skillCreatorTitle: 'Skill Creator Studio',
+    skillCreatorTitle: 'Skill Creator',
     skillCreatorDesc: 'Transform any content into AI agent skills — code, documents, media, APIs, or natural language descriptions. Intelligent analysis with automatic quality scoring.',
     evolution: 'Evolution',
-    evolutionTitle: 'Evolution Workbench',
+    evolutionTitle: 'Skill Evolution',
     evolutionDesc: 'Advanced self-evolution engine with Feedback Descent algorithm. Optimize skills through pairwise comparison, frontier management, and continuous improvement.',
     skillsHub: 'Skills Hub',
     skillsHubTitle: 'Skills Hub',
@@ -20,11 +20,11 @@ const translations = {
     octoTrace: 'OctoTrace',
     octoTraceTitle: 'OctoTrace Dashboard',
     octoTraceDesc: 'Real-time visualization tracking for all AI operations. Span tree view, cost analytics, budget monitoring, token usage tracking across all modules.',
-    autoResearch: 'AutoResearch',
-    autoResearchTitle: 'AutoResearch',
-    autoResearchDesc: 'Autonomous AI research system that experiments iteratively. Let AI agents conduct research while you sleep — modifying code, training models, evaluating results, and evolving approaches.',
-    aiWiki: 'AI Wiki',
-    aiWikiTitle: 'AI Wiki Knowledge Base',
+    autoSkill: 'AutoSkill',
+    autoSkillTitle: 'AutoSkill',
+    autoSkillDesc: 'Autonomous AI research system that experiments iteratively. Let AI agents conduct research while you sleep — modifying code, training models, evaluating results, and evolving approaches.',
+    skillWiki: 'Skill Wiki',
+    skillWikiTitle: 'Skill Wiki Knowledge Base',
     aiWikiDesc: 'Incremental knowledge management system with three-layer architecture. Transform documents into structured, interlinked intelligence with LLM-powered ingestion, intelligent querying, and quality assurance.',
     howOctopaiEvolves: 'How Octopai Evolves',
     dataIngestion: 'Data Ingestion',
@@ -89,10 +89,10 @@ const translations = {
     dataAnalystDesc: 'Statistical analysis and visualization generation.',
     contentCreatorDesc: 'Multi-format content generation and optimization.',
     apiIntegratorDesc: 'Seamless API connection builder with error recovery.',
-    skillCreatorStudioDesc: 'Create skills from any input type with intelligent analysis.',
-    evolutionWorkbenchDesc: 'Self-evolve skills using Feedback Descent optimization.',
-    skillsHubProDesc: 'Manage skills in GitHub-style repositories.',
-    octoTraceDashboardDesc: 'Visualize and track all AI operations in real-time.',
+    skillCreatorDesc: 'Create skills from any input type with intelligent analysis.',
+    skillEvolutionDesc: 'Self-evolve skills using Feedback Descent optimization.',
+    skillsHubDesc: 'Manage skills in GitHub-style repositories.',
+    octoTraceDesc: 'Visualize and track all AI operations in real-time.',
     techArchitecture: 'Enterprise-Grade Architecture',
     persistence: 'Persistent Storage',
     persistenceDesc: 'SQLite database with 12 tables and 18 indexes. WAL mode for high concurrency. Multi-tenant data isolation with full transactional integrity.',
@@ -118,31 +118,28 @@ const translations = {
   },
   zh: {
     heroSubtitle: 'AI Agent的无限进化智能引擎',
-    heroDescription: '一个具有自进化AI Agent、Skills Hub、AI Wiki、OctoTrace和AutoResearch的无限进化AI Agent平台——赋能AI Agent持续学习、适应、进化和积累知识。',
+    heroDescription: '一个具有Skill Creator、Skill Evolution、Skills Hub、OctoTrace、Skill Wiki和AutoSkill的无限进化AI Agent平台——赋能AI Agent持续学习、适应、进化和积累知识。',
     launchAgent: '启动Agent',
     coreCapabilities: '核心能力',
     sixPillars: '六大核心能力',
-    selfEvolvingAgent: '自进化Agent',
-    selfEvolvingAgentTitle: '自进化AI Agent',
-    selfEvolvingAgentDesc: '一个持续学习和进化的智能Agent。它通过每一次交互和任务完成来调整策略、提升性能并扩展能力。',
+    skillCreator: '技能创建',
+    skillCreatorTitle: 'Skill Creator',
+    skillCreatorDesc: '将任何内容转化为AI Agent技能——代码、文档、媒体、API或自然语言描述。智能分析自动质量评分。',
+    evolution: '进化',
+    evolutionTitle: 'Skill Evolution',
+    evolutionDesc: '高级自进化引擎，采用Feedback Descent算法。通过成对比较、前沿管理和持续优化来改进技能。',
     skillsHub: 'Skills Hub',
     skillsHubTitle: 'Skills Hub',
     skillsHubDesc: 'AI Agent智能技能生态系统 — 创建、管理、协作和进化您的技能，支持版本控制和无缝集成',
-    autoResearch: 'AutoResearch',
-    autoResearchTitle: 'AutoResearch',
-    autoResearchDesc: '自主AI研究系统，进行迭代式实验。让AI Agent在您睡觉时进行研究——修改代码、训练模型、评估结果并进化方法。',
-    skillCreator: '技能创建',
-    skillCreatorTitle: 'Skill Creator Studio',
-    skillCreatorDesc: '将任何内容转化为AI Agent技能——代码、文档、媒体、API或自然语言描述。智能分析自动质量评分。',
-    evolution: '进化',
-    evolutionTitle: 'Evolution Workbench',
-    evolutionDesc: '高级自进化引擎，采用Feedback Descent算法。通过成对比较、前沿管理和持续优化来改进技能。',
     octoTrace: 'OctoTrace',
     octoTraceTitle: 'OctoTrace Dashboard',
     octoTraceDesc: '所有AI操作的实时可视化追踪。Span树视图、成本分析、预算监控、跨模块Token使用追踪。',
-    aiWiki: 'AI Wiki',
-    aiWikiTitle: 'AI Wiki 知识库',
-    aiWikiDesc: '增量式知识管理系统，采用三层架构。通过LLM驱动的导入、智能查询和质量保证，将文档转化为结构化、相互关联的智能知识。',
+    autoSkill: 'AutoSkill',
+    autoSkillTitle: 'AutoSkill',
+    autoSkillDesc: '自主AI研究系统，进行迭代式实验。让AI Agent在您睡觉时进行研究——修改代码、训练模型、评估结果并进化方法。',
+    skillWiki: 'Skill Wiki',
+    skillWikiTitle: 'Skill Wiki 知识库',
+    skillWikiDesc: '增量式知识管理系统，采用三层架构。通过LLM驱动的导入、智能查询和质量保证，将文档转化为结构化、相互关联的智能知识。',
     evolution: '进化',
     howOctopaiEvolves: 'Octopai如何进化',
     dataIngestion: '数据摄入',
@@ -225,11 +222,11 @@ const Home = () => {
     { name: t.codeGenerator, category: t.developmentCategory, desc: t.codeGeneratorDesc, icon: '💻' },
     { name: t.dataAnalyst, category: t.analyticsCategory, desc: t.dataAnalystDesc, icon: '📊' },
     { name: t.contentCreator, category: t.creativeCategory, desc: t.contentCreatorDesc, icon: '✍️' },
-    { name: t.apiIntegrator, category: t.integrationCategory, desc: t.apiIntegratorDesc, icon: '�' },
-    { name: t.skillCreatorStudio, category: t.developmentCategory, desc: t.skillCreatorStudioDesc, icon: '⚡' },
-    { name: t.evolutionWorkbench, category: t.researchCategory, desc: t.evolutionWorkbenchDesc, icon: '🧬' },
-    { name: t.skillsHubPro, category: t.integrationCategory, desc: t.skillsHubProDesc, icon: '📦' },
-    { name: t.octoTraceDashboard, category: t.analyticsCategory, desc: t.octoTraceDashboardDesc, icon: '🔎' }
+    { name: t.apiIntegrator, category: t.integrationCategory, desc: t.apiIntegratorDesc, icon: '🔌' },
+    { name: t.skillCreator, category: t.developmentCategory, desc: t.skillCreatorDesc, icon: '⚡' },
+    { name: t.skillEvolution, category: t.researchCategory, desc: t.skillEvolutionDesc, icon: '🧬' },
+    { name: t.skillsHub, category: t.integrationCategory, desc: t.skillsHubDesc, icon: '📦' },
+    { name: t.octoTrace, category: t.analyticsCategory, desc: t.octoTraceDesc, icon: '🔎' }
   ]
 
   return (
@@ -293,11 +290,11 @@ const Home = () => {
               </svg>
             </Link>
             
-            <Link to="/ai-wiki" className="btn-secondary" style={{ 
-              padding: '16px 36px', fontSize: '1.05rem', borderColor: 'rgba(245, 158, 11, 0.5)',
-              background: 'rgba(245, 158, 11, 0.08)', backdropFilter: 'blur(8px)'
-            }}>
-              📚 Explore AI Wiki
+            <Link to="/skill-wiki" className="btn-secondary" style={{ 
+                padding: '16px 36px', fontSize: '1.05rem', borderColor: 'rgba(245, 158, 11, 0.5)',
+                background: 'rgba(245, 158, 11, 0.08)', backdropFilter: 'blur(8px)'
+              }}>
+                📚 Explore Skill Wiki
             </Link>
             
             <a href="#capabilities" style={{
@@ -342,7 +339,7 @@ const Home = () => {
         
         <div className="card-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
           {/* Skill Creator Studio */}
-          <Link to="/skill-creator-studio" style={{ textDecoration: 'none' }}>
+          <Link to="/skill-creator" style={{ textDecoration: 'none' }}>
             <div 
               className="card card-whisper" 
               style={{ 
@@ -374,8 +371,8 @@ const Home = () => {
             </div>
           </Link>
 
-          {/* Evolution Workbench */}
-          <Link to="/evolution-workbench" style={{ textDecoration: 'none' }}>
+          {/* Skill Evolution */}
+          <Link to="/skill-evolution" style={{ textDecoration: 'none' }}>
             <div 
               className="card card-whisper"
               style={{ cursor: 'pointer', height: '100%', transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)' }}
@@ -402,7 +399,7 @@ const Home = () => {
           </Link>
 
           {/* Skills Hub */}
-          <Link to="/skills-hub-pro" style={{ textDecoration: 'none' }}>
+          <Link to="/skills-hub" style={{ textDecoration: 'none' }}>
             <div 
               className="card card-whisper"
               style={{ cursor: 'pointer', height: '100%', transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)' }}
@@ -455,8 +452,8 @@ const Home = () => {
             </div>
           </Link>
 
-          {/* AI Wiki - NEW MODULE */}
-          <Link to="/ai-wiki" style={{ textDecoration: 'none' }}>
+          {/* Skill Wiki - NEW MODULE */}
+          <Link to="/skill-wiki" style={{ textDecoration: 'none' }}>
             <div 
               className="card card-whisper" 
               style={{ 
@@ -475,10 +472,10 @@ const Home = () => {
                 e.currentTarget.style.borderColor = ''
               }}
             >
-              <div className="card-label">{t.aiWiki}</div>
+              <div className="card-label">{t.skillWiki}</div>
               <div className="feature-icon" style={{ fontSize: '2rem' }}>📚</div>
-              <h3>{t.aiWikiTitle}</h3>
-              <p>{t.aiWikiDesc}</p>
+              <h3>{t.skillWikiTitle}</h3>
+              <p>{t.skillWikiDesc}</p>
               <div style={{ marginTop: '16px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 <span style={{ fontSize: '0.75rem', padding: '4px 10px', borderRadius: '12px', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', fontWeight: '600' }}>LLM Ingest</span>
                 <span style={{ fontSize: '0.75rem', padding: '4px 10px', borderRadius: '12px', background: 'rgba(168, 85, 247, 0.1)', color: '#a855f7', fontWeight: '600' }}>Smart Query</span>
@@ -487,8 +484,8 @@ const Home = () => {
             </div>
           </Link>
 
-          {/* AutoResearch */}
-          <Link to="/research" style={{ textDecoration: 'none' }}>
+          {/* AutoSkill */}
+          <Link to="/auto-skill" style={{ textDecoration: 'none' }}>
             <div 
               className="card card-whisper"
               style={{ cursor: 'pointer', height: '100%', transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)' }}
@@ -503,10 +500,10 @@ const Home = () => {
                 e.currentTarget.style.borderColor = ''
               }}
             >
-              <div className="card-label">{t.autoResearch}</div>
+              <div className="card-label">{t.autoSkill}</div>
               <div className="feature-icon" style={{ fontSize: '2rem' }}>🔬</div>
-              <h3>{t.autoResearchTitle}</h3>
-              <p>{t.autoResearchDesc}</p>
+              <h3>{t.autoSkillTitle}</h3>
+              <p>{t.autoSkillDesc}</p>
               <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--octo-border-color)', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 <span style={{ fontSize: '0.75rem', padding: '4px 10px', borderRadius: '12px', background: 'rgba(139, 92, 246, 0.1)', color: '#7c3aed', fontWeight: '600' }}>Autonomous</span>
                 <span style={{ fontSize: '0.75rem', padding: '4px 10px', borderRadius: '12px', background: 'rgba(236, 72, 153, 0.1)', color: '#db2777', fontWeight: '600' }}>Iterative</span>

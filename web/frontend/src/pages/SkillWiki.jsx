@@ -322,7 +322,7 @@ const AIWiki = () => {
               </div>
               <div className="min-w-0 flex-1">
                 <h1 className="text-5xl font-black bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-700 dark:from-blue-400 dark:via-cyan-300 dark:to-blue-400 bg-clip-text text-transparent mb-3 tracking-wide drop-shadow-xl filter leading-snug">
-                  AI Wiki
+                  Skill Wiki
                 </h1>
                 <p className="text-gray-700 dark:text-gray-300 text-base leading-relaxed font-medium max-w-2xl opacity-90">
                   Incremental Knowledge Base System — Transform documents into structured, interlinked intelligence that compounds over time through continuous learning and evolution
@@ -333,7 +333,7 @@ const AIWiki = () => {
             {/* Action Buttons */}
             <div className="flex gap-3 shrink-0">
               <Link 
-                to="/auto-research" 
+                to="/auto-skill" 
                 className="group px-5 py-2.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 text-white rounded-xl font-bold transition-all duration-300 shadow-lg shadow-emerald-500/25 hover:shadow-xl flex items-center gap-2"
               >
                 <span className="text-lg group-hover:rotate-12 transition-transform duration-300 inline-block">🔬</span> 
@@ -364,7 +364,7 @@ const AIWiki = () => {
               <div className="relative">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-2xl">📖</span>
-                  <h4 className="font-bold text-purple-700 dark:text-purple-300">Layer 2: AI Wiki</h4>
+                  <h4 className="font-bold text-purple-700 dark:text-purple-300">Layer 2: Skill Wiki</h4>
                 </div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">LLM-generated structured knowledge with cross-references</p>
                 <div className="mt-2 text-xs font-mono bg-purple-100 dark:bg-purple-900/30 rounded px-2 py-1">{wikiPages.length} wiki pages</div>

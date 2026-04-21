@@ -11,12 +11,12 @@ const Navbar = () => {
 
   const navLinks = [
     { path: '/', label: 'Home' },
-    { path: '/skill-creator-studio', label: 'Skill Creator' },
-    { path: '/evolution-workbench', label: 'AI Evolution' },
-    { path: '/skills-hub-pro', label: 'Skills Hub' },
+    { path: '/skill-creator', label: 'Skill Creator' },
+    { path: '/skill-evolution', label: 'Skill Evolution' },
+    { path: '/skills-hub', label: 'Skills Hub' },
     { path: '/octo-trace', label: 'OctoTrace' },
-    { path: '/ai-wiki', label: 'AI Wiki' },
-    { path: '/research', label: 'AutoResearch' },
+    { path: '/skill-wiki', label: 'Skill Wiki' },
+    { path: '/auto-skill', label: 'AutoSkill' },
   ]
 
   return (
