@@ -174,3 +174,373 @@
     --text-display: clamp(2rem, 5vw, 2.5rem);
   }
 }
+
+/* ================================================
+   KEYFRAME ANIMATIONS
+   ================================================ */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(3deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes techFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes techPulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(56, 152, 236, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(56, 152, 236, 0.6), 0 0 60px rgba(6, 182, 212, 0.4);
+  }
+}
+
+/* ================================================
+   ANIMATION CLASSES
+   ================================================ */
+.fade-in-up {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.tech-float {
+  animation: techFloat 4s ease-in-out infinite;
+}
+
+.tech-pulse-glow {
+  animation: techPulseGlow 2.5s ease-in-out infinite;
+}
+
+/* ================================================
+   HERO SECTION STYLES
+   ================================================ */
+.hero-section {
+  text-align: center;
+  position: relative;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* ================================================
+   CARD STYLES
+   ================================================ */
+.card {
+  background: var(--octo-bg-card);
+  border: 1px solid var(--octo-border-color);
+  border-radius: var(--radius-generous);
+  padding: 32px;
+  transition: all var(--transition-slow);
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-whisper-dark);
+}
+
+.card-whisper {
+  background: rgba(48, 48, 46, 0.6);
+  backdrop-filter: blur(10px);
+}
+
+.card-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--octo-accent-color);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+}
+
+/* ================================================
+   CARD GRID
+   ================================================ */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-top: 32px;
+}
+
+/* ================================================
+   SECTION STYLES
+   ================================================ */
+.section-container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 80px var(--container-padding);
+}
+
+.section-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--octo-accent-color);
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.section-heading {
+  font-family: var(--font-serif);
+  font-size: var(--text-heading-2);
+  color: var(--octo-text-primary);
+  margin-bottom: 48px;
+  font-weight: 700;
+}
+
+/* ================================================
+   DARK SECTION
+   ================================================ */
+.dark-section {
+  background: var(--octo-cosmic-navy);
+  padding: 80px 0;
+}
+
+/* ================================================
+   DIVIDER
+   ================================================ */
+.section-divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--octo-border-color), transparent);
+  margin: 0;
+}
+
+/* ================================================
+   BUTTON STYLES
+   ================================================ */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, var(--octo-accent-color) 0%, var(--octo-cyan-accent) 100%);
+  color: white;
+  padding: 14px 32px;
+  border-radius: var(--radius-comfortable);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all var(--transition-slow);
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(56, 152, 236, 0.4);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(56, 152, 236, 0.1);
+  color: var(--octo-text-primary);
+  padding: 14px 32px;
+  border-radius: var(--radius-comfortable);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all var(--transition-slow);
+  border: 1px solid rgba(56, 152, 236, 0.3);
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: rgba(56, 152, 236, 0.2);
+  transform: translateY(-2px);
+}
+
+/* ================================================
+   SKILLS GRID
+   ================================================ */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.skill-card {
+  background: var(--octo-bg-card);
+  border: 1px solid var(--octo-border-color);
+  border-radius: var(--radius-generous);
+  padding: 24px;
+  transition: all var(--transition-slow);
+}
+
+.skill-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--octo-accent-color);
+  box-shadow: var(--shadow-whisper-dark);
+}
+
+.skill-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.skill-card-icon {
+  font-size: 2rem;
+}
+
+.skill-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--octo-text-primary);
+  margin-bottom: 8px;
+}
+
+.card-description {
+  color: var(--octo-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* ================================================
+   STAT STYLES
+   ================================================ */
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--octo-text-secondary);
+}
+
+/* ================================================
+   GRADIENT TEXT
+   ================================================ */
+.gradient-text {
+  background: linear-gradient(135deg, #3898ec 0%, #06b6d4 50%, #6366f1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ================================================
+   STARS BACKGROUND
+   ================================================ */
+.stars, .stars2, .stars3 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ================================================
+   TECH PARTICLES
+   ================================================ */
+.tech-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.tech-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(56, 152, 236, 0.5);
+  border-radius: 50%;
+}
+
+/* ================================================
+   RESPONSIVE STYLES
+   ================================================ */
+@media (max-width: 768px) {
+  .section-container {
+    padding: 60px var(--container-padding-mobile);
+  }
+  
+  .card-grid, .skills-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .hero-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-container {
+    padding: 48px var(--container-padding-mobile);
+  }
+  
+  .section-heading {
+    font-size: var(--text-heading-3);
+  }
+  
+  .stat-value {
+    font-size: 2rem;
+  }
+}

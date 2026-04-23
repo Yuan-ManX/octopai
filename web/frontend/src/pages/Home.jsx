@@ -23,9 +23,10 @@ const translations = {
     autoSkill: 'AutoSkill',
     autoSkillTitle: 'AutoSkill',
     autoSkillDesc: 'Autonomous AI research system that experiments iteratively. Let AI agents conduct research while you sleep — modifying code, training models, evaluating results, and evolving approaches.',
+    exploreAutoSkill: 'Explore AutoSkill',
     skillWiki: 'Skill Wiki',
     skillWikiTitle: 'Skill Wiki Knowledge Base',
-    aiWikiDesc: 'Incremental knowledge management system with three-layer architecture. Transform documents into structured, interlinked intelligence with LLM-powered ingestion, intelligent querying, and quality assurance.',
+    skillWikiDesc: 'Incremental knowledge management system with three-layer architecture. Transform documents into structured, interlinked intelligence with LLM-powered ingestion, intelligent querying, and quality assurance.',
     howOctopaiEvolves: 'How Octopai Evolves',
     dataIngestion: 'Data Ingestion',
     dataIngestionDesc: 'Collects execution data, user feedback, performance metrics, and environmental signals from every interaction.',
@@ -137,6 +138,7 @@ const translations = {
     autoSkill: 'AutoSkill',
     autoSkillTitle: 'AutoSkill',
     autoSkillDesc: '自主AI研究系统，进行迭代式实验。让AI Agent在您睡觉时进行研究——修改代码、训练模型、评估结果并进化方法。',
+    exploreAutoSkill: '探索AutoSkill',
     skillWiki: 'Skill Wiki',
     skillWikiTitle: 'Skill Wiki 知识库',
     skillWikiDesc: '增量式知识管理系统，采用三层架构。通过LLM驱动的导入、智能查询和质量保证，将文档转化为结构化、相互关联的智能知识。',
@@ -253,7 +255,7 @@ const Home = () => {
       </div>
 
       {/* HERO SECTION - Enhanced with Visual Impact */}
-      <section className="hero-section fade-in-up" style={{ position: 'relative', overflow: 'hidden' }}>
+      <section className="hero-section fade-in-up" style={{ position: 'relative', overflow: 'hidden', padding: '80px 20px' }}>
         {/* Animated gradient orbs */}
         <div style={{ 
           position: 'absolute', top: '-10%', left: '-5%', width: '400px', height: '400px',
@@ -266,24 +268,36 @@ const Home = () => {
           borderRadius: '50%', filter: 'blur(80px)', animation: 'float 12s ease-in-out infinite reverse'
         }} />
         
+        {/* Additional decorative elements */}
+        <div style={{
+          position: 'absolute', top: '20%', right: '15%', width: '20px', height: '20px',
+          background: 'rgba(245, 158, 11, 0.3)', borderRadius: '50%',
+          animation: 'pulse 3s ease-in-out infinite'
+        }} />
+        <div style={{
+          position: 'absolute', bottom: '30%', left: '10%', width: '15px', height: '15px',
+          background: 'rgba(59, 130, 246, 0.3)', borderRadius: '50%',
+          animation: 'pulse 2.5s ease-in-out infinite reverse'
+        }} />
+        
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <h1 className="tech-float">
+          <h1 className="tech-float" style={{ fontSize: '4rem', marginBottom: '16px' }}>
             Octopai
           </h1>
           
-          <p className="gradient-text" style={{ fontSize: '1.9rem', marginBottom: '20px', fontWeight: 600, letterSpacing: '-0.02em', maxWidth: '900px', margin: '0 auto 24px' }}>
+          <p className="gradient-text" style={{ fontSize: '2rem', marginBottom: '24px', fontWeight: 700, letterSpacing: '-0.02em', maxWidth: '900px', margin: '0 auto 32px' }}>
             {t.heroSubtitle}
           </p>
           
           <p style={{ 
-            fontSize: '1.05rem', lineHeight: '1.6', maxWidth: '1000px', margin: '0 auto 36px', 
-            color: 'var(--octo-text-secondary)', opacity: 0.95
+            fontSize: '1.2rem', lineHeight: '1.8', maxWidth: '900px', margin: '0 auto 48px', 
+            color: 'var(--octo-text-secondary)', opacity: 0.9
           }}>
             {t.heroDescription}
           </p>
           
           <div className="hero-actions" style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
-            <Link to="/agent" className="btn-primary tech-pulse-glow" style={{ color: '#ffffff', padding: '16px 36px', fontSize: '1.05rem' }}>
+            <Link to="/skill-creator" className="btn-primary tech-pulse-glow" style={{ color: '#ffffff', padding: '16px 36px', fontSize: '1.05rem' }}>
               {t.launchAgent}
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -294,7 +308,7 @@ const Home = () => {
                 padding: '16px 36px', fontSize: '1.05rem', borderColor: 'rgba(245, 158, 11, 0.5)',
                 background: 'rgba(245, 158, 11, 0.08)', backdropFilter: 'blur(8px)'
               }}>
-                📚 Explore Skill Wiki
+              📚 Explore Skill Wiki
             </Link>
             
             <a href="#capabilities" style={{
@@ -305,6 +319,51 @@ const Home = () => {
             onMouseLeave={(e) => e.currentTarget.style.color = 'var(--octo-text-secondary)'}>
               Learn More ↓
             </a>
+          </div>
+          
+          {/* Language Switcher */}
+          <div style={{ marginTop: '40px', display: 'flex', justifyContent: 'center' }}>
+            <div style={{ 
+              display: 'flex', 
+              background: 'rgba(255, 255, 255, 0.05)', 
+              borderRadius: '12px', 
+              padding: '4px', 
+              border: '1px solid var(--octo-border-color)',
+              gap: '4px'
+            }}>
+              <button
+                onClick={() => setLanguage('en')}
+                style={{
+                  padding: '8px 20px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '0.9rem',
+                  fontWeight: language === 'en' ? '600' : '400',
+                  background: language === 'en' ? 'linear-gradient(135deg, #f59e0b 0%, #f97316 100%)' : 'transparent',
+                  color: language === 'en' ? '#ffffff' : 'var(--octo-text-secondary)',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                English
+              </button>
+              <button
+                onClick={() => setLanguage('zh')}
+                style={{
+                  padding: '8px 20px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '0.9rem',
+                  fontWeight: language === 'zh' ? '600' : '400',
+                  background: language === 'zh' ? 'linear-gradient(135deg, #f59e0b 0%, #f97316 100%)' : 'transparent',
+                  color: language === 'zh' ? '#ffffff' : 'var(--octo-text-secondary)',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                中文
+              </button>
+            </div>
           </div>
 
           {/* Quick Stats Bar */}
@@ -333,7 +392,7 @@ const Home = () => {
       <hr className="section-divider"/>
 
       {/* FIVE CORE CAPABILITIES */}
-      <section className="section-container">
+      <section id="capabilities" className="section-container">
         <div className="section-label">{t.coreCapabilities}</div>
         <h2 className="section-heading">{t.sixPillars}</h2>
         
@@ -613,10 +672,10 @@ const Home = () => {
 
       <hr className="section-divider"/>
 
-      {/* AUTORESEARCH SECTION */}
+      {/* AUTOSKILL SECTION */}
       <section className="dark-section">
         <div className="section-container">
-          <div className="section-label">{t.autoResearch}</div>
+          <div className="section-label">{t.autoSkill}</div>
           <h2 className="section-heading">{t.autonomousResearch}</h2>
           <p style={{ color: 'var(--octo-text-secondary)', marginBottom: '48px', fontSize: '1.125rem', maxWidth: '800px', textAlign: 'center' }}>
             {t.autoResearchDescription}
@@ -647,8 +706,8 @@ const Home = () => {
           </div>
           
           <div style={{ textAlign: 'center', marginTop: '48px' }}>
-            <Link to="/research" className="btn-secondary" style={{ color: '#ffffff' }}>
-              {t.exploreAutoResearch}
+            <Link to="/auto-skill" className="btn-secondary" style={{ color: '#ffffff' }}>
+              {t.exploreAutoSkill}
             </Link>
           </div>
         </div>
