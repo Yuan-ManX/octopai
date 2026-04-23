@@ -25,11 +25,9 @@ from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
-
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 # Import core functionality from octopai package
-# Use try-except to handle missing dependencies gracefully
 try:
     from octopai import (
         # Skill Evolution
@@ -38,20 +36,20 @@ try:
         EvolutionMode,
         FrontierManager,
         FeedbackDescentOptimizer,
-        
+
         # Skills
         SkillCreator,
         SkillRegistry,
         SkillMetadata,
         Skill,
         SkillHub,
-        
+
         # Tracing
         OctoTracer,
         CostTracker,
-        
+
         # Skills Hub
-        HubManager,
+        HubManager as SkillsHubManager,
     )
     octopai_available = True
 except ImportError as e:
@@ -70,7 +68,7 @@ except ImportError as e:
     SkillHub = None
     OctoTracer = None
     CostTracker = None
-    HubManager = None
+    SkillsHubManager = None
 
 
 # Initialize app
@@ -101,29 +99,29 @@ if octopai_available:
         skill_registry = SkillRegistry(
             storage_path=DATA_DIR / "registry"
         )
-        
-        # Initialize hub manager
-        hub_manager = HubManager(
-            storage_path=DATA_DIR / "hub"
+
+        # Initialize skills hub manager
+        skills_hub_manager = SkillsHubManager(
+            storage_dir=DATA_DIR / "skillshub"
         )
-        
+
         # Initialize tracer and cost tracker
         tracer = OctoTracer(
             config={"storage": "in-memory"}
         )
         cost_tracker = CostTracker()
-        
+
     except Exception as e:
         print(f"Warning: Some octopai components not fully initialized: {e}")
         # Create simple in-memory storages as fallback
         skill_registry = None
-        hub_manager = None
+        skills_hub_manager = None
         tracer = None
         cost_tracker = None
 else:
     # Create simple in-memory storages as fallback
     skill_registry = None
-    hub_manager = None
+    skills_hub_manager = None
     tracer = None
     cost_tracker = None
 
@@ -143,12 +141,15 @@ feedback_storage: List[Dict] = []
 # ==========================================
 
 class SkillCreateRequest(BaseModel):
-    name: str
-    description: str
-    content: str
-    category: str = "general"
-    author: str = "anonymous"
-    version: str = "1.0.0"
+    name: str = Field(..., description="Skill name")
+    description: str = Field(..., description="Skill description")
+    content: str = Field(..., description="Skill content/code")
+    category: str = Field(default="general", description="Skill category")
+    author: str = Field(default="anonymous", description="Author name")
+    version: str = Field(default="1.0.0", description="Semantic version")
+    namespace: str = Field(default="global", description="Namespace to create skill in")
+    visibility: str = Field(default="private", description="Visibility: public, private, internal")
+    topics: Optional[List[str]] = Field(default_factory=list, description="Related topics")
 
 
 class EvolutionStartRequest(BaseModel):
@@ -165,6 +166,42 @@ class ExperimentCreateRequest(BaseModel):
     description: str
     goal: str
     config: Dict[str, Any] = {}
+
+
+class NamespaceCreateRequest(BaseModel):
+    name: str = Field(..., description="Namespace name")
+    owner_id: str = Field(..., description="Owner user ID")
+    description: str = Field(default="", description="Namespace description")
+    namespace_type: str = Field(default="team", description="Type: global or team")
+
+
+class SkillVersionCreateRequest(BaseModel):
+    version: str = Field(..., description="Semantic version string")
+    content: str = Field(..., description="Skill content")
+    changelog: str = Field(default="", description="What changed in this version")
+    metadata: Optional[Dict[str, Any]] = Field(default_factory=dict, description="Additional metadata")
+
+
+class ReviewApproveRequest(BaseModel):
+    reviewer_id: str = Field(..., description="Reviewer user ID")
+    comment: str = Field(default="", description="Review comment")
+
+
+class ReviewRejectRequest(BaseModel):
+    reviewer_id: str = Field(..., description="Reviewer user ID")
+    reason: str = Field(..., description="Reason for rejection")
+
+
+class PromotionRequestCreate(BaseModel):
+    source_skill_id: str = Field(..., description="Source skill ID")
+    source_version_id: str = Field(..., description="Source version ID")
+    submitter_id: str = Field(..., description="Submitter user ID")
+    target_namespace_id: str = Field(default="global", description="Target namespace (usually global)")
+
+
+class SkillRatingRequest(BaseModel):
+    user_id: str = Field(..., description="User ID")
+    score: int = Field(..., ge=1, le=5, description="Rating 1-5")
 
 
 # ==========================================
@@ -189,6 +226,7 @@ class ConnectionManager:
                 await connection.send_json(message)
             except Exception:
                 pass
+
 
 manager = ConnectionManager()
 
@@ -218,7 +256,7 @@ async def get_status():
             "available": octopai_available,
             "components": {
                 "skill_registry": skill_registry is not None,
-                "hub_manager": hub_manager is not None,
+                "skills_hub_manager": skills_hub_manager is not None,
                 "tracer": tracer is not None,
                 "cost_tracker": cost_tracker is not None
             }
@@ -235,7 +273,7 @@ async def get_status():
 async def create_skill(request: SkillCreateRequest):
     """Create a new skill"""
     skill_id = f"skill_{int(datetime.now().timestamp())}"
-    
+
     skill_data = {
         "id": skill_id,
         "name": request.name,
@@ -249,46 +287,81 @@ async def create_skill(request: SkillCreateRequest):
         "likes": 0,
         "downloads": 0
     }
-    
+
     skills_storage[skill_id] = skill_data
-    
-    # Try to use octopai SkillCreator if available
-    if skill_registry:
+
+    # Try to use Skills Hub Manager if available
+    if skills_hub_manager:
         try:
-            # Create skill metadata compatible with octopai
-            pass
-        except Exception:
-            pass
-    
+            skill = skills_hub_manager.create_skill(
+                namespace_id=request.namespace,
+                name=request.name,
+                owner_id=request.author,
+                summary=request.description,
+                visibility=request.visibility,
+                category=request.category,
+                topics=request.topics
+            )
+            skills_hub_manager.create_version(
+                skill_id=skill.id,
+                version=request.version,
+                content=request.content,
+                created_by=request.author
+            )
+            skill_data["hub_skill_id"] = skill.id
+        except Exception as e:
+            print(f"Skills Hub creation failed: {e}")
+
     return {"success": True, "skill": skill_data}
 
 
 @app.get("/api/skills")
-async def list_skills(category: Optional[str] = None):
+async def list_skills(category: Optional[str] = None, namespace: Optional[str] = None):
     """List all skills, optionally filtered by category"""
+    # Use Skills Hub if available
+    if skills_hub_manager:
+        skills_list = skills_hub_manager.list_skills(namespace_id=namespace, category=category)
+        return {"skills": [s.model_dump() for s in skills_list], "count": len(skills_list)}
+
+    # Fallback to in-memory storage
     skills_list = list(skills_storage.values())
-    
     if category:
         skills_list = [s for s in skills_list if s.get("category") == category]
-    
     return {"skills": skills_list, "count": len(skills_list)}
 
 
 @app.get("/api/skills/{skill_id}")
 async def get_skill(skill_id: str):
     """Get a specific skill by ID"""
+    if skills_hub_manager:
+        skill = skills_hub_manager.get_skill(skill_id)
+        if skill:
+            return {"skill": skill.model_dump()}
+        raise HTTPException(status_code=404, detail="Skill not found")
+
     if skill_id not in skills_storage:
         raise HTTPException(status_code=404, detail="Skill not found")
-    
     return {"skill": skills_storage[skill_id]}
 
 
 @app.put("/api/skills/{skill_id}")
 async def update_skill(skill_id: str, request: SkillCreateRequest):
     """Update an existing skill"""
+    if skills_hub_manager:
+        updated = skills_hub_manager.update_skill(
+            skill_id=skill_id,
+            display_name=request.name,
+            summary=request.description,
+            category=request.category,
+            topics=request.topics
+        )
+        if updated:
+            return {"success": True, "skill": updated.model_dump()}
+        raise HTTPException(status_code=404, detail="Skill not found")
+
     if skill_id not in skills_storage:
         raise HTTPException(status_code=404, detail="Skill not found")
-    
+
     skills_storage[skill_id].update({
         "name": request.name,
         "description": request.description,
@@ -297,16 +370,20 @@ async def update_skill(skill_id: str, request: SkillCreateRequest):
         "version": request.version,
         "updated_at": datetime.now().isoformat()
     })
-    
     return {"success": True, "skill": skills_storage[skill_id]}
 
 
 @app.delete("/api/skills/{skill_id}")
-async def delete_skill(skill_id: str):
+async def delete_skill(skill_id: str, deleter_id: str = "anonymous"):
     """Delete a skill"""
+    if skills_hub_manager:
+        success = skills_hub_manager.delete_skill(skill_id, deleter_id)
+        if success:
+            return {"success": True}
+        raise HTTPException(status_code=404, detail="Skill not found")
+
     if skill_id not in skills_storage:
         raise HTTPException(status_code=404, detail="Skill not found")
-    
     del skills_storage[skill_id]
     return {"success": True}
 
@@ -319,7 +396,7 @@ async def delete_skill(skill_id: str):
 async def start_evolution(request: EvolutionStartRequest):
     """Start a skill evolution process"""
     run_id = f"evo_{int(datetime.now().timestamp())}"
-    
+
     evolution_data = {
         "id": run_id,
         "skill_id": request.skill_id,
@@ -332,15 +409,15 @@ async def start_evolution(request: EvolutionStartRequest):
         "current_iteration": 0,
         "created_at": datetime.now().isoformat()
     }
-    
+
     active_evolution[run_id] = evolution_data
-    
+
     # Notify via WebSocket
     await manager.broadcast({
         "type": "evolution_started",
         "data": evolution_data
     })
-    
+
     return {"success": True, "evolution": evolution_data}
 
 
@@ -349,14 +426,14 @@ async def stop_evolution(run_id: str):
     """Stop a running evolution process"""
     if run_id not in active_evolution:
         raise HTTPException(status_code=404, detail="Evolution run not found")
-    
+
     active_evolution[run_id]["status"] = "stopped"
-    
+
     await manager.broadcast({
         "type": "evolution_stopped",
         "data": {"id": run_id}
     })
-    
+
     return {"success": True}
 
 
@@ -365,7 +442,7 @@ async def get_evolution_status(run_id: str):
     """Get status of an evolution run"""
     if run_id not in active_evolution:
         raise HTTPException(status_code=404, detail="Evolution run not found")
-    
+
     return {"evolution": active_evolution[run_id]}
 
 
@@ -397,12 +474,16 @@ async def list_programs():
 
 
 # ==========================================
-# Skills Hub Endpoints
+# Skills Hub Endpoints (Enhanced)
 # ==========================================
 
 @app.get("/api/skillshub/stats")
 async def get_hub_stats():
     """Get Skills Hub statistics"""
+    if skills_hub_manager:
+        stats = skills_hub_manager.get_statistics()
+        return stats.model_dump()
+
     return {
         "total_skills": len(skills_storage),
         "total_likes": sum(s.get("likes", 0) for s in skills_storage.values()),
@@ -411,12 +492,241 @@ async def get_hub_stats():
     }
 
 
-@app.post("/api/skillshub/skills/{skill_id}/like")
-async def like_skill(skill_id: str):
-    """Like a skill"""
+@app.get("/api/skillshub/namespaces")
+async def list_namespaces(user_id: Optional[str] = None, namespace_type: Optional[str] = None):
+    """List all namespaces"""
+    if skills_hub_manager:
+        namespaces = skills_hub_manager.list_namespaces(user_id=user_id, namespace_type=namespace_type)
+        return {"namespaces": [ns.model_dump() for ns in namespaces], "count": len(namespaces)}
+    return {"namespaces": [], "count": 0}
+
+
+@app.post("/api/skillshub/namespaces")
+async def create_namespace(request: NamespaceCreateRequest):
+    """Create a new namespace"""
+    if not skills_hub_manager:
+        raise HTTPException(status_code=500, detail="Skills Hub not available")
+
+    try:
+        namespace = skills_hub_manager.create_namespace(
+            name=request.name,
+            owner_id=request.owner_id,
+            description=request.description,
+            namespace_type=request.namespace_type
+        )
+        return {"success": True, "namespace": namespace.model_dump()}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/api/skillshub/namespaces/{namespace_id}")
+async def get_namespace(namespace_id: str):
+    """Get namespace details"""
+    if not skills_hub_manager:
+        raise HTTPException(status_code=500, detail="Skills Hub not available")
+    namespace = skills_hub_manager.get_namespace(namespace_id)
+    if not namespace:
+        raise HTTPException(status_code=404, detail="Namespace not found")
+    return {"namespace": namespace.model_dump()}
+
+
+@app.post("/api/skillshub/skills/{skill_id}/versions")
+async def create_skill_version(skill_id: str, request: SkillVersionCreateRequest):
+    """Create a new skill version"""
+    if not skills_hub_manager:
+        raise HTTPException(status_code=500, detail="Skills Hub not available")
+
+    try:
+        version = skills_hub_manager.create_version(
+            skill_id=skill_id,
+            version=request.version,
+            content=request.content,
+            created_by="anonymous",
+            changelog=request.changelog,
+            metadata=request.metadata
+        )
+        return {"success": True, "version": version.model_dump()}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/skillshub/skills/{skill_id}/versions/{version_id}/submit")
+async def submit_version_for_review(version_id: str, submitter_id: str = "anonymous"):
+    """Submit a version for review"""
+    if not skills_hub_manager:
+        raise HTTPException(status_code=500, detail="Skills Hub not available")
+
+    try:
+        version = skills_hub_manager.submit_for_review(version_id, submitter_id)
+        if version:
+            return {"success": True, "version": version.model_dump()}
+        raise HTTPException(status_code=404, detail="Version not found")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/api/skillshub/reviews/pending")
+async def get_pending_reviews(namespace_id: Optional[str] = None):
+    """Get pending review tasks"""
+    if not skills_hub_manager:
+        return {"reviews": [], "count": 0}
+    reviews = skills_hub_manager.get_pending_reviews(namespace_id=namespace_id)
+    return {"reviews": [r.model_dump() for r in reviews], "count": len(reviews)}
+
+
+@app.post("/api/skillshub/reviews/{review_id}/approve")
+async def approve_review(review_id: str, request: ReviewApproveRequest):
+    """Approve a review task"""
+    if not skills_hub_manager:
+        raise HTTPException(status_code=500, detail="Skills Hub not available")
+
+    version = skills_hub_manager.approve_version(
+        review_id=review_id,
+        reviewer_id=request.reviewer_id,
+        comment=request.comment
+    )
+    if version:
+        return {"success": True, "version": version.model_dump()}
+    raise HTTPException(status_code=404, detail="Review not found")
+
+
+@app.post("/api/skillshub/reviews/{review_id}/reject")
+async def reject_review(review_id: str, request: ReviewRejectRequest):
+    """Reject a review task"""
+    if not skills_hub_manager:
+        raise HTTPException(status_code=500, detail="Skills Hub not available")
+
+    version = skills_hub_manager.reject_version(
+        review_id=review_id,
+        reviewer_id=request.reviewer_id,
+        reason=request.reason
+    )
+    if version:
+        return {"success": True, "version": version.model_dump()}
+    raise HTTPException(status_code=404, detail="Review not found")
+
+
+@app.post("/api/skillshub/promotions")
+async def request_promotion(request: PromotionRequestCreate):
+    """Request promotion of a skill to global namespace"""
+    if not skills_hub_manager:
+        raise HTTPException(status_code=500, detail="Skills Hub not available")
+
+    try:
+        promotion = skills_hub_manager.request_promotion(
+            source_skill_id=request.source_skill_id,
+            source_version_id=request.source_version_id,
+            submitter_id=request.submitter_id,
+            target_namespace_id=request.target_namespace_id
+        )
+        return {"success": True, "promotion": promotion.model_dump()}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/api/skillshub/promotions/pending")
+async def get_pending_promotions():
+    """Get pending promotion requests"""
+    if not skills_hub_manager:
+        return {"promotions": [], "count": 0}
+    promotions = skills_hub_manager.get_pending_promotions()
+    return {"promotions": [p.model_dump() for p in promotions], "count": len(promotions)}
+
+
+@app.post("/api/skillshub/promotions/{promotion_id}/approve")
+async def approve_promotion(promotion_id: str, request: ReviewApproveRequest):
+    """Approve a promotion request"""
+    if not skills_hub_manager:
+        raise HTTPException(status_code=500, detail="Skills Hub not available")
+
+    skill = skills_hub_manager.approve_promotion(
+        promotion_id=promotion_id,
+        reviewer_id=request.reviewer_id,
+        comment=request.comment
+    )
+    if skill:
+        return {"success": True, "skill": skill.model_dump()}
+    raise HTTPException(status_code=404, detail="Promotion not found")
+
+
+@app.post("/api/skillshub/promotions/{promotion_id}/reject")
+async def reject_promotion(promotion_id: str, request: ReviewRejectRequest):
+    """Reject a promotion request"""
+    if not skills_hub_manager:
+        raise HTTPException(status_code=500, detail="Skills Hub not available")
+
+    promotion = skills_hub_manager.reject_promotion(
+        promotion_id=promotion_id,
+        reviewer_id=request.reviewer_id,
+        reason=request.reason
+    )
+    if promotion:
+        return {"success": True, "promotion": promotion.model_dump()}
+    raise HTTPException(status_code=404, detail="Promotion not found")
+
+
+@app.post("/api/skillshub/skills/{skill_id}/star")
+async def star_skill(skill_id: str, user_id: str = "anonymous"):
+    """Star a skill"""
+    if skills_hub_manager:
+        success = skills_hub_manager.star_skill(skill_id, user_id)
+        return {"success": success}
+
     if skill_id in skills_storage:
         skills_storage[skill_id]["likes"] = skills_storage[skill_id].get("likes", 0) + 1
     return {"success": True}
+
+
+@app.post("/api/skillshub/skills/{skill_id}/unstar")
+async def unstar_skill(skill_id: str, user_id: str = "anonymous"):
+    """Unstar a skill"""
+    if skills_hub_manager:
+        success = skills_hub_manager.unstar_skill(skill_id, user_id)
+        return {"success": success}
+
+    if skill_id in skills_storage:
+        skills_storage[skill_id]["likes"] = max(0, skills_storage[skill_id].get("likes", 0) - 1)
+    return {"success": True}
+
+
+@app.post("/api/skillshub/skills/{skill_id}/rate")
+async def rate_skill(skill_id: str, request: SkillRatingRequest):
+    """Rate a skill"""
+    if not skills_hub_manager:
+        raise HTTPException(status_code=500, detail="Skills Hub not available")
+
+    try:
+        rating = skills_hub_manager.rate_skill(skill_id, request.user_id, request.score)
+        return {"success": True, "rating": rating.model_dump()}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/api/skillshub/search")
+async def search_skills(query: str = "", namespace_id: Optional[str] = None, visibility: Optional[str] = None, category: Optional[str] = None, limit: int = 20):
+    """Search for skills"""
+    if skills_hub_manager:
+        result = skills_hub_manager.search_skills(query=query, namespace_id=namespace_id, visibility=visibility, category=category, limit=limit)
+        return result.model_dump()
+    return {"skills": [], "total_count": 0, "query": query}
+
+
+@app.get("/api/skillshub/skills/popular")
+async def get_popular_skills(namespace_id: Optional[str] = None, limit: int = 10):
+    """Get popular skills"""
+    if skills_hub_manager:
+        skills = skills_hub_manager.get_popular_skills(namespace_id=namespace_id, limit=limit)
+        return {"skills": [s.model_dump() for s in skills], "count": len(skills)}
+    return {"skills": [], "count": 0}
+
+
+@app.get("/api/skillshub/skills/recent")
+async def get_recent_skills(namespace_id: Optional[str] = None, limit: int = 10):
+    """Get recently updated skills"""
+    if skills_hub_manager:
+        skills = skills_hub_manager.get_recent_skills(namespace_id=namespace_id, limit=limit)
+        return {"skills": [s.model_dump() for s in skills], "count": len(skills)}
+    return {"skills": [], "count": 0}
 
 
 # ==========================================
@@ -449,7 +759,7 @@ async def get_costs():
 # ==========================================
 
 @app.get("/api/skillwiki/search")
-async def search_wiki(query: str):
+async def search_wiki(query: str = ""):
     """Search the skill wiki"""
     return {
         "query": query,
@@ -476,7 +786,7 @@ async def get_knowledge_graph():
 async def create_experiment(request: ExperimentCreateRequest):
     """Create a new AutoSkill experiment"""
     experiment_id = f"exp_{int(datetime.now().timestamp())}"
-    
+
     experiment_data = {
         "id": experiment_id,
         "name": request.name,
@@ -486,9 +796,9 @@ async def create_experiment(request: ExperimentCreateRequest):
         "status": "created",
         "created_at": datetime.now().isoformat()
     }
-    
+
     experiments_storage[experiment_id] = experiment_data
-    
+
     return {"success": True, "experiment": experiment_data}
 
 
@@ -503,7 +813,7 @@ async def get_experiment(experiment_id: str):
     """Get a specific experiment"""
     if experiment_id not in experiments_storage:
         raise HTTPException(status_code=404, detail="Experiment not found")
-    
+
     return {"experiment": experiments_storage[experiment_id]}
 
 
@@ -512,16 +822,16 @@ async def start_experiment(experiment_id: str):
     """Start an AutoSkill experiment"""
     if experiment_id not in experiments_storage:
         raise HTTPException(status_code=404, detail="Experiment not found")
-    
+
     experiments_storage[experiment_id]["status"] = "running"
     experiments_storage[experiment_id]["started_at"] = datetime.now().isoformat()
     active_experiments[experiment_id] = experiments_storage[experiment_id]
-    
+
     await manager.broadcast({
         "type": "experiment_started",
         "data": experiments_storage[experiment_id]
     })
-    
+
     return {"success": True}
 
 
@@ -530,11 +840,11 @@ async def stop_experiment(experiment_id: str):
     """Stop a running AutoSkill experiment"""
     if experiment_id not in experiments_storage:
         raise HTTPException(status_code=404, detail="Experiment not found")
-    
+
     experiments_storage[experiment_id]["status"] = "stopped"
     if experiment_id in active_experiments:
         del active_experiments[experiment_id]
-    
+
     return {"success": True}
 
 
@@ -565,7 +875,7 @@ async def websocket_endpoint(websocket: WebSocket):
 frontend_dist = BASE_DIR.parent / "frontend" / "dist"
 if frontend_dist.exists():
     app.mount("/static", StaticFiles(directory=str(frontend_dist / "assets")), name="static")
-    
+
     @app.get("/{path:path}")
     async def serve_frontend(path: str):
         """Serve frontend application"""

@@ -19,6 +19,7 @@ from .hub import (
 )
 from .manager import (
     HubManager,
+    SkillsHubManager,
     PublishRequest,
     SearchResult,
     HubStatistics,
@@ -45,6 +46,7 @@ __all__ = [
     "RepositoryEvent",
     "ForkRecord",
     "HubManager",
+    "SkillsHubManager",
     "PublishRequest",
     "SearchResult",
     "HubStatistics",

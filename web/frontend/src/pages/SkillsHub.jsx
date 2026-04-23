@@ -45,7 +45,7 @@ const SkillsHub = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch('http://localhost:3003/api/stats/overview')
+      const response = await fetch('http://localhost:8000/api/skillshub/stats')
       const data = await response.json()
       setStats(data)
     } catch (error) {
@@ -55,9 +55,9 @@ const SkillsHub = () => {
 
   const fetchTrendingSkills = async () => {
     try {
-      const response = await fetch('http://localhost:3003/api/skills/trending?limit=6')
+      const response = await fetch('http://localhost:8000/api/skillshub/skills/popular?limit=6')
       const data = await response.json()
-      setTrendingSkills(data.skills)
+      setTrendingSkills(data.skills || [])
     } catch (error) {
       console.error('Error fetching trending skills:', error)
     }
@@ -65,9 +65,9 @@ const SkillsHub = () => {
 
   const fetchRecentSkills = async () => {
     try {
-      const response = await fetch('http://localhost:3003/api/skills/recent?limit=8')
+      const response = await fetch('http://localhost:8000/api/skillshub/skills/recent?limit=8')
       const data = await response.json()
-      setRecentSkills(data.skills)
+      setRecentSkills(data.skills || [])
     } catch (error) {
       console.error('Error fetching recent skills:', error)
     }
@@ -75,9 +75,9 @@ const SkillsHub = () => {
 
   const fetchRecommendedSkills = async () => {
     try {
-      const response = await fetch('http://localhost:3003/api/skills/recommended?limit=6')
+      const response = await fetch('http://localhost:8000/api/skillshub/skills/popular?limit=6')
       const data = await response.json()
-      setRecommendedSkills(data.skills)
+      setRecommendedSkills(data.skills || [])
     } catch (error) {
       console.error('Error fetching recommended skills:', error)
     }
@@ -85,9 +85,9 @@ const SkillsHub = () => {
 
   const fetchPopularSkills = async () => {
     try {
-      const response = await fetch('http://localhost:3003/api/skills/popular?limit=10')
+      const response = await fetch('http://localhost:8000/api/skillshub/skills/popular?limit=10')
       const data = await response.json()
-      setPopularSkills(data.skills)
+      setPopularSkills(data.skills || [])
     } catch (error) {
       console.error('Error fetching popular skills:', error)
     }
@@ -95,42 +95,40 @@ const SkillsHub = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://localhost:3003/api/categories')
+      const response = await fetch('http://localhost:8000/api/skillshub/stats')
       const data = await response.json()
-      setCategories(data.categories)
+      // Extract categories from top_categories if available
+      if (data.top_categories) {
+        setCategories(data.top_categories.map(([cat]) => cat))
+      } else {
+        setCategories([])
+      }
     } catch (error) {
       console.error('Error fetching categories:', error)
     }
   }
 
   const fetchTags = async () => {
-    try {
-      const response = await fetch('http://localhost:3003/api/tags')
-      const data = await response.json()
-      setTags(data.tags)
-    } catch (error) {
-      console.error('Error fetching tags:', error)
-    }
+    // TODO: Implement tag API endpoint later
+    setTags([])
   }
 
   const fetchSkills = async () => {
     setLoading(true)
     try {
       const params = new URLSearchParams({
-        page,
-        page_size: 12,
-        sort_by: sortBy,
-        sort_order: sortOrder
+        limit: 12,
+        offset: (page - 1) * 12
       })
       if (selectedCategory) {
         params.append('category', selectedCategory)
       }
       
-      const response = await fetch(`http://localhost:3003/api/skills?${params}`)
+      const response = await fetch(`http://localhost:8000/api/skills?${params}`)
       const data = await response.json()
-      setSkills(data.skills)
-      setTotal(data.total)
-      setHasNext(data.has_next)
+      setSkills(data.skills || [])
+      setTotal(data.skills?.length || 0)
+      setHasNext(false)
     } catch (error) {
       console.error('Error fetching skills:', error)
     } finally {
@@ -141,23 +139,17 @@ const SkillsHub = () => {
   const searchSkills = async () => {
     setLoading(true)
     try {
-      const response = await fetch('http://localhost:3003/api/skills/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: searchQuery,
-          category: selectedCategory || undefined,
-          tags: selectedTags.length > 0 ? selectedTags : undefined,
-          sort_by: sortBy,
-          sort_order: sortOrder,
-          page,
-          page_size: 12
-        })
+      const params = new URLSearchParams({
+        query: searchQuery,
+        limit: 12
       })
+      if (selectedCategory) params.append('category', selectedCategory)
+      
+      const response = await fetch(`http://localhost:8000/api/skillshub/search?${params}`)
       const data = await response.json()
-      setSkills(data.skills)
-      setTotal(data.total)
-      setHasNext(data.has_next)
+      setSkills(data.skills || [])
+      setTotal(data.total_count || 0)
+      setHasNext(false)
     } catch (error) {
       console.error('Error searching skills:', error)
     } finally {

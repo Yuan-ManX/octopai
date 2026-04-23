@@ -111,7 +111,127 @@ export const api = {
   skillsHub: {
     getStats: () => apiRequest('/skillshub/stats'),
 
-    likeSkill: (skillId) => apiRequest(`/skillshub/skills/${skillId}/like`, {
+    // Namespace endpoints
+    listNamespaces: (user_id, namespace_type) => {
+      let query = ''
+      const params = []
+      if (user_id) params.push(`user_id=${encodeURIComponent(user_id)}`)
+      if (namespace_type) params.push(`namespace_type=${encodeURIComponent(namespace_type)}`)
+      if (params.length > 0) query = `?${params.join('&')}`
+      return apiRequest(`/skillshub/namespaces${query}`)
+    },
+
+    createNamespace: (data) => apiRequest('/skillshub/namespaces', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+
+    getNamespace: (namespaceId) => apiRequest(`/skillshub/namespaces/${namespaceId}`),
+
+    // Skill endpoints
+    listSkills: (category, namespaceId) => {
+      const params = []
+      if (category) params.push(`category=${encodeURIComponent(category)}`)
+      if (namespaceId) params.push(`namespace_id=${encodeURIComponent(namespaceId)}`)
+      const query = params.length > 0 ? `?${params.join('&')}` : ''
+      return apiRequest(`/skillshub/skills${query}`)
+    },
+
+    createSkillVersion: (skillId, data) => apiRequest(`/skillshub/skills/${skillId}/versions`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+
+    submitVersionForReview: (skillId, versionId, submitterId = 'anonymous') => {
+      const query = submitterId ? `?submitter_id=${encodeURIComponent(submitterId)}` : ''
+      return apiRequest(`/skillshub/skills/${skillId}/versions/${versionId}/submit${query}`, {
+        method: 'POST'
+      })
+    },
+
+    // Review endpoints
+    getPendingReviews: (namespaceId) => {
+      const query = namespaceId ? `?namespace_id=${encodeURIComponent(namespaceId)}` : ''
+      return apiRequest(`/skillshub/reviews/pending${query}`)
+    },
+
+    approveReview: (reviewId, data) => apiRequest(`/skillshub/reviews/${reviewId}/approve`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+
+    rejectReview: (reviewId, data) => apiRequest(`/skillshub/reviews/${reviewId}/reject`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+
+    // Promotion endpoints
+    requestPromotion: (data) => apiRequest('/skillshub/promotions', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+
+    getPendingPromotions: () => apiRequest('/skillshub/promotions/pending'),
+
+    approvePromotion: (promotionId, data) => apiRequest(`/skillshub/promotions/${promotionId}/approve`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+
+    rejectPromotion: (promotionId, data) => apiRequest(`/skillshub/promotions/${promotionId}/reject`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+
+    // Star and Rating endpoints
+    starSkill: (skillId, userId = 'anonymous') => {
+      const query = userId ? `?user_id=${encodeURIComponent(userId)}` : ''
+      return apiRequest(`/skillshub/skills/${skillId}/star${query}`, {
+        method: 'POST'
+      })
+    },
+
+    unstarSkill: (skillId, userId = 'anonymous') => {
+      const query = userId ? `?user_id=${encodeURIComponent(userId)}` : ''
+      return apiRequest(`/skillshub/skills/${skillId}/unstar${query}`, {
+        method: 'POST'
+      })
+    },
+
+    rateSkill: (skillId, data) => apiRequest(`/skillshub/skills/${skillId}/rate`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+
+    // Search and discovery endpoints
+    searchSkills: (query, namespaceId, visibility, category, limit) => {
+      const params = []
+      if (query) params.push(`query=${encodeURIComponent(query)}`)
+      if (namespaceId) params.push(`namespace_id=${encodeURIComponent(namespaceId)}`)
+      if (visibility) params.push(`visibility=${encodeURIComponent(visibility)}`)
+      if (category) params.push(`category=${encodeURIComponent(category)}`)
+      if (limit) params.push(`limit=${encodeURIComponent(limit)}`)
+      const queryStr = params.length > 0 ? `?${params.join('&')}` : ''
+      return apiRequest(`/skillshub/search${queryStr}`)
+    },
+
+    getPopularSkills: (namespaceId, limit) => {
+      const params = []
+      if (namespaceId) params.push(`namespace_id=${encodeURIComponent(namespaceId)}`)
+      if (limit) params.push(`limit=${encodeURIComponent(limit)}`)
+      const queryStr = params.length > 0 ? `?${params.join('&')}` : ''
+      return apiRequest(`/skillshub/skills/popular${queryStr}`)
+    },
+
+    getRecentSkills: (namespaceId, limit) => {
+      const params = []
+      if (namespaceId) params.push(`namespace_id=${encodeURIComponent(namespaceId)}`)
+      if (limit) params.push(`limit=${encodeURIComponent(limit)}`)
+      const queryStr = params.length > 0 ? `?${params.join('&')}` : ''
+      return apiRequest(`/skillshub/skills/recent${queryStr}`)
+    },
+
+    likeSkill: (skillId) => apiRequest(`/skillshub/skills/${skillId}/star`, {
       method: 'POST'
     })
   },
