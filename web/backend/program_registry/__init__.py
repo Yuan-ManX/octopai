@@ -1,9 +1,27 @@
 """
-Program Registry - Program Version Management System
-Registry for managing agent program versions
+Octopai Program Registry
+
+A comprehensive system for managing, evolving, and versioning
+AI agent programs with frontier management capabilities.
 """
+from program_registry.models import (
+    ProgramStatus,
+    SkillType,
+    SkillMetadata,
+    Skill,
+    ProgramConfig,
+    ProgramEntry,
+    Experiment
+)
+from program_registry.manager import ProgramRegistry
 
-from .manager import ProgramManager
-from .models import ProgramConfig, ProgramMetadata
-
-__all__ = ['ProgramManager', 'ProgramConfig', 'ProgramMetadata']
+__all__ = [
+    "ProgramStatus",
+    "SkillType",
+    "SkillMetadata",
+    "Skill",
+    "ProgramConfig",
+    "ProgramEntry",
+    "Experiment",
+    "ProgramRegistry"
+]
