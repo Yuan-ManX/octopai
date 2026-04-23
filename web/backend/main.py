@@ -95,21 +95,32 @@ DATA_DIR.mkdir(exist_ok=True)
 # Initialize core systems from octopai
 if octopai_available:
     try:
-        # Initialize skill registry
-        skill_registry = SkillRegistry(
-            storage_path=DATA_DIR / "registry"
-        )
-
-        # Initialize skills hub manager
+        # Initialize skills hub manager first (we know this works!)
         skills_hub_manager = SkillsHubManager(
             storage_dir=DATA_DIR / "skillshub"
         )
-
-        # Initialize tracer and cost tracker
-        tracer = OctoTracer(
-            config={"storage": "in-memory"}
-        )
-        cost_tracker = CostTracker()
+        print("✅ SkillsHubManager initialized successfully!")
+        
+        # Try to initialize other components, but don't fail everything if one fails
+        try:
+            # Initialize skill registry
+            skill_registry = SkillRegistry(
+                storage_path=DATA_DIR / "registry"
+            )
+        except Exception as registry_err:
+            print(f"⚠️  SkillRegistry not initialized: {registry_err}")
+            skill_registry = None
+            
+        try:
+            # Initialize tracer and cost tracker
+            tracer = OctoTracer(
+                config={"storage": "in-memory"}
+            )
+            cost_tracker = CostTracker()
+        except Exception as tracer_err:
+            print(f"⚠️  Tracer not initialized: {tracer_err}")
+            tracer = None
+            cost_tracker = None
 
     except Exception as e:
         print(f"Warning: Some octopai components not fully initialized: {e}")
@@ -134,6 +145,39 @@ skills_storage: Dict[str, Dict] = {}
 programs_storage: Dict[str, Dict] = {}
 experiments_storage: Dict[str, Dict] = {}
 feedback_storage: List[Dict] = []
+
+
+# ==========================================
+# Helper function to convert models to dicts
+# ==========================================
+from dataclasses import asdict
+from datetime import datetime
+from pydantic import BaseModel
+
+def model_to_dict(obj):
+    """Convert a model (Pydantic or dataclass) to a dict, handling datetimes properly"""
+    if isinstance(obj, BaseModel):
+        # Use Pydantic's model_dump
+        obj_dict = obj.model_dump()
+    elif hasattr(obj, "__dataclass_fields__"):
+        # Use asdict for dataclasses
+        obj_dict = asdict(obj)
+    else:
+        return obj
+    
+    # Convert datetime objects to isoformat strings recursively
+    def convert_dates(v):
+        if isinstance(v, datetime):
+            return v.isoformat()
+        elif isinstance(v, list):
+            return [convert_dates(item) for item in v]
+        elif isinstance(v, dict):
+            return {k: convert_dates(val) for k, val in v.items()}
+        elif isinstance(v, BaseModel) or hasattr(v, "__dataclass_fields__"):
+            return model_to_dict(v)
+        return v
+    
+    return convert_dates(obj_dict)
 
 
 # ==========================================
@@ -321,7 +365,7 @@ async def list_skills(category: Optional[str] = None, namespace: Optional[str] =
     # Use Skills Hub if available
     if skills_hub_manager:
         skills_list = skills_hub_manager.list_skills(namespace_id=namespace, category=category)
-        return {"skills": [s.model_dump() for s in skills_list], "count": len(skills_list)}
+        return {"skills": [model_to_dict(s) for s in skills_list], "count": len(skills_list)}
 
     # Fallback to in-memory storage
     skills_list = list(skills_storage.values())
@@ -336,7 +380,7 @@ async def get_skill(skill_id: str):
     if skills_hub_manager:
         skill = skills_hub_manager.get_skill(skill_id)
         if skill:
-            return {"skill": skill.model_dump()}
+            return {"skill": model_to_dict(skill)}
         raise HTTPException(status_code=404, detail="Skill not found")
 
     if skill_id not in skills_storage:
@@ -356,7 +400,7 @@ async def update_skill(skill_id: str, request: SkillCreateRequest):
             topics=request.topics
         )
         if updated:
-            return {"success": True, "skill": updated.model_dump()}
+            return {"success": True, "skill": model_to_dict(updated)}
         raise HTTPException(status_code=404, detail="Skill not found")
 
     if skill_id not in skills_storage:
@@ -482,7 +526,7 @@ async def get_hub_stats():
     """Get Skills Hub statistics"""
     if skills_hub_manager:
         stats = skills_hub_manager.get_statistics()
-        return stats.model_dump()
+        return model_to_dict(stats)
 
     return {
         "total_skills": len(skills_storage),
@@ -497,7 +541,7 @@ async def list_namespaces(user_id: Optional[str] = None, namespace_type: Optiona
     """List all namespaces"""
     if skills_hub_manager:
         namespaces = skills_hub_manager.list_namespaces(user_id=user_id, namespace_type=namespace_type)
-        return {"namespaces": [ns.model_dump() for ns in namespaces], "count": len(namespaces)}
+        return {"namespaces": [model_to_dict(ns) for ns in namespaces], "count": len(namespaces)}
     return {"namespaces": [], "count": 0}
 
 
@@ -514,7 +558,7 @@ async def create_namespace(request: NamespaceCreateRequest):
             description=request.description,
             namespace_type=request.namespace_type
         )
-        return {"success": True, "namespace": namespace.model_dump()}
+        return {"success": True, "namespace": model_to_dict(namespace)}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -527,7 +571,7 @@ async def get_namespace(namespace_id: str):
     namespace = skills_hub_manager.get_namespace(namespace_id)
     if not namespace:
         raise HTTPException(status_code=404, detail="Namespace not found")
-    return {"namespace": namespace.model_dump()}
+    return {"namespace": model_to_dict(namespace)}
 
 
 @app.post("/api/skillshub/skills/{skill_id}/versions")
@@ -545,7 +589,7 @@ async def create_skill_version(skill_id: str, request: SkillVersionCreateRequest
             changelog=request.changelog,
             metadata=request.metadata
         )
-        return {"success": True, "version": version.model_dump()}
+        return {"success": True, "version": model_to_dict(version)}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -559,7 +603,7 @@ async def submit_version_for_review(version_id: str, submitter_id: str = "anonym
     try:
         version = skills_hub_manager.submit_for_review(version_id, submitter_id)
         if version:
-            return {"success": True, "version": version.model_dump()}
+            return {"success": True, "version": model_to_dict(version)}
         raise HTTPException(status_code=404, detail="Version not found")
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -571,7 +615,7 @@ async def get_pending_reviews(namespace_id: Optional[str] = None):
     if not skills_hub_manager:
         return {"reviews": [], "count": 0}
     reviews = skills_hub_manager.get_pending_reviews(namespace_id=namespace_id)
-    return {"reviews": [r.model_dump() for r in reviews], "count": len(reviews)}
+    return {"reviews": [model_to_dict(r) for r in reviews], "count": len(reviews)}
 
 
 @app.post("/api/skillshub/reviews/{review_id}/approve")
@@ -586,7 +630,7 @@ async def approve_review(review_id: str, request: ReviewApproveRequest):
         comment=request.comment
     )
     if version:
-        return {"success": True, "version": version.model_dump()}
+        return {"success": True, "version": model_to_dict(version)}
     raise HTTPException(status_code=404, detail="Review not found")
 
 
@@ -602,7 +646,7 @@ async def reject_review(review_id: str, request: ReviewRejectRequest):
         reason=request.reason
     )
     if version:
-        return {"success": True, "version": version.model_dump()}
+        return {"success": True, "version": model_to_dict(version)}
     raise HTTPException(status_code=404, detail="Review not found")
 
 
@@ -619,7 +663,7 @@ async def request_promotion(request: PromotionRequestCreate):
             submitter_id=request.submitter_id,
             target_namespace_id=request.target_namespace_id
         )
-        return {"success": True, "promotion": promotion.model_dump()}
+        return {"success": True, "promotion": model_to_dict(promotion)}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -630,7 +674,7 @@ async def get_pending_promotions():
     if not skills_hub_manager:
         return {"promotions": [], "count": 0}
     promotions = skills_hub_manager.get_pending_promotions()
-    return {"promotions": [p.model_dump() for p in promotions], "count": len(promotions)}
+    return {"promotions": [model_to_dict(p) for p in promotions], "count": len(promotions)}
 
 
 @app.post("/api/skillshub/promotions/{promotion_id}/approve")
@@ -645,7 +689,7 @@ async def approve_promotion(promotion_id: str, request: ReviewApproveRequest):
         comment=request.comment
     )
     if skill:
-        return {"success": True, "skill": skill.model_dump()}
+        return {"success": True, "skill": model_to_dict(skill)}
     raise HTTPException(status_code=404, detail="Promotion not found")
 
 
@@ -661,7 +705,7 @@ async def reject_promotion(promotion_id: str, request: ReviewRejectRequest):
         reason=request.reason
     )
     if promotion:
-        return {"success": True, "promotion": promotion.model_dump()}
+        return {"success": True, "promotion": model_to_dict(promotion)}
     raise HTTPException(status_code=404, detail="Promotion not found")
 
 
@@ -697,7 +741,7 @@ async def rate_skill(skill_id: str, request: SkillRatingRequest):
 
     try:
         rating = skills_hub_manager.rate_skill(skill_id, request.user_id, request.score)
-        return {"success": True, "rating": rating.model_dump()}
+        return {"success": True, "rating": model_to_dict(rating)}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -707,7 +751,8 @@ async def search_skills(query: str = "", namespace_id: Optional[str] = None, vis
     """Search for skills"""
     if skills_hub_manager:
         result = skills_hub_manager.search_skills(query=query, namespace_id=namespace_id, visibility=visibility, category=category, limit=limit)
-        return result.model_dump()
+        result_dict = model_to_dict(result)
+        return result_dict
     return {"skills": [], "total_count": 0, "query": query}
 
 
@@ -716,7 +761,7 @@ async def get_popular_skills(namespace_id: Optional[str] = None, limit: int = 10
     """Get popular skills"""
     if skills_hub_manager:
         skills = skills_hub_manager.get_popular_skills(namespace_id=namespace_id, limit=limit)
-        return {"skills": [s.model_dump() for s in skills], "count": len(skills)}
+        return {"skills": [model_to_dict(s) for s in skills], "count": len(skills)}
     return {"skills": [], "count": 0}
 
 
@@ -725,7 +770,7 @@ async def get_recent_skills(namespace_id: Optional[str] = None, limit: int = 10)
     """Get recently updated skills"""
     if skills_hub_manager:
         skills = skills_hub_manager.get_recent_skills(namespace_id=namespace_id, limit=limit)
-        return {"skills": [s.model_dump() for s in skills], "count": len(skills)}
+        return {"skills": [model_to_dict(s) for s in skills], "count": len(skills)}
     return {"skills": [], "count": 0}
 
 
