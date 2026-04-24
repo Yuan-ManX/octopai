@@ -444,7 +444,7 @@ class CostTracker:
         if not recent_records:
             return {
                 "period_days": time_range_days,
-                "total_traces_tracked": len(recentance_records),
+                "total_traces_tracked": len(recent_records),
                 "total_cost_usd": 0.0,
                 "total_tokens": 0,
                 "avg_cost_per_trace": 0.0,

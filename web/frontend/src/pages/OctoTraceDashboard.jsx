@@ -23,7 +23,7 @@ const OctoTraceDashboard = () => {
 
   const fetchTraceData = async () => {
     try {
-      const response = await fetch('http://localhost:3005/api/v1/traces?limit=20')
+      const response = await fetch('http://127.0.0.1:8000/api/octotrace/traces?limit=20')
       if (response.ok) {
         const data = await response.json()
         setTraces(data.traces || [])
@@ -40,9 +40,14 @@ const OctoTraceDashboard = () => {
 
   const fetchCostData = async () => {
     try {
-      const response = await fetch('http://localhost:3005/api/v1/tracing/costs')
-      if (response.ok) {
-        setCostData(await response.json())
+      const overviewResponse = await fetch('http://127.0.0.1:8000/api/octotrace/overview')
+      if (overviewResponse.ok) {
+        const overviewData = await overviewResponse.json()
+        const costResponse = await fetch('http://127.0.0.1:8000/api/octotrace/costs')
+        if (costResponse.ok) {
+          const costData = await costResponse.json()
+          setCostData({ ...overviewData, ...costData })
+        }
       }
     } catch (error) {
       console.error('Error fetching cost data:', error)

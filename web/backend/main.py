@@ -47,6 +47,9 @@ try:
         # Tracing
         OctoTracer,
         CostTracker,
+        TracerConfig,
+        InMemoryStorage,
+        FileStorage,
 
         # Skills Hub
         HubManager as SkillsHubManager,
@@ -68,6 +71,9 @@ except ImportError as e:
     SkillHub = None
     OctoTracer = None
     CostTracker = None
+    TracerConfig = None
+    InMemoryStorage = None
+    FileStorage = None
     SkillsHubManager = None
 
 
@@ -101,29 +107,45 @@ if octopai_available:
         )
         print("✅ SkillsHubManager initialized successfully!")
         
-        # Try to initialize other components, but don't fail everything if one fails
+        # Initialize OctoTracer with FileStorage
+        tracer_config = TracerConfig(
+            project_id="octopai-api",
+            service_name="octopai-api",
+            include_inputs=True,
+            include_outputs=True
+        )
+        
+        # Ensure trace storage directory exists
+        trace_storage_dir = DATA_DIR / "traces"
+        trace_storage_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Initialize FileStorage
+        trace_storage = FileStorage(storage_dir=trace_storage_dir)
+        
+        # Initialize OctoTracer
+        tracer = OctoTracer(
+            config=tracer_config,
+            storage=trace_storage
+        )
+        print("✅ OctoTracer initialized successfully!")
+        
+        # Initialize CostTracker
+        cost_tracker = CostTracker()
+        print("✅ CostTracker initialized successfully!")
+        
+        # Try to initialize skill registry
         try:
-            # Initialize skill registry
             skill_registry = SkillRegistry(
                 storage_path=DATA_DIR / "registry"
             )
         except Exception as registry_err:
             print(f"⚠️  SkillRegistry not initialized: {registry_err}")
             skill_registry = None
-            
-        try:
-            # Initialize tracer and cost tracker
-            tracer = OctoTracer(
-                config={"storage": "in-memory"}
-            )
-            cost_tracker = CostTracker()
-        except Exception as tracer_err:
-            print(f"⚠️  Tracer not initialized: {tracer_err}")
-            tracer = None
-            cost_tracker = None
 
     except Exception as e:
         print(f"Warning: Some octopai components not fully initialized: {e}")
+        import traceback
+        traceback.print_exc()
         # Create simple in-memory storages as fallback
         skill_registry = None
         skills_hub_manager = None
@@ -781,10 +803,39 @@ async def get_recent_skills(namespace_id: Optional[str] = None, limit: int = 10)
 @app.get("/api/octotrace/overview")
 async def get_trace_overview():
     """Get OctoTrace overview"""
+    try:
+        if tracer:
+            # List traces to get count
+            trace_list = tracer.list_traces(limit=100)
+            total_traces = len(trace_list.data) if hasattr(trace_list, 'data') else 0
+            
+            # Calculate aggregated stats
+            if cost_tracker:
+                cost_stats = cost_tracker.get_cost_statistics()
+                total_cost = cost_stats.get('total_cost_usd', 0.0)
+                total_tokens = cost_stats.get('total_tokens', 0)
+                return {
+                    "total_traces": total_traces,
+                    "active_sessions": 0,
+                    "total_cost": total_cost,
+                    "total_tokens": total_tokens,
+                    "average_latency": 0.0,
+                    "cost_stats": cost_stats
+                }
+            return {
+                "total_traces": total_traces,
+                "active_sessions": 0,
+                "total_cost": 0.0,
+                "total_tokens": 0,
+                "average_latency": 0.0
+            }
+    except Exception as e:
+        print(f"Error getting overview: {e}")
     return {
         "total_traces": 0,
         "active_sessions": 0,
         "total_cost": 0.0,
+        "total_tokens": 0,
         "average_latency": 0.0
     }
 
@@ -792,11 +843,136 @@ async def get_trace_overview():
 @app.get("/api/octotrace/costs")
 async def get_costs():
     """Get cost tracking data"""
+    try:
+        if cost_tracker:
+            cost_stats = cost_tracker.get_cost_statistics()
+            suggestions = cost_tracker.get_optimization_suggestions()
+            return {
+                "model_usage": cost_stats.get('most_expensive_models', []),
+                "total_cost": cost_stats.get('total_cost_usd', 0.0),
+                "total_tokens": cost_stats.get('total_tokens', 0),
+                "budget_remaining": 100.0,
+                "cost_stats": cost_stats,
+                "suggestions": suggestions
+            }
+    except Exception as e:
+        print(f"Error getting costs: {e}")
     return {
         "model_usage": [],
         "total_cost": 0.0,
+        "total_tokens": 0,
         "budget_remaining": 100.0
     }
+
+
+@app.get("/api/octotrace/traces")
+async def list_traces(page: int = 0, limit: int = 20, project_id: str = None, search: str = None, status: str = None):
+    """List all traces"""
+    try:
+        if tracer:
+            filters = {}
+            if search:
+                filters['search'] = search
+            if status:
+                filters['status'] = status
+            result = tracer.list_traces(
+                project_id=project_id,
+                page=page,
+                page_size=limit,
+                filters=filters
+            )
+            
+            traces_data = [model_to_dict(trace) for trace in result.data] if hasattr(result, 'data') else []
+            return {
+                "traces": traces_data,
+                "total": result.total if hasattr(result, 'total') else len(traces_data),
+                "page": page,
+                "limit": limit
+            }
+    except Exception as e:
+        print(f"Error listing traces: {e}")
+    return {"traces": [], "total": 0, "page": page, "limit": limit}
+
+
+@app.get("/api/octotrace/traces/{trace_id}")
+async def get_trace_detail(trace_id: str):
+    """Get detailed information about a specific trace"""
+    try:
+        if tracer:
+            trace = tracer.get_trace(trace_id)
+            if trace:
+                return {"trace": model_to_dict(trace)}
+    except Exception as e:
+        print(f"Error getting trace: {e}")
+    raise HTTPException(status_code=404, detail=f"Trace {trace_id} not found")
+
+
+@app.post("/api/octotrace/traces")
+async def create_test_trace():
+    """Create a test trace for demonstration purposes"""
+    try:
+        if tracer:
+            # Create a test trace
+            import time
+            trace = tracer.create_trace(
+                name="Test Trace",
+                project_id="octopai-api",
+                user_id="system",
+                input_data={"test": "input"},
+                tags=["test", "demo"],
+                metadata={"source": "api"}
+            )
+            
+            # Create some spans - don't specify kind to use default 'internal'
+            with tracer.start_span(trace, "LLM Call to GPT-4") as span:
+                time.sleep(0.1)
+                tracer.end_span(
+                    span,
+                    output_data={"response": "test"},
+                    cost=0.0015,
+                    input_tokens=500,
+                    output_tokens=100
+                )
+                
+            with tracer.start_span(trace, "Skill Execution") as span:
+                time.sleep(0.05)
+                tracer.end_span(span, output_data={"result": "success"})
+            
+            # Finish the trace
+            final_trace = tracer.finish_trace(
+                trace,
+                output_data={"final_result": "success"}
+            )
+            
+            # Also track in CostTracker
+            if cost_tracker:
+                cost_tracker.track_usage(
+                    input_tokens=500,
+                    output_tokens=100,
+                    model_name="GPT-4 Turbo",
+                    trace_id=trace.trace_id
+                )
+                cost_tracker.create_cost_record(trace.trace_id)
+            
+            return {"trace": model_to_dict(final_trace)}
+    except Exception as e:
+        print(f"Error creating test trace: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.delete("/api/octotrace/traces/{trace_id}")
+async def delete_trace(trace_id: str):
+    """Delete a specific trace"""
+    try:
+        if tracer and tracer.storage:
+            success = tracer.storage.delete_trace(trace_id)
+            if success:
+                return {"success": True, "trace_id": trace_id}
+    except Exception as e:
+        print(f"Error deleting trace: {e}")
+    raise HTTPException(status_code=404, detail=f"Trace {trace_id} not found")
 
 
 # ==========================================
