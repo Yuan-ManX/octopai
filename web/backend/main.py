@@ -298,11 +298,11 @@ manager = ConnectionManager()
 
 
 # ==========================================
-# Root & Health Endpoints
+# Health Endpoints
 # ==========================================
 
-@app.get("/")
-async def root():
+@app.get("/health")
+async def health():
     return {
         "message": "Octopai API v4.0",
         "status": "running",
@@ -1090,20 +1090,48 @@ async def websocket_endpoint(websocket: WebSocket):
 
 
 # ==========================================
-# Frontend Serving (optional)
+# Frontend Serving (development mode)
 # ==========================================
 
-frontend_dist = BASE_DIR.parent / "frontend" / "dist"
-if frontend_dist.exists():
-    app.mount("/static", StaticFiles(directory=str(frontend_dist / "assets")), name="static")
+frontend_dir = BASE_DIR.parent / "frontend"
 
+# Mount frontend static files if they exist
+if frontend_dir.exists():
+    src_dir = frontend_dir / "src"
+    if src_dir.exists():
+        app.mount("/src", StaticFiles(directory=str(src_dir)), name="src")
+    
+    node_modules_dir = frontend_dir / "node_modules"
+    if node_modules_dir.exists():
+        app.mount("/node_modules", StaticFiles(directory=str(node_modules_dir)), name="node_modules")
+    
     @app.get("/{path:path}")
     async def serve_frontend(path: str):
-        """Serve frontend application"""
-        index_file = frontend_dist / "index.html"
+        """Serve frontend application in development mode"""
+        if path == "" or path == "/":
+            index_file = frontend_dir / "index.html"
+            if index_file.exists():
+                return HTMLResponse(content=index_file.read_text())
+        elif path == "index.html":
+            index_file = frontend_dir / "index.html"
+            if index_file.exists():
+                return HTMLResponse(content=index_file.read_text())
+        elif path == "404.html":
+            notfound_file = frontend_dir / "404.html"
+            if notfound_file.exists():
+                return HTMLResponse(content=notfound_file.read_text())
+        else:
+            # Try to serve static files directly
+            static_file = frontend_dir / path
+            if static_file.exists() and static_file.is_file():
+                from fastapi.responses import FileResponse
+                return FileResponse(str(static_file))
+        
+        # Fallback to index.html for SPA routing
+        index_file = frontend_dir / "index.html"
         if index_file.exists():
             return HTMLResponse(content=index_file.read_text())
-        return {"message": "Frontend not built yet"}
+        return {"message": "Octopai API Server is running"}
 
 
 if __name__ == "__main__":
