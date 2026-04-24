@@ -20,6 +20,9 @@ Comprehensive AI Agent platform with modular architecture:
   - storage: Multiple backends (in-memory, file, database)
   - visualizer: Tree/timeline visualization data
   - analytics: Performance and cost analysis
+- research: Autonomous research system
+  - manager: Research project and experiment management
+  - models: Research data structures
 """
 
 # Core Agents Module
@@ -95,6 +98,14 @@ from octopai.skills.hub_pkg import (
     ActivityItem, ReviewRequest, PRStatus, IssueType, IssueStatus,
 )
 
+# Program Registry Module (Skill Program Management)
+from octopai.skills.program_registry import (
+    ProgramRegistry,
+    ProgramStatus, ProgramEntry, ProgramConfig,
+    Skill, SkillMetadata, SkillType,
+    Experiment
+)
+
 # Tracing Module (OctoTrace with Cost Tracking)
 from octopai.tracing import (
     OctoTracer, TracerConfig, SpanKind, SpanStatus,
@@ -105,6 +116,13 @@ from octopai.tracing import (
     TraceAnalytics, AnalyticsReport,
     CostTracker, ModelPricing, TokenUsage,
     CostRecord, BudgetConfig,
+)
+
+# Research Module (AutoResearch - v4.0)
+from octopai.research import (
+    AutoResearchManager,
+    ResearchProject, ResearchIdea, Experiment, Paper,
+    LiteratureSearch, ResearchStatus, ExperimentStatus, Visibility,
 )
 
 __version__ = "4.0.0"
@@ -141,6 +159,12 @@ __all__ = [
     'MarketplaceManager', 'Rating', 'Review',
     'CollaborationManager', 'PullRequest', 'Issue', 'Comment',
     'ActivityItem', 'ReviewRequest', 'PRStatus', 'IssueType', 'IssueStatus',
+    
+    # Program Registry (Skill Program Management)
+    'ProgramRegistry',
+    'ProgramStatus', 'ProgramEntry', 'ProgramConfig',
+    'Skill', 'SkillMetadata', 'SkillType',
+    'Experiment',
 
     # Tools
     'SandboxExecutor', 'SandboxSession', 'SandboxConfig', 'ExecutionResult', 'SandboxMode', 'ExecutionStatus',
@@ -176,4 +200,9 @@ __all__ = [
     'TraceAnalytics', 'AnalyticsReport',
     'CostTracker', 'ModelPricing', 'TokenUsage',
     'CostRecord', 'BudgetConfig',
+
+    # Research (AutoResearch - v4.0)
+    'AutoResearchManager',
+    'ResearchProject', 'ResearchIdea', 'Experiment', 'Paper',
+    'LiteratureSearch', 'ResearchStatus', 'ExperimentStatus', 'Visibility',
 ]
