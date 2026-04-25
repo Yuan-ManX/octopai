@@ -16,20 +16,20 @@
         }
 
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --accent: #06b6d4;
-            --accent-glow: rgba(6, 182, 212, 0.3);
+            --primary: #0088FF;
+            --primary-dark: #0066CC;
+            --accent: #00CCFF;
+            --accent-glow: rgba(0, 204, 255, 0.3);
             --surface: #0a0a0f;
             --surface-light: #12121a;
             --surface-card: rgba(18, 18, 26, 0.8);
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
-            --border: rgba(99, 102, 241, 0.15);
-            --gradient-1: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
-            --gradient-2: linear-gradient(90deg, #06b6d4 0%, #6366f1 100%);
-            --gradient-3: linear-gradient(180deg, rgba(99, 102, 241, 0.1) 0%, transparent 100%);
+            --border: rgba(0, 136, 255, 0.15);
+            --gradient-1: linear-gradient(135deg, #0088FF 0%, #0066CC 50%, #00CCFF 100%);
+            --gradient-2: linear-gradient(90deg, #00CCFF 0%, #0088FF 100%);
+            --gradient-3: linear-gradient(180deg, rgba(0, 136, 255, 0.1) 0%, transparent 100%);
         }
 
         html {
@@ -940,7 +940,7 @@
             draw() {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(99, 102, 241, ${this.opacity})`;
+                ctx.fillStyle = `rgba(0, 136, 255, ${this.opacity})`;
                 ctx.fill();
             }
         }
@@ -962,7 +962,7 @@
 
                     if (distance < 150) {
                         ctx.beginPath();
-                        ctx.strokeStyle = `rgba(99, 102, 241, ${0.1 * (1 - distance / 150)})`;
+                        ctx.strokeStyle = `rgba(0, 136, 255, ${0.1 * (1 - distance / 150)})`;
                         ctx.lineWidth = 0.5;
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
