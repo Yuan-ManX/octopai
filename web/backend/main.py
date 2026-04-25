@@ -1090,7 +1090,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
 
 # ==========================================
-# Frontend Serving (development mode)
+# Frontend Serving (production mode with landing page)
 # ==========================================
 
 frontend_dir = BASE_DIR.parent / "frontend"
@@ -1107,11 +1107,20 @@ if frontend_dir.exists():
     
     @app.get("/{path:path}")
     async def serve_frontend(path: str):
-        """Serve frontend application in development mode"""
+        """Serve frontend application with landing page as default"""
         if path == "" or path == "/":
+            # Serve landing page as default
+            landing_file = frontend_dir / "landing.html"
+            if landing_file.exists():
+                return HTMLResponse(content=landing_file.read_text())
+            # Fallback to index.html
             index_file = frontend_dir / "index.html"
             if index_file.exists():
                 return HTMLResponse(content=index_file.read_text())
+        elif path == "landing.html":
+            landing_file = frontend_dir / "landing.html"
+            if landing_file.exists():
+                return HTMLResponse(content=landing_file.read_text())
         elif path == "index.html":
             index_file = frontend_dir / "index.html"
             if index_file.exists():
@@ -1127,10 +1136,10 @@ if frontend_dir.exists():
                 from fastapi.responses import FileResponse
                 return FileResponse(str(static_file))
         
-        # Fallback to index.html for SPA routing
-        index_file = frontend_dir / "index.html"
-        if index_file.exists():
-            return HTMLResponse(content=index_file.read_text())
+        # Fallback to landing.html for SPA routing
+        landing_file = frontend_dir / "landing.html"
+        if landing_file.exists():
+            return HTMLResponse(content=landing_file.read_text())
         return {"message": "Octopai API Server is running"}
 
 
