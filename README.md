@@ -177,22 +177,12 @@ Quick links:
 - [API Reference](./docs/en/api-reference.md)
 - [Examples](./docs/en/examples.md)
 
-## 🏗️ Architecture
 
-```
-octopai/
-├── octopai/              # Core logic
-│   ├── agents/          # Agent & evolution
-│   ├── skills/        # Skill creation
-│   ├── evolution/    # Evolution engine
-│   ├── tracing/     # OctoTrace
-│   └── utils/       # Utilities
-├── web/               # Web application
-│   ├── backend/     # FastAPI backend
-│   └── frontend/    # React frontend
-├── docs/              # Documentation
-└── examples/          # Usage examples
-```
+## 📞 Support & Community
+
+- **Issues**: [GitHub Issues](https://github.com/Yuan-ManX/octopai/issues)
+- **Documentation**: [docs/](./docs/README.md)
+
 
 ## 📄 License
 
@@ -211,8 +201,3 @@ If you like this project, please ⭐ star the repo! Your support helps us grow!
     <img src="https://api.star-history.com/svg?repos=Yuan-ManX/octopai&type=Date" />
   </a>
 </p>
-
-## 📞 Support & Community
-
-- **Issues**: [GitHub Issues](https://github.com/Yuan-ManX/octopai/issues)
-- **Documentation**: [docs/](./docs/README.md)
