@@ -177,22 +177,10 @@ npm run dev
 - [API参考](./docs/zh/api-reference.md)
 - [示例](./docs/zh/examples.md)
 
-## 🏗️ 架构
+## 📞 支持与社区
 
-```
-octopai/
-├── octopai/              # 核心逻辑
-│   ├── agents/          # Agent和进化
-│   ├── skills/        # 技能创建
-│   ├── evolution/    # 进化引擎
-│   ├── tracing/     # OctoTrace
-│   └── utils/       # 工具函数
-├── web/               # Web应用
-│   ├── backend/     # FastAPI后端
-│   └── frontend/    # React前端
-├── docs/              # 文档
-└── examples/          # 使用示例
-```
+- **问题**：[GitHub Issues](https://github.com/Yuan-ManX/octopai/issues)
+- **文档**：[docs/](./docs/README.md)
 
 ## 📄 许可证
 
@@ -212,11 +200,3 @@ MIT License - 详见[LICENSE](LICENSE)文件。
   </a>
 </p>
 
-## 📞 支持与社区
-
-- **问题**：[GitHub Issues](https://github.com/Yuan-ManX/octopai/issues)
-- **文档**：[docs/](./docs/README.md)
-
----
-
-**Octopai** - 赋能AI Agent探索、扩展和进化其认知能力。🐙✨
